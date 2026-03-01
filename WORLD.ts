@@ -249,29 +249,29 @@ class OneBlock {
 		return ["Air", 0];
 	}
 
-	static onPlayerChangeBlock(playerId: any, x: any, y: number, z: any, fromBlock: string, toBlock: string, _droppedItem: any, _fromBlockInfo: any, _toBlockInfo: any) {
-		/**
-		 * @description One Block Placement
-		 */
-		if (fromBlock === "Air") {
-			const held = api.getHeldItem(playerId);
-			if (held?.attributes?.customDisplayName === "One Block (Plains)") {
+	static onPlayerAltAction (playerId: any, x: any, y: any, z: any, block: any, targetEId: any) {
+		const held = api.getHeldItem(playerId);
+		const customDisplayName = held?.attributes?.customDisplayName;
+		if (phasesByNames.has(customDisplayName)) {
+			const phase = phasesByNames.get(customDisplayName);
+			if (phase) {
 				const above = api.getBlock(x, y + 1, z);
-				if (above === "Air") {
-					ChestStorage.init(playerId, x, y, z);
+				const above2 = api.getBlock(x, y + 2, z);
+				if (above === "Air" && above2 === "Air") {
+					api.setItemSlot(playerId, api.getSelectedInventorySlotI(playerId), "Air");
+					setBlock(x, y + 1, z, "Chest");
+					ChestStorage.init(playerId, x, y + 1, z);
+					ChestStorage.set(playerId, x, y + 1, z, 1, phase.name);
 					const block = OneBlock.getRandomBlock(plains.blocks);
-					api.setBlock(x, y + 1, z, block[0]);
-					ChestStorage.set(playerId, x, y, z, 1, "one_block_plains");
+					api.setBlock(x, y + 2, z, block[0]);
 				} else {
-					api.sendMessage(
-						playerId,
-						"Invalid placement.",
-						{ color: "gold" },
-					);
-					return "preventChange";
+					api.sendMessage(playerId, "Invalid placement.", { color: "gold" });
 				}
 			}
 		}
+	}
+
+	static onPlayerChangeBlock(playerId: any, x: any, y: number, z: any, fromBlock: string, toBlock: string, _droppedItem: any, _fromBlockInfo: any, _toBlockInfo: any) {
 		/**
 		 * @description Displacement
 		 */
@@ -284,9 +284,9 @@ class OneBlock {
 					if (ChestStorage.get(playerId, x, y, z, 1) === "one_block_plains") {
 						ChestStorage.teardown(playerId, x, y, z);
 						api.setBlock(x, y + 1, z, "Air");
-						api.giveItem(playerId, "Loot Chest", 1, {
-							customDisplayName: "One Block (Plains)",
-							customDescription: "Spawns plains blocks on top of it!",
+						api.giveItem(playerId, "Stick", 1, {
+							customDisplayName: forest.name,
+							customDescription: forest.description,
 						});
 						return "preventDrop";
 					}
@@ -312,7 +312,7 @@ class OneBlock {
 			if (chatMessage === `.${key}`) {
 				const phase = phasesByIds.get(key);
 				if (phase) {
-					api.giveItem(playerId, "Loot Chest", 1, {
+					api.giveItem(playerId, "Stick", 1, {
 						customDisplayName: phase.name,
 						customDescription: phase.description,
 						customAttributes: {
@@ -373,6 +373,10 @@ class TownSquare {
 onPlayerJoin = (playerId: any) => {
 	return TownSquare.onPlayerJoin(playerId);
 };
+
+onPlayerAltAction = (playerId: any, x: any, y: any, z: any, block: any, targetEId: any) => {
+	return OneBlock.onPlayerAltAction(playerId, x, y, z, block, targetEId);
+}
 
 onPlayerChangeBlock = (playerId: any, x: any, y: number, z: any, fromBlock: string, toBlock: string, droppedItem: any, fromBlockInfo: any, toBlockInfo: any) => {
 	return OneBlock.onPlayerChangeBlock(playerId, x, y, z, fromBlock, toBlock, droppedItem, fromBlockInfo, toBlockInfo);
