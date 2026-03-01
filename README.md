@@ -4,15 +4,27 @@
 
 #### One Block
 
-https://bloxd-io.fandom.com/wiki/One_Block
+https://bloxd-io.fandom.com/
 
-- I use this as reference for One Block.
+- I use this as reference for the game.
 
 #### Bloxd Code API
 
 https://github.com/Bloxdy/code-api/
 
 - I open README.md and CALLBACKS.md here.
+
+#### Bloxd Code API at BloxdHub
+
+https://bloxdhub.com/bloxd-api
+
+- I use this as reference sometimes.
+
+#### One Block
+
+https://bloxd-io.fandom.com/wiki/One_Block
+
+- I use this as reference for One Block.
 
 #### GitHub VSCode
 
