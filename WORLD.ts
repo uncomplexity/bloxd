@@ -100,7 +100,7 @@ class Scheduler {
         }
 
         if (this.timeouts.length > 0) {
-            const remaining = [];
+            const remaining: any[] = [];
             for (const timeout of this.timeouts) {
                 if (timeout[2]) continue;
                 if (now >= timeout[0]) {
