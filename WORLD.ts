@@ -200,7 +200,9 @@ interface Phase {
 const phasesByIds = new Map<string, Phase>();
 const phasesByNames = new Map<string, Phase>();
 
+// @ts-ignore
 globalThis.phasesByIds = phasesByIds;
+// @ts-ignore
 globalThis.phasesByNames = phasesByNames;
 
 const forest: Phase = {
