@@ -182,7 +182,6 @@ interface Phase {
 	id: string;
 	name: string;
 	description: string;
-	block: string;
 	blocks: PhaseBlock[];
 }
 
@@ -196,7 +195,6 @@ const forest: Phase = {
 	id: "forest",
 	name: "One Block (Forest)",
 	description: "Dirt, Grass Block, Maple Log, Stone, Maple Leaves, Fruity Maple Leaves, Chest",
-	block: "White Portal",
 	blocks: [
 		["Dirt", 1],
 		["Grass Block", 1],
