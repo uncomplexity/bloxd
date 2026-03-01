@@ -68,6 +68,14 @@ declare let onPlayerFinishQTE: GenericFunction
 declare let onPlayerBoughtShopItem: GenericFunction
 declare let doPeriodicSave: GenericFunction
 
+interface MessageStyle {
+	color?: string;
+	fontWeight?: number;
+}
+
+globalThis.m = (playerId: string, message: string, style: MessageStyle) => api.sendMessage(playerId, message, style);
+globalThis.ms = (color: string, fontWeight?: number) => ({ color, fontWeight });
+
 class ChestStorage {
 	static init(playerId: any, x: any, y: any, z: any) {
 		if (api.getBlock(x, y, z) === "Air") {
@@ -175,7 +183,6 @@ class ChestStorage {
 	}
 }
 
-
 type PhaseBlock = [string, number, string?];
 
 interface Phase {
@@ -197,7 +204,7 @@ globalThis.phasesByNames = phasesByNames;
 const forest: Phase = {
 	id: "forest",
 	name: "One Block (Forest)",
-	description: "Dirt, Grass Block, Maple Log, Stone, Maple Leaves, Fruity Maple Leaves, Chest",
+	description: "Creates a one block for forest phase. Dirt, Grass Block, Maple Log, Stone, Maple Leaves, Fruity Maple Leaves, and Chest.",
 	blocks: [
 		["Dirt", 1],
 		["Grass Block", 1],
@@ -214,7 +221,7 @@ phasesByNames.set(forest.name, forest);
 const plains: Phase = {
 	id: "plains",
 	name: "One Block (Plains)",
-	description: "Clay, Sand, Gravel, Dirt, Grass Block, Plum Log, Stone, Plum Leaves, Fruity Plum Leaves, Chest",
+	description: "Creates a one block for plains phase. Clay, Sand, Gravel, Dirt, Grass Block, Plum Log, Stone, Plum Leaves, Fruity Plum Leaves, and Chest.",
 	blocks: [
 		["Clay", 1],
 		["Sand", 1],
@@ -235,7 +242,7 @@ phasesByNames.set(plains.name, plains);
 const hills: Phase = {
 	id: "hills",
 	name: "One Block (Hills)",
-	description: "Cedar Log, Cedar Leaves, Granite, Coal Ore, Iron Ore, Grass Block, Rocky Dirt, Stone, Pear Log, Fruity Pear Leaves, Pear Leaves, Chest",
+	description: "Creates a one block for hills phase. Cedar Log, Cedar Leaves, Granite, Coal Ore, Iron Ore, Grass Block, Rocky Dirt, Stone, Pear Log, Fruity Pear Leaves, Pear Leaves, and Chest.",
 	blocks: [
 		["Cedar Log", 1],
 		["Cedar Leaves", 1],
