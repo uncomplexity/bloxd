@@ -8,11 +8,11 @@ if (phase) {
         customDisplayName: phase.name,
         customDescription: phase.description,
       });
-      api.sendMessage(playerId, `You received ${phase.name}.`, { color: "gold" });
+      m(playerId, `You received ${phase.name}.`, ms("gold"));
     } else {
-      api.sendMessage(playerId, `You need 125 gold coin to buy ${phase.name}.`, { color: "red" });
+      m(playerId, `You need 125 gold coin to buy ${phase.name}.`, ms("red"));
     }
   } else {
-    api.sendMessage(playerId, `You need 125 gold coin to buy ${phase.name}.`, { color: "red" });
+    m(playerId, `You need 125 gold coin to buy ${phase.name}.`, ms("red"));
   }
 }
