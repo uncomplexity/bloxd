@@ -12,9 +12,9 @@ if (phase) {
       });
       m(playerId, `You received ${phase.name}.`, ms("gold"));
     } else {
-      m(playerId, `You need cost gold coin to buy ${phase.name}.`, ms("red"));
+      m(playerId, `You need ${cost} gold coin to buy ${phase.name}.`, ms("red"));
     }
   } else {
-    m(playerId, `You need cost gold coin to buy ${phase.name}.`, ms("red"));
+    m(playerId, `You need ${cost} gold coin to buy ${phase.name}.`, ms("red"));
   }
 }
