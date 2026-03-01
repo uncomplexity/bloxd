@@ -453,7 +453,15 @@ class OneBlock {
 
 class TownSquare {
 	static onPlayerJoin(playerId: any) {
+		/**
+		 * @description Town Square
+		 */
 		api.setCantChangeBlockRect(playerId, [-64, -1024, -64], [64, 1024, 64]);
+
+		/**
+		 * @desecription ayuu_'s Jagannath
+		 */
+		api.setCantChangeBlockRect(playerId, [-11, -8, 65], [-21, -4, 82]);
 	}
 	static onPlayerDamagingOtherPlayer(attackingPlayer: any, damagedPlayer: any) {
 		if (api.isInsideRect(api.getPosition(damagedPlayer), [-64, -1024, -64], [64, 1024, 64])) {
