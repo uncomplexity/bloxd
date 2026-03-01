@@ -176,7 +176,7 @@ class ChestStorage {
 }
 
 
-type PhaseBlock = [string, number];
+type PhaseBlock = [string, number, string?];
 
 interface Phase {
 	id: string;
@@ -254,7 +254,7 @@ phasesByNames.set(hills.name, hills);
 const flowers: Phase = {
 	id: "flowers",
 	name: "One Block (Flowers)",
-	description: "Dandelion, Poppy, Red Tulip, Pink Tulip, White Tulip, Orange Tulip, Daisy, Bluebell, Forget-me-not, Allium, Azure Bluet, Lily of the Valley, Shadow Rose",
+	description: "Creates a one block for flowers. Dandelion, Poppy, Red Tulip, Pink Tulip, White Tulip, Orange Tulip, Daisy, Bluebell, Forget-me-not, Allium, Azure Bluet, Lily of the Valley, and Shadow Rose.",
 	blocks: [
 		["Dandelion", 1],
 		["Poppy", 1],
@@ -269,10 +269,33 @@ const flowers: Phase = {
 		["Azure Bluet", 1],
 		["Lily of the Valley", 1],
 		["Shadow Rose", 1],
+		["Red Mushroom", 1],
+		["Brown Mushroom", 1],
 	],
 };
 phasesByIds.set(flowers.id, flowers);
 phasesByNames.set(flowers.name, flowers);
+
+const logs: Phase = {
+	id: "logs",
+	name: "One Block (Logs)",
+	description: "Creates a one block for logs. Maple, Pine, Plum, Cedar, Aspen, Jungle, Palm, Pear, Cherry, Spectral, and Mango.",
+	blocks: [
+		["Maple Log", 1],
+		["Pine Log", 1],
+		["Plum Log", 1],
+		["Cedar Log", 1],
+		["Aspen Log", 1],
+		["Jungle Log", 1],
+		["Palm Log", 1],
+		["Pear Log", 1],
+		["Cherry Log", 1],
+		["Spectral Log", 1],
+		["Mango Log", 1],
+	],
+};
+phasesByIds.set(logs.id, logs);
+phasesByNames.set(logs.name, logs);
 
 class OneBlock {
 	static randomInt(min: number, max: number) {
