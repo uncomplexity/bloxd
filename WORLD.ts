@@ -117,38 +117,38 @@ class ChestStorage {
 		return false;
 	}
 	static set(playerId: any, x: any, y: any, z: any, index: number, value: any) {
-		if (ChestStorage.isStorage(x, y, z) && 0 < index && index <= 35) {
-			api.setStandardChestItemSlot(
-				[x, y, z],
-				index,
-				"Stick",
-				1,
-				playerId,
-				{ customDescription: JSON.stringify(value) },
-			);
+		if (ChestStorage.isStorage(x, y, z)) {
+			if (0 < index && index <= 35) {
+				api.setStandardChestItemSlot(
+					[x, y, z],
+					index,
+					"Stick",
+					1,
+					playerId,
+					{ customDescription: JSON.stringify(value) },
+				);
+			} else {
+				api.sendMessage(playerId, "Storage.set: Invalid index.", { color: "red" });
+			}
 		} else {
-			api.sendMessage(
-				playerId,
-				"Storage.set: Invalid block or index.",
-				{ color: "red" },
-			);
+			api.sendMessage(playerId, "Storage.set: Invalid block.", { color: "red" });
 		}
 	}
 	static get(playerId: any, x: any, y: any, z: any, index: number) {
-		if (ChestStorage.isStorage(x, y, z) && 0 < index && index <= 35) {
-			const item = api.getStandardChestItemSlot(
-				[x, y, z],
-				index,
-			);
-			if (item?.attributes?.customDescription) {
-				return JSON.parse(item?.attributes?.customDescription);
+		if (ChestStorage.isStorage(x, y, z)) {
+			if (0 < index && index <= 35) {
+				const item = api.getStandardChestItemSlot(
+					[x, y, z],
+					index,
+				);
+				if (item?.attributes?.customDescription) {
+					return JSON.parse(item?.attributes?.customDescription);
+				}
+			} else {
+				api.sendMessage(playerId, "Storage.set: Invalid index.", { color: "red" });
 			}
 		} else {
-			api.sendMessage(
-				playerId,
-				"Storage.set: Invalid block or index.",
-				{ color: "red" },
-			);
+				api.sendMessage(playerId, "Storage.set: Invalid block.", { color: "red" });
 		}
 		return null;
 	}
@@ -257,7 +257,7 @@ class OneBlock {
 				const above2 = api.getBlock(x, y + 2, z);
 				if (above === "Air" && above2 === "Air") {
 					api.setItemSlot(playerId, api.getSelectedInventorySlotI(playerId), "Air");
-					api.setBlock(x, y + 1, z, "Chest");
+					api.setBlock(x, y + 1, z, "Loot Chest");
 					ChestStorage.init(playerId, x, y + 1, z);
 					ChestStorage.set(playerId, x, y + 1, z, 1, phase.name);
 					const block = OneBlock.getRandomBlock(plains.blocks);
