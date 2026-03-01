@@ -482,6 +482,10 @@ class TownSquare {
 	}
 }
 
+/**
+ * @description Global Event Handlers. return them, and chain them with "??".
+ */
+
 onPlayerJoin = (playerId: any) => {
 	return TownSquare.onPlayerJoin(playerId);
 };
