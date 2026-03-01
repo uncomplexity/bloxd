@@ -313,7 +313,10 @@ class OneBlock {
 					api.giveItem(playerId, "Chest", 1, {
 						customDisplayName: phase.name,
 						customDescription: phase.description,
-						customAttributes: {}
+						customAttributes: {
+							id: phase.id,
+							now: api.now(),
+						}
 					});
 					api.sendMessage(playerId, `You received ${phase.name}.`, { color: "gold" });
 					return false;
