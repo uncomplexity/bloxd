@@ -257,7 +257,7 @@ class OneBlock {
 				const above2 = api.getBlock(x, y + 2, z);
 				if (above === "Air" && above2 === "Air") {
 					api.setItemSlot(playerId, api.getSelectedInventorySlotI(playerId), "Air");
-					setBlock(x, y + 1, z, "Chest");
+					api.setBlock(x, y + 1, z, "Chest");
 					ChestStorage.init(playerId, x, y + 1, z);
 					ChestStorage.set(playerId, x, y + 1, z, 1, phase.name);
 					const block = OneBlock.getRandomBlock(plains.blocks);
