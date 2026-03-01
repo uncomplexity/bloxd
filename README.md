@@ -2,6 +2,15 @@
 
 ## Used
 
+#### Schematics
+
+- https://bloxd-io-fan.fandom.com/wiki/Fanmade_Websites
+- https://github.com/Bloxdy/schematics/
+- https://bloxdhub.com/
+- https://bloxdhub.com/schematics
+- https://bloxdium.com/
+- https://bloxdium.com/schematic?id=xXAvj9y
+
 #### One Block
 
 https://bloxd-io.fandom.com/
