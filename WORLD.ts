@@ -308,13 +308,15 @@ class OneBlock {
 		for (const key of phases.keys()) {
 			if (chatMessage === `.${key}`) {
 				const phase = phases.get(key);
-				api.giveItem(playerId, "Chest", 1, {
-					customDisplayName: phase.name,
-					customDescription: phase.description,
-					customAttributes: {}
-				});
-				api.sendMessage(playerId, `You received ${phase.name}.`, { color: "gold" });
-				return false;
+				if (phase) {
+					api.giveItem(playerId, "Chest", 1, {
+						customDisplayName: phase.name,
+						customDescription: phase.description,
+						customAttributes: {}
+					});
+					api.sendMessage(playerId, `You received ${phase.name}.`, { color: "gold" });
+					return false;
+				}
 			}
 		}
 		switch (chatMessage) {
