@@ -191,6 +191,9 @@ interface Phase {
 const phasesByIds = new Map<string, Phase>();
 const phasesByNames = new Map<string, Phase>();
 
+globalThis.phasesByIds = phasesByIds;
+globalThis.phasesByNames = phasesByNames;
+
 const forest: Phase = {
 	id: "forest",
 	name: "One Block (Forest)",
