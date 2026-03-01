@@ -297,6 +297,27 @@ const logs: Phase = {
 phasesByIds.set(logs.id, logs);
 phasesByNames.set(logs.name, logs);
 
+const saplings: Phase = {
+	id: "saplings",
+	name: "One Block (Saplings)",
+	description: "Creates a one block for saplings. Maple, Pine, Plum, Cedar, Aspen, Jungle, Palm, Pear, Cherry, Spectral, and Mango.",
+	blocks: [
+		["Maple Sapling", 1],
+		["Pine Sapling", 1],
+		["Plum Sapling", 1],
+		["Cedar Sapling", 1],
+		["Aspen Sapling", 1],
+		["Jungle Sapling", 1],
+		["Palm Sapling", 1],
+		["Pear Sapling", 1],
+		["Cherry Sapling", 1],
+		["Spectral Sapling", 1],
+		["Mango Sapling", 1],
+	],
+};
+phasesByIds.set(saplings.id, saplings);
+phasesByNames.set(saplings.name, saplings);
+
 class OneBlock {
 	static randomInt(min: number, max: number) {
 		const minc = Math.ceil(min);
