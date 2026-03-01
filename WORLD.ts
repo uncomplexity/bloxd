@@ -258,7 +258,8 @@ class OneBlock {
 				if (above === "Air" && above2 === "Air") {
 					api.setItemSlot(playerId, api.getSelectedInventorySlotI(playerId), "Air");
 					ChestStorage.init(playerId, x, y + 1, z);
-					ChestStorage.set(playerId, x, y + 1, z, 1, phase.name);
+					ChestStorage.set(playerId, x, y + 1, z, 1, "one_block"); // type
+					ChestStorage.set(playerId, x, y + 1, z, 2, phase.id); // subtype
 					const block = OneBlock.getRandomBlock(plains.blocks);
 					api.setBlock(x, y + 2, z, block[0]);
 				} else {
@@ -278,14 +279,21 @@ class OneBlock {
 			 */
 			if (ChestStorage.isStorage(x, y, z)) {
 				if (ChestStorage.isOwnStorage(playerId, x, y, z)) {
-					if (ChestStorage.get(playerId, x, y, z, 1) === "one_block_plains") {
-						ChestStorage.teardown(playerId, x, y, z);
-						api.setBlock(x, y + 1, z, "Air");
-						api.giveItem(playerId, "Stick", 1, {
-							customDisplayName: forest.name,
-							customDescription: forest.description,
-						});
-						return "preventDrop";
+					const type = ChestStorage.get(playerId, x, y - 1, z, 1);
+					if (type === "one_block") {
+						const subtype = ChestStorage.get(playerId, x, y - 1, z, 2);
+						if (phasesByIds.has(subtype)) {
+							const phase = phasesByIds.get(subtype);
+							if (phase) {
+								ChestStorage.teardown(playerId, x, y, z);
+								api.setBlock(x, y + 1, z, "Air");
+								api.giveItem(playerId, "Stick", 1, {
+									customDisplayName: phase.name,
+									customDescription: phase.description,
+								});
+								return "preventDrop";
+							}
+						}
 					}
 				} else {
 					return "preventChange";
@@ -295,9 +303,16 @@ class OneBlock {
 			 * @description Block Displacement
 			 */
 			if (ChestStorage.isStorage(x, y - 1, z)) {
-				if (ChestStorage.get(playerId, x, y - 1, z, 1) === "one_block_plains") {
-					const block = OneBlock.getRandomBlock(plains.blocks);
-					api.setBlock(x, y, z, block[0]);
+				const type = ChestStorage.get(playerId, x, y - 1, z, 1);
+				if (type === "one_block") {
+					const subtype = ChestStorage.get(playerId, x, y - 1, z, 2);
+					if (phasesByIds.has(subtype)) {
+						const phase = phasesByIds.get(subtype);
+						if (phase) {
+							const block = OneBlock.getRandomBlock(phase.blocks);
+							api.setBlock(x, y, z, block[0]);
+						}
+					}
 				}
 			}
 		}
@@ -312,10 +327,6 @@ class OneBlock {
 					api.giveItem(playerId, "Stick", 1, {
 						customDisplayName: phase.name,
 						customDescription: phase.description,
-						customAttributes: {
-							id: phase.id,
-							now: api.now(),
-						}
 					});
 					api.sendMessage(playerId, `You received ${phase.name}.`, { color: "gold" });
 					return false;
