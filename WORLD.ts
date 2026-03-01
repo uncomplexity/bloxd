@@ -175,17 +175,41 @@ class ChestStorage {
 	}
 }
 
+
 type PhaseBlock = [string, number];
 
 interface Phase {
+	id: string;
 	name: string;
+	description: string;
 	blocks: PhaseBlock[];
 }
 
+/**
+ * @url https://bloxd-io.fandom.com/wiki/One_Block
+ */
 const phases = new Map<string, Phase>();
 
+const forest: Phase = {
+	id: "forest",
+	name: "One Block (Forest)",
+	description: "Dirt, Grass Block, Maple Log, Stone, Maple Leaves, Fruity Maple Leaves, Chest",
+	blocks: [
+		["Dirt", 24],
+		["Grass Block", 24],
+		["Maple Log", 24],
+		["Stone", 24],
+		["Maple Leaves", 24],
+		["Fruity Maple Leaves", 24],
+		["Chest", 24],
+	],
+};
+phases.set(forest.name, forest);
+
 const plains: Phase = {
+	id: "plains",
 	name: "One Block (Plains)",
+	description: "Clay, Sand, Gravel, Dirt, Grass Block, Plum Log, Stone, Plum Leaves, Fruity Plum Leaves, Chest",
 	blocks: [
 		["Grass Block", 128],
 		["Messy Stone", 128],
