@@ -71,7 +71,7 @@ declare let doPeriodicSave: GenericFunction
 class ChestStorage {
 	static init(playerId: any, x: any, y: any, z: any) {
 		if (api.getBlock(x, y, z) === "Air") {
-			api.setBlock(x, y, z, "Chest");
+			api.setBlock(x, y, z, "Loot Chest");
 			api.setStandardChestItemSlot(
 				[x, y, z],
 				0,
@@ -88,7 +88,7 @@ class ChestStorage {
 		return false;
 	}
 	static isStorage(x: any, y: any, z: any) {
-		if (api.getBlock(x, y, z) === "Chest") {
+		if (api.getBlock(x, y, z) === "Loot Chest") {
 			const item = api.getStandardChestItemSlot(
 				[x, y, z],
 				0,
@@ -101,7 +101,7 @@ class ChestStorage {
 		return false;
 	}
 	static isOwnStorage(playerId: any, x: any, y: any, z: any) {
-		if (api.getBlock(x, y, z) === "Chest") {
+		if (api.getBlock(x, y, z) === "Loot Chest") {
 			const item = api.getStandardChestItemSlot(
 				[x, y, z],
 				0,
@@ -282,7 +282,7 @@ class OneBlock {
 					if (ChestStorage.get(playerId, x, y, z, 1) === "one_block_plains") {
 						ChestStorage.teardown(playerId, x, y, z);
 						api.setBlock(x, y + 1, z, "Air");
-						api.giveItem(playerId, "Chest", 1, {
+						api.giveItem(playerId, "Loot Chest", 1, {
 							customDisplayName: "One Block (Plains)",
 							customDescription: "Spawns plains blocks on top of it!",
 						});
@@ -310,7 +310,7 @@ class OneBlock {
 			if (chatMessage === `.${key}`) {
 				const phase = phasesByIds.get(key);
 				if (phase) {
-					api.giveItem(playerId, "Chest", 1, {
+					api.giveItem(playerId, "Loot Chest", 1, {
 						customDisplayName: phase.name,
 						customDescription: phase.description,
 						customAttributes: {
