@@ -1,10 +1,13 @@
 # bloxd
 
+#### One Block
+
+https://bloxd-io.fandom.com/wiki/One_Block
+
 #### TypeScript Playground
 
 https://www.typescriptlang.org/play/
 
-- I write code here.
 - I use the right side panel to catch type errors.
 - I use the right side panel for TypeScript to JavaScript conversion.
 
