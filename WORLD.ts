@@ -461,7 +461,7 @@ class TownSquare {
 		/**
 		 * @desecription ayuu_'s Jagannath
 		 */
-		api.setCantChangeBlockRect(playerId, [-11, -8, 65], [-21, -4, 82]);
+		api.setCantChangeBlockRect(playerId, [-11, -10, 65], [-21, -4, 82]);
 	}
 	static onPlayerDamagingOtherPlayer(attackingPlayer: any, damagedPlayer: any) {
 		if (api.isInsideRect(api.getPosition(damagedPlayer), [-64, -1024, -64], [64, 1024, 64])) {
