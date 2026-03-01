@@ -68,63 +68,7 @@ declare let onPlayerFinishQTE: GenericFunction
 declare let onPlayerBoughtShopItem: GenericFunction
 declare let doPeriodicSave: GenericFunction
 
-class Scheduler {
-	tasks: any[];
-	timeouts: any[];
-    constructor() {
-        this.tasks = [];
-        this.timeouts = [];
-    }
-    every(ms: any, callback: any) {
-        this.tasks.push([ms, Date.now(), callback]);
-    }
-    after(ms: number, callback: any) {
-        const handle = [Date.now() + ms, callback, false];
-        this.timeouts.push(handle);
-        return handle;
-    }
-    clear(handle: boolean[]) {
-        if (handle) handle[2] = true;
-    }
-    update() {
-        const now = Date.now();
-        for (const task of this.tasks) {
-            if (now - task[1] >= task[0]) {
-                try {
-                    task[2]();
-                } catch (e) {
-                    api.log("Error in scheduled task: " + e);
-                }
-                task[1] = now;
-            }
-        }
-
-        if (this.timeouts.length > 0) {
-            const remaining: any[] = [];
-            for (const timeout of this.timeouts) {
-                if (timeout[2]) continue;
-                if (now >= timeout[0]) {
-                    try {
-                        timeout[1]();
-                    } catch (e) {
-						console.error(e);
-                    }
-                } else {
-                    remaining.push(timeout);
-                }
-            }
-            this.timeouts = remaining;
-        }
-    }
-}
-
-const scheduler = new Scheduler();
-
-tick = (_ms: any) => {
-  // scheduler.update();
-}
-
-class Storage_ {
+class MyStorage {
 	static init (playerId: any, x: any, y: any, z: any) {
 		if (api.getBlock(x, y, z) === "Air") {
 			api.setBlock(x, y, z, "Chest");
@@ -173,7 +117,7 @@ class Storage_ {
 		return false;
 	}
 	static set (playerId: any, x: any, y: any, z: any, index: number, value: any) {
-		if (Storage_.isStorage(x, y, z) && 0 < index && index <= 35) {
+		if (MyStorage.isStorage(x, y, z) && 0 < index && index <= 35) {
 			api.setStandardChestItemSlot(
 				[x, y, z],
 				index,
@@ -191,7 +135,7 @@ class Storage_ {
 		}
 	}
 	static get (playerId: any, x: any, y: any, z: any, index: number) {
-		if (Storage_.isStorage(x, y, z) && 0 < index && index <= 35) {
+		if (MyStorage.isStorage(x, y, z) && 0 < index && index <= 35) {
 			const item = api.getStandardChestItemSlot(
 				[x, y, z],
 				index,
@@ -209,7 +153,7 @@ class Storage_ {
 		return null;
 	}
 	static teardown (playerId: any, x: any, y: any, z: any) {
-		if (Storage_.isStorage(x, y, z)) {
+		if (MyStorage.isStorage(x, y, z)) {
 			for (let index = 0; index <= 35; index += 1) {
 				api.setStandardChestItemSlot(
 					[x, y, z],
@@ -223,7 +167,7 @@ class Storage_ {
 		}
 	}
   static onPlayerAttemptOpenChest = (playerId: any, x: any, y: any, z: any,	_isMoonstoneChest: any, _isIronChest: any) => {
-    if (Storage_.isStorage(x, y, z)) {
+    if (MyStorage.isStorage(x, y, z)) {
       api.sendMessage(playerId, "You can't open that.", { color: "gold" });
       return "preventOpen";
     }
@@ -275,10 +219,10 @@ class OneBlock{
       if (held?.attributes?.customDisplayName === "One Block (Plains)") {
         const above = api.getBlock(x, y + 1, z);
         if (above === "Air") {
-          Storage_.init(playerId, x, y, z);
+          MyStorage.init(playerId, x, y, z);
           const block = OneBlock.getRandomBlock(plains.blocks);
           api.setBlock(x, y + 1, z, block[0]);
-          Storage_.set(playerId, x, y, z, 1, "one_block_plains");
+          MyStorage.set(playerId, x, y, z, 1, "one_block_plains");
         } else {
           api.sendMessage(
             playerId,
@@ -290,10 +234,10 @@ class OneBlock{
       }
     }
     if (toBlock === "Air") {
-      if (Storage_.isStorage(x, y, z)) {
-        if (Storage_.isOwnStorage(playerId, x, y, z)) {
-          if (Storage_.get(playerId, x, y, z, 1) === "one_block_plains") {
-            Storage_.teardown(playerId, x, y, z);
+      if (MyStorage.isStorage(x, y, z)) {
+        if (MyStorage.isOwnStorage(playerId, x, y, z)) {
+          if (MyStorage.get(playerId, x, y, z, 1) === "one_block_plains") {
+            MyStorage.teardown(playerId, x, y, z);
             api.setBlock(x, y + 1, z, "Air");
             api.giveItem(playerId, "Chest", 1, {
               customDisplayName: "One Block (Plains)",
@@ -305,8 +249,8 @@ class OneBlock{
           return "preventChange";
         }
       }
-      if (Storage_.isStorage(x, y - 1, z)) {
-        if (Storage_.get(playerId, x, y - 1, z, 1) === "one_block_plains") {
+      if (MyStorage.isStorage(x, y - 1, z)) {
+        if (MyStorage.get(playerId, x, y - 1, z, 1) === "one_block_plains") {
                 const block = OneBlock.getRandomBlock(plains.blocks);
           api.setBlock(x, y, z, block[0]);
         }
@@ -386,7 +330,7 @@ onPlayerChat = (playerId: any, chatMessage: any) => {
 }
 
 onPlayerAttemptOpenChest = (playerId: any, x: any, y: any, z: any,	isMoonstoneChest: any, isIronChest: any) => {
-  return Storage_.onPlayerAttemptOpenChest(playerId, x, y, z,	isMoonstoneChest, isIronChest)
+  return MyStorage.onPlayerAttemptOpenChest(playerId, x, y, z,	isMoonstoneChest, isIronChest)
 };
 
 
