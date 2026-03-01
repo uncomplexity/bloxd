@@ -188,7 +188,8 @@ interface Phase {
 /**
  * @url https://bloxd-io.fandom.com/wiki/One_Block
  */
-const phases = new Map<string, Phase>();
+const phasesByIds = new Map<string, Phase>();
+const phasesByNames = new Map<string, Phase>();
 
 const forest: Phase = {
 	id: "forest",
@@ -204,8 +205,8 @@ const forest: Phase = {
 		["Chest", 1],
 	],
 };
-phases.set(forest.id, forest);
-phases.set(forest.name, forest);
+phasesByIds.set(forest.id, forest);
+phasesByNames.set(forest.name, forest);
 
 const plains: Phase = {
 	id: "plains",
@@ -224,8 +225,8 @@ const plains: Phase = {
 		["Chest", 1],
 	],
 };
-phases.set(plains.id, plains);
-phases.set(plains.name, plains);
+phasesByIds.set(plains.id, plains);
+phasesByNames.set(plains.name, plains);
 
 class OneBlock {
 	static randomInt(min: number, max: number) {
@@ -305,9 +306,9 @@ class OneBlock {
 	}
 
 	static onPlayerChat(playerId: any, chatMessage: any) {
-		for (const key of phases.keys()) {
+		for (const key of phasesByIds.keys()) {
 			if (chatMessage === `.${key}`) {
-				const phase = phases.get(key);
+				const phase = phasesByIds.get(key);
 				if (phase) {
 					api.giveItem(playerId, "Chest", 1, {
 						customDisplayName: phase.name,
@@ -321,7 +322,7 @@ class OneBlock {
 		}
 		switch (chatMessage) {
 			case ".oneblock": {
-				const commands = Array.from(phases.values()).map((phase) => `.${phase.id}`).join(', ');
+				const commands = Array.from(phasesByIds.values()).map((phase) => `.${phase.id}`).join(', ');
 				api.sendMessage(playerId, `OneBlock test commands: ${commands}`, { color: "gold" });
 				return false;
 			}
