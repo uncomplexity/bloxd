@@ -195,15 +195,16 @@ const forest: Phase = {
 	name: "One Block (Forest)",
 	description: "Dirt, Grass Block, Maple Log, Stone, Maple Leaves, Fruity Maple Leaves, Chest",
 	blocks: [
-		["Dirt", 24],
-		["Grass Block", 24],
-		["Maple Log", 24],
-		["Stone", 24],
-		["Maple Leaves", 24],
-		["Fruity Maple Leaves", 24],
-		["Chest", 24],
+		["Dirt", 1],
+		["Grass Block", 1],
+		["Maple Log", 1],
+		["Stone", 1],
+		["Maple Leaves", 1],
+		["Fruity Maple Leaves", 1],
+		["Chest", 1],
 	],
 };
+phases.set(forest.id, forest);
 phases.set(forest.name, forest);
 
 const plains: Phase = {
@@ -211,14 +212,19 @@ const plains: Phase = {
 	name: "One Block (Plains)",
 	description: "Clay, Sand, Gravel, Dirt, Grass Block, Plum Log, Stone, Plum Leaves, Fruity Plum Leaves, Chest",
 	blocks: [
-		["Grass Block", 128],
-		["Messy Stone", 128],
-		["Coal Ore", 64],
-		["Iron Ore", 32],
-		["Gold Ore", 16],
-		["Diamond Ore", 8],
+		["Clay", 1],
+		["Sand", 1],
+		["Gravel", 1],
+		["Dirt", 1],
+		["Grass Block", 1],
+		["Plum Log", 1],
+		["Stone", 1],
+		["Plum Leaves", 1],
+		["Fruity Plum Leaves", 1],
+		["Chest", 1],
 	],
 };
+phases.set(plains.id, plains);
 phases.set(plains.name, plains);
 
 class OneBlock {
@@ -299,18 +305,22 @@ class OneBlock {
 	}
 
 	static onPlayerChat(playerId: any, chatMessage: any) {
-		switch (chatMessage) {
-			case ".plains": {
+		for (const key of phases.keys()) {
+			if (chatMessage === `.${key}`) {
+				const phase = phases.get(key);
 				api.giveItem(playerId, "Chest", 1, {
-					customDisplayName: "One Block (Plains)",
-					customDescription: "Spawns plains blocks on top of it!",
+					customDisplayName: phase.name,
+					customDescription: phase.description,
 					customAttributes: {}
 				});
-				api.sendMessage(
-					playerId,
-					"You received One Block (Plains).",
-					{ color: "gold" },
-				);
+				api.sendMessage(playerId, `You received ${phase.name}.`, { color: "gold" });
+				return false;
+			}
+		}
+		switch (chatMessage) {
+			case ".oneblock": {
+				const commands = Array.from(phases.values()).map((phase) => `.${phase.id}`).join(', ');
+				api.sendMessage(playerId, `OneBlock test commands: ${commands}`, { color: "gold" });
 				return false;
 			}
 			default: {
