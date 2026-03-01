@@ -25,11 +25,18 @@ https://www.typescriptlang.org/play/
 - I use the right side panel to catch type errors.
 - I use the right side panel for TypeScript to JavaScript conversion.
 
+#### Minify
+
+https://minify-js.com/
+
+- I use this to minify JavaScript code.
+- I check the "toplevel" option.
+
 #### TypeScript ESLint  Playground
 
 https://typescript-eslint.io/play/
 
-- This can be used to double-check for errors.
+- Not used right now. This can be used to double-check for errors.
 
 #### TSConfig Bses
 
