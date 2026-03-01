@@ -228,6 +228,52 @@ const plains: Phase = {
 phasesByIds.set(plains.id, plains);
 phasesByNames.set(plains.name, plains);
 
+
+const hills: Phase = {
+	id: "hills",
+	name: "One Block (Hills)",
+	description: "Cedar Log, Cedar Leaves, Granite, Coal Ore, Iron Ore, Grass Block, Rocky Dirt, Stone, Pear Log, Fruity Pear Leaves, Pear Leaves, Chest",
+	blocks: [
+		["Cedar Log", 1],
+		["Cedar Leaves", 1],
+		["Granite", 1],
+		["Coal Ore", 1],
+		["Iron Ore", 1],
+		["Grass Block", 1],
+		["Rocky Dirt", 1],
+		["Stone", 1],
+		["Pear Log", 1],
+		["Fruity Pear Leaves", 1],
+		["Pear Leaves", 1],
+		["Chest", 1],
+	],
+};
+phasesByIds.set(hills.id, hills);
+phasesByNames.set(hills.name, hills);
+
+const flowers: Phase = {
+	id: "flowers",
+	name: "One Block (Flowers)",
+	description: "Dandelion, Poppy, Red Tulip, Pink Tulip, White Tulip, Orange Tulip, Daisy, Bluebell, Forget-me-not, Allium, Azure Bluet, Lily of the Valley, Shadow Rose",
+	blocks: [
+		["Dandelion", 1],
+		["Poppy", 1],
+		["Red Tulip", 1],
+		["Pink Tulip", 1],
+		["White Tulip", 1],
+		["Orange Tulip", 1],
+		["Daisy", 1],
+		["Bluebell", 1],
+		["Forget-me-not", 1],
+		["Allium", 1],
+		["Azure Bluet", 1],
+		["Lily of the Valley", 1],
+		["Shadow Rose", 1],
+	],
+};
+phasesByIds.set(flowers.id, flowers);
+phasesByNames.set(flowers.name, flowers);
+
 class OneBlock {
 	static randomInt(min: number, max: number) {
 		const minc = Math.ceil(min);
@@ -260,7 +306,7 @@ class OneBlock {
 					ChestStorage.init(playerId, x, y + 1, z);
 					ChestStorage.set(playerId, x, y + 1, z, 1, "one_block"); // type
 					ChestStorage.set(playerId, x, y + 1, z, 2, phase.id); // subtype
-					const block = OneBlock.getRandomBlock(plains.blocks);
+					const block = OneBlock.getRandomBlock(phase.blocks);
 					api.setBlock(x, y + 2, z, block[0]);
 				} else {
 					api.sendMessage(playerId, "Invalid placement.", { color: "gold" });
