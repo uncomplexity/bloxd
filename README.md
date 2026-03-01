@@ -1,5 +1,7 @@
 # bloxd
 
+## Used
+
 #### One Block
 
 https://bloxd-io.fandom.com/wiki/One_Block
@@ -32,11 +34,13 @@ https://minify-js.com/
 - I use this to minify JavaScript code.
 - I check the "toplevel" option.
 
+## Not Used
+
 #### TypeScript ESLint  Playground
 
 https://typescript-eslint.io/play/
 
-- Not used right now. This can be used to double-check for errors.
+- This can be used to double-check for errors.
 
 #### TSConfig Bses
 
