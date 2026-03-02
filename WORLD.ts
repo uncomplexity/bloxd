@@ -432,6 +432,9 @@ class OneBlock {
 						const type = "one_block";
 						const subtype = phase.id;
 						ChestStorage.set(playerId, x, y + 1, z, 1, [type, subtype, ...block]);
+						/**
+						 * @todo add y + 1 to ProtectedRect Whitelist
+						 */
 					} else {
 						m(playerId, "Invalid placement, not enough space.", s("gold"));
 					}
@@ -463,11 +466,17 @@ class OneBlock {
 									customDisplayName: phase.name,
 									customDescription: phase.description,
 								});
+								/**
+								 * @todo remove y + 1 from ProtectedRect Whitelist
+								 */
 								return "preventDrop";
 							}
 						}
 					}
 				} else {
+					/**
+					 * @todo show who owns this. maybe getEntityName?
+					 */
 					m(playerId, "That's not yours.", s("gold"));
 					return "preventChange";
 				}
