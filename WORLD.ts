@@ -580,7 +580,6 @@ class TownSquare {
 						for (let y = 0; y < 32; y++) {
 							for (let z = 0; z < 32; z++) {
 								const id = chunkData.blockData.get(x, y, z);
-								const name = api.blockIdToBlockName(id);
 								if (targetIds.has(id)) {
 									const worldX = chunkPosition[0] + x;
 									const worldY = chunkPosition[1] + y;
