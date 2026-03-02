@@ -486,8 +486,8 @@ class OneBlock {
 								let amount = 1;
 								const itemMin = metadata[5];
 								if (itemMin) {
+									const itemMax = metadata[6];
 									if (itemMax) {
-										const itemMax = metadata[6];
 										amount = OneBlock.randomInt(itemMin, itemMax);
 									} else {
 										amount = itemMin;
