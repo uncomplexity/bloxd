@@ -76,6 +76,11 @@ interface MessageStyle {
 /**
  * @description message
  */
+const b = (message: string, style: MessageStyle) => api.broadcastMessage(message, style);
+
+/**
+ * @description message
+ */
 const m = (playerId: string, message: string, style: MessageStyle) => api.sendMessage(playerId, message, style);
 
 /**
@@ -102,6 +107,8 @@ const protectedExceptions: Map<ProtectedRect, Set<string>> = new Map([
 	[protectedAyuuJagannath, new Set()],
 ]);
 
+// @ts-ignore
+globalThis.b = b;
 // @ts-ignore
 globalThis.m = m;
 // @ts-ignore
@@ -552,9 +559,36 @@ class TownSquare {
 	}
 }
 
+class ProtectedChunks {
+	static onChunkLoaded (chunkId: string, chunk: number[], _wasPersistedChunk: boolean) {
+		const [baseX, baseY, baseZ] = api.chunkIdToBotLeftCoord(chunkId);
+		const chunkData = api.getChunk(chunk);
+		const chestId = api.blockNameToBlockId("Chest");
+    for (let x = 0; x < 32; x++) {
+        for (let y = 0; y < 32; y++) {
+            for (let z = 0; z < 32; z++) {
+                const id = chunkData.blockData.get(x, y, z);
+                if (id === chestId) {
+                    const worldX = baseX + x;
+                    const worldY = baseY + y;
+                    const worldZ = baseZ + z;
+                    if (ChestStorage.isStorage(worldX, worldY, worldZ)) {
+											b(`Chest Storage found at ${worldX}, ${worldY}, ${worldZ}.`, s("gold"));
+                    }
+                }
+            }
+        }
+    }
+	}
+}
+
 /**
  * @description Global Event Handlers. return them, and chain them with "??".
  */
+
+onChunkLoaded = (chunkId: string, chunk: number[], wasPersistedChunk: boolean) => {
+	return ProtectedChunks.onChunkLoaded(chunkId, chunk, wasPersistedChunk);
+}
 
 onPlayerJoin = (playerId: any) => {
 	return TownSquare.onPlayerJoin(playerId);
@@ -583,5 +617,3 @@ onPlayerChat = (playerId: any, chatMessage: any) => {
 onPlayerAttemptOpenChest = (playerId: any, x: any, y: any, z: any, isMoonstoneChest: any, isIronChest: any) => {
 	return ChestStorage.onPlayerAttemptOpenChest(playerId, x, y, z, isMoonstoneChest, isIronChest)
 };
-
-
