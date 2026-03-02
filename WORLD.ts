@@ -434,6 +434,7 @@ class OneBlock {
 						ChestStorage.set(playerId, x, y + 1, z, 1, [type, subtype, ...block]);
 						/**
 						 * @todo add y + 1 to ProtectedRect Whitelist
+						 * @link https://claude.ai/share/b8cf46d3-ef85-4287-8f5c-fbf43f4b57da
 						 */
 					} else {
 						m(playerId, "Invalid placement, not enough space.", s("gold"));
