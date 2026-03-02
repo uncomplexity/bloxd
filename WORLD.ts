@@ -222,9 +222,9 @@ class ChestStorage {
 }
 
 /**
- * @description BlockName, Weight, ItemName = BlockName, ItemMin = 1, ItemMax = null
+ * @description Weight, BlockName, ItemName = BlockName, ItemMin = 1, ItemMax = null
  */
-type PhaseBlock = [string, number, string?, number?, number?];
+type PhaseBlock = [number, string, string?, number?, number?];
 
 interface Phase {
 	id: string;
@@ -249,13 +249,13 @@ const forest: Phase = {
 	name: "One Block (Forest)",
 	description: "Creates a one block for forest phase. Dirt, Grass Block, Maple Log, Stone, Maple Leaves, Fruity Maple Leaves, and Chest.",
 	blocks: [
-		["Dirt", 1],
-		["Grass Block", 1],
-		["Maple Log", 1],
-		["Stone", 1],
-		["Maple Leaves", 1],
-		["Fruity Maple Leaves", 1],
-		["Chest", 1],
+		[1, "Dirt"],
+		[1, "Grass Block"],
+		[1, "Maple Log"],
+		[1, "Stone"],
+		[1, "Maple Leaves"],
+		[1, "Fruity Maple Leaves"],
+		[1, "Chest"],
 	],
 };
 phasesByIds.set(forest.id, forest);
@@ -266,16 +266,16 @@ const plains: Phase = {
 	name: "One Block (Plains)",
 	description: "Creates a one block for plains phase. Clay, Sand, Gravel, Dirt, Grass Block, Plum Log, Stone, Plum Leaves, Fruity Plum Leaves, and Chest.",
 	blocks: [
-		["Clay", 1],
-		["Sand", 1],
-		["Gravel", 1],
-		["Dirt", 1],
-		["Grass Block", 1],
-		["Plum Log", 1],
-		["Stone", 1],
-		["Plum Leaves", 1],
-		["Fruity Plum Leaves", 1],
-		["Chest", 1],
+		[1, "Clay"],
+		[1, "Sand"],
+		[1, "Gravel"],
+		[1, "Dirt"],
+		[1, "Grass Block"],
+		[1, "Plum Log"],
+		[1, "Stone"],
+		[1, "Plum Leaves"],
+		[1, "Fruity Plum Leaves"],
+		[1, "Chest"],
 	],
 };
 phasesByIds.set(plains.id, plains);
@@ -286,18 +286,18 @@ const hills: Phase = {
 	name: "One Block (Hills)",
 	description: "Creates a one block for hills phase. Cedar Log, Cedar Leaves, Granite, Coal Ore, Iron Ore, Grass Block, Rocky Dirt, Stone, Pear Log, Fruity Pear Leaves, Pear Leaves, and Chest.",
 	blocks: [
-		["Cedar Log", 1],
-		["Cedar Leaves", 1],
-		["Granite", 1],
-		["Coal Ore", 1],
-		["Iron Ore", 1],
-		["Grass Block", 1],
-		["Rocky Dirt", 1],
-		["Stone", 1],
-		["Pear Log", 1],
-		["Fruity Pear Leaves", 1],
-		["Pear Leaves", 1],
-		["Chest", 1],
+		[1, "Cedar Log"],
+		[1, "Cedar Leaves"],
+		[1, "Granite"],
+		[1, "Coal Ore"],
+		[1, "Iron Ore"],
+		[1, "Grass Block"],
+		[1, "Rocky Dirt"],
+		[1, "Stone"],
+		[1, "Pear Log"],
+		[1, "Fruity Pear Leaves"],
+		[1, "Pear Leaves"],
+		[1, "Chest"],
 	],
 };
 phasesByIds.set(hills.id, hills);
@@ -308,21 +308,21 @@ const flowers: Phase = {
 	name: "One Block (Flowers)",
 	description: "Creates a one block for flowers. Dandelion, Poppy, Red Tulip, Pink Tulip, White Tulip, Orange Tulip, Daisy, Bluebell, Forget-me-not, Allium, Azure Bluet, Lily of the Valley, and Shadow Rose.",
 	blocks: [
-		["Dandelion", 1],
-		["Poppy", 1],
-		["Red Tulip", 1],
-		["Pink Tulip", 1],
-		["White Tulip", 1],
-		["Orange Tulip", 1],
-		["Daisy", 1],
-		["Bluebell", 1],
-		["Forget-me-not", 1],
-		["Allium", 1],
-		["Azure Bluet", 1],
-		["Lily of the Valley", 1],
-		["Shadow Rose", 1],
-		["Red Mushroom", 1],
-		["Brown Mushroom", 1],
+		[1, "Dandelion"],
+		[1, "Poppy"],
+		[1, "Red Tulip"],
+		[1, "Pink Tulip"],
+		[1, "White Tulip"],
+		[1, "Orange Tulip"],
+		[1, "Daisy"],
+		[1, "Bluebell"],
+		[1, "Forget-me-not"],
+		[1, "Allium"],
+		[1, "Azure Bluet"],
+		[1, "Lily of the Valley"],
+		[1, "Shadow Rose"],
+		[1, "Red Mushroom"],
+		[1, "Brown Mushroom"],
 	],
 };
 phasesByIds.set(flowers.id, flowers);
@@ -333,17 +333,17 @@ const logs: Phase = {
 	name: "One Block (Logs)",
 	description: "Creates a one block for logs. Maple, Pine, Plum, Cedar, Aspen, Jungle, Palm, Pear, Cherry, Spectral, and Mango.",
 	blocks: [
-		["Maple Log", 1],
-		["Pine Log", 1],
-		["Plum Log", 1],
-		["Cedar Log", 1],
-		["Aspen Log", 1],
-		["Jungle Log", 1],
-		["Palm Log", 1],
-		["Pear Log", 1],
-		["Cherry Log", 1],
-		["Spectral Log", 1],
-		["Mango Log", 1],
+		[1, "Maple Log"],
+		[1, "Pine Log"],
+		[1, "Plum Log"],
+		[1, "Cedar Log"],
+		[1, "Aspen Log"],
+		[1, "Jungle Log"],
+		[1, "Palm Log"],
+		[1, "Pear Log"],
+		[1, "Cherry Log"],
+		[1, "Spectral Log"],
+		[1, "Mango Log"],
 	],
 };
 phasesByIds.set(logs.id, logs);
@@ -354,17 +354,17 @@ const saplings: Phase = {
 	name: "One Block (Saplings)",
 	description: "Creates a one block for saplings. Maple, Pine, Plum, Cedar, Aspen, Jungle, Palm, Pear, Cherry, Spectral, and Mango.",
 	blocks: [
-		["Maple Sapling", 1],
-		["Pine Sapling", 1],
-		["Plum Sapling", 1],
-		["Cedar Sapling", 1],
-		["Aspen Sapling", 1],
-		["Jungle Sapling", 1],
-		["Palm Sapling", 1],
-		["Pear Sapling", 1],
-		["Cherry Sapling", 1],
-		["Spectral Sapling", 1],
-		["Mango Sapling", 1],
+		[1, "Maple Sapling"],
+		[1, "Pine Sapling"],
+		[1, "Plum Sapling"],
+		[1, "Cedar Sapling"],
+		[1, "Aspen Sapling"],
+		[1, "Jungle Sapling"],
+		[1, "Palm Sapling"],
+		[1, "Pear Sapling"],
+		[1, "Cherry Sapling"],
+		[1, "Spectral Sapling"],
+		[1, "Mango Sapling"],
 	],
 };
 phasesByIds.set(saplings.id, saplings);
@@ -389,11 +389,11 @@ class OneBlock {
 	}
 
 	static getRandomBlock(blocks: PhaseBlock[]): PhaseBlock {
-		const total = blocks.reduce((acc: any, block: any[]) => acc + block[1], 0);
+		const total = blocks.reduce((acc: any, block: any[]) => acc + block[0], 0);
 		const random = OneBlock.randomInt(1, total);
 		let sum = 0;
 		for (const block of blocks) {
-			sum += block[1];
+			sum += block[0];
 			if (random <= sum) {
 				return block;
 			}
@@ -429,7 +429,11 @@ class OneBlock {
 					ChestStorage.set(playerId, x, y + 1, z, 1, "one_block"); // type
 					ChestStorage.set(playerId, x, y + 1, z, 2, phase.id); // subtype
 					const block = OneBlock.getRandomBlock(phase.blocks);
-					api.setBlock(x, y + 2, z, block[0]);
+					api.setBlock(x, y + 2, z, block[1]);
+					ChestStorage.set(playerId, x, y + 1, z, 3, block[1]); // BlockName
+					ChestStorage.set(playerId, x, y + 1, z, 4, block[2]); // ItemName
+					ChestStorage.set(playerId, x, y + 1, z, 5, block[3]); // ItemMin
+					ChestStorage.set(playerId, x, y + 1, z, 6, block[4]); // ItemMax
 				} else {
 					m(playerId, "Invalid placement, not enough space.", s("gold"));
 				}
@@ -478,20 +482,30 @@ class OneBlock {
 					if (phasesByIds.has(subtype)) {
 						const phase = phasesByIds.get(subtype);
 						if (phase) {
-							const block = OneBlock.getRandomBlock(phase.blocks);
-							if (block[2]) {
+							let preventDrop = false;
+							const itemName = ChestStorage.get(playerId, x, y + 1, z, 4);	
+							if (itemName) {
 								let amount = 1;
-								if (block[3]) {
-									if (block[4]) {
-										amount = OneBlock.randomInt(block[3], block[4]);
+								const itemMin = ChestStorage.get(playerId, x, y + 1, z, 5);
+								if (itemMin) {
+									const itemMax = ChestStorage.get(playerId, x, y + 1, z, 6);
+									if (itemMax) {
+										amount = OneBlock.randomInt(itemMin, itemMax);
 									} else {
-										amount = block[3];
+										amount = itemMin;
 									}
 								}
-								api.createItemDrop(x, y, z, block[2], amount, true, {}, 16000, null, {})
+								api.createItemDrop(x, y, z, itemName, amount, true, {}, 16000, null, {})
+								preventDrop = true;
+							}
+							const block = OneBlock.getRandomBlock(phase.blocks);
+							api.setBlock(x, y, z, block[1]);
+							ChestStorage.set(playerId, x, y - 1, z, 3, block[1]); // BlockName
+							ChestStorage.set(playerId, x, y - 1, z, 4, block[2]); // ItemName
+							ChestStorage.set(playerId, x, y - 1, z, 5, block[3]); // ItemMin
+							ChestStorage.set(playerId, x, y - 1, z, 6, block[4]); // ItemMax
+							if (preventDrop) {
 								return "preventDrop";
-							} else {
-								api.setBlock(x, y, z, block[0]);
 							}
 						}
 					}
