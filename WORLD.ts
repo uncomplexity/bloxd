@@ -112,7 +112,7 @@ globalThis.b = b;
 // @ts-ignore
 globalThis.m = m;
 // @ts-ignore
-globalThis.ms = s;
+globalThis.s = s;
 
 class ChestStorage {
 	static init(playerId: any, x: any, y: any, z: any) {
