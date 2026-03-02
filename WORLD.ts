@@ -546,6 +546,7 @@ class TownSquare {
 		if (chatMessage.startsWith(".give ")) {
 			const item = chatMessage.substring(6);
 			api.giveItem(playerId, item, 1, {});
+			return false;
 		}
 		return undefined
 	}
