@@ -375,7 +375,7 @@ const coins: Phase = {
 	name: "One Block (Coins)",
 	description: "Creates a one block for coins. Gold Coin.",
 	blocks: [
-		["Block of Gold", 1, "Gold Coin", 1, 10],
+		[1, "Block of Gold", "Gold Coin", 1, 10],
 	],
 };
 phasesByIds.set(coins.id, coins);
