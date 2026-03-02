@@ -483,12 +483,12 @@ class OneBlock {
 						const phase = phasesByIds.get(subtype);
 						if (phase) {
 							let preventDrop = false;
-							const itemName = ChestStorage.get(playerId, x, y + 1, z, 4);	
+							const itemName = ChestStorage.get(playerId, x, y - 1, z, 4);	
 							if (itemName) {
 								let amount = 1;
-								const itemMin = ChestStorage.get(playerId, x, y + 1, z, 5);
+								const itemMin = ChestStorage.get(playerId, x, y - 1, z, 5);
 								if (itemMin) {
-									const itemMax = ChestStorage.get(playerId, x, y + 1, z, 6);
+									const itemMax = ChestStorage.get(playerId, x, y - 1, z, 6);
 									if (itemMax) {
 										amount = OneBlock.randomInt(itemMin, itemMax);
 									} else {
