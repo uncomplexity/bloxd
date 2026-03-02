@@ -97,9 +97,6 @@ const protectedRects: ProtectedRect[] = [
 	protectedAyuuJagannath,
 ];
 
-/**
- * @todo remove leaving players from here
- */
 const protectedExceptions: Map<ProtectedRect, Set<string>> = new Map([
 	[protectedTownSquare, new Set()],
 	[protectedAyuuJagannath, new Set()],
@@ -369,6 +366,7 @@ class OneBlock {
 		const maxf = Math.floor(max);
 		return Math.floor(Math.random() * (maxf - minc + 1) + minc);
 	}
+
 	static getRandomBlock(blocks: PhaseBlock[]): PhaseBlock {
 		const total = blocks.reduce((acc: any, block: any[]) => acc + block[1], 0);
 		const random = OneBlock.randomInt(1, total);
@@ -506,9 +504,14 @@ class TownSquare {
 		}
 		playersIds.add(playerId);
 	}
+
 	static onPlayerLeave(playerId: any, _serverIsShuttingDown: any) {
 		playersIds.delete(playerId);
+		for (const protectedException of protectedExceptions.values()) {
+			protectedException.delete(playerId);
+		}
 	}
+
 	static onPlayerDamagingOtherPlayer(attackingPlayer: any, damagedPlayer: any) {
 		if (api.isInsideRect(api.getPosition(damagedPlayer), [-64, -1024, -64], [64, 1024, 64])) {
 			api.sendMessage(attackingPlayer, "Can't attack inside the town square.", s("gold"));
