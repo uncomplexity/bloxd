@@ -382,7 +382,10 @@ class OneBlock {
 			const phase = phasesByNames.get(customDisplayName);
 			if (phase) {
 				for (const protectedRect of protectedRects) {
-					if (api.isInsideRect(api.getPosition([x, y, z]), protectedRect.from, protectedRect.to)) {
+					if (
+						api.isInsideRect([x, y + 1, z], protectedRect.from, protectedRect.to)
+						|| api.isInsideRect([x, y + 2, z], protectedRect.from, protectedRect.to)
+					) {
 						m(playerId, "Invalid placement, protected area.", s("gold"));
 						return undefined;
 					}
