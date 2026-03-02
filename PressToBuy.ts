@@ -17,13 +17,13 @@ if (phase) {
         customDisplayName: phase.name,
         customDescription: phase.description,
       });
-      m(playerId, `You received ${phase.name}.`, ms("gold"));
+      m(playerId, `You received ${phase.name}.`, s("gold"));
     } else {
-      m(playerId, `You need ${cost} gold coin to buy ${phase.name}.`, ms("red"));
+      m(playerId, `You need ${cost} gold coin to buy ${phase.name}.`, s("red"));
     }
   } else {
-    m(playerId, `You need ${cost} gold coin to buy ${phase.name}.`, ms("red"));
+    m(playerId, `You need ${cost} gold coin to buy ${phase.name}.`, s("red"));
   }
 } else {
-  m(playerId, `Internal error: item not found.`, ms("red"));
+  m(playerId, `Internal error: item not found.`, s("red"));
 }

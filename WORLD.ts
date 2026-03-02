@@ -73,10 +73,34 @@ interface MessageStyle {
 	fontWeight?: number;
 }
 
+/**
+ * @description message
+ */
+const m = (playerId: string, message: string, style: MessageStyle) => api.sendMessage(playerId, message, style);
+
+/**
+ * @description style
+ */
+const s = (color: string, fontWeight?: number) => ({ color, fontWeight });
+
+interface ProtectedRect {
+	from: [number, number, number];
+	to: [number, number, number];
+}
+
+const protectedTownSquare: ProtectedRect = { from: [-64, -1024, -64], to: [64, 1024, 64] };
+
+const protectedAyuuJagannath: ProtectedRect = { from: [-11, -10, 65], to: [-21, -4, 82] };
+
+const protectedRects: ProtectedRect[] = [
+	protectedTownSquare,
+	protectedAyuuJagannath,
+];
+
 // @ts-ignore
-globalThis.m = (playerId: string, message: string, style: MessageStyle) => api.sendMessage(playerId, message, style);
+globalThis.m = m;
 // @ts-ignore
-globalThis.ms = (color: string, fontWeight?: number) => ({ color, fontWeight });
+globalThis.ms = s;
 
 class ChestStorage {
 	static init(playerId: any, x: any, y: any, z: any) {
@@ -138,10 +162,10 @@ class ChestStorage {
 					{ customDescription: JSON.stringify(value) },
 				);
 			} else {
-				api.sendMessage(playerId, "Storage.set: Invalid index.", { color: "red" });
+				m(playerId, "Storage.set: Invalid index.", s("red"));
 			}
 		} else {
-			api.sendMessage(playerId, "Storage.set: Invalid block.", { color: "red" });
+			m(playerId, "Storage.set: Invalid block.", s("red"));
 		}
 	}
 	static get(playerId: any, x: any, y: any, z: any, index: number) {
@@ -155,10 +179,10 @@ class ChestStorage {
 					return JSON.parse(item?.attributes?.customDescription);
 				}
 			} else {
-				api.sendMessage(playerId, "Storage.set: Invalid index.", { color: "red" });
+				m(playerId, "Storage.set: Invalid index.", s("red"));
 			}
 		} else {
-				api.sendMessage(playerId, "Storage.set: Invalid block.", { color: "red" });
+				m(playerId, "Storage.set: Invalid block.", s("red"));
 		}
 		return null;
 	}
@@ -178,7 +202,7 @@ class ChestStorage {
 	}
 	static onPlayerAttemptOpenChest = (playerId: any, x: any, y: any, z: any, _isMoonstoneChest: any, _isIronChest: any) => {
 		if (ChestStorage.isStorage(x, y, z)) {
-			api.sendMessage(playerId, "You can't open that.", { color: "gold" });
+			m(playerId, "You can't open that.", s("gold"));
 			return "preventOpen";
 		}
 		return undefined;
@@ -357,6 +381,12 @@ class OneBlock {
 		if (phasesByNames.has(customDisplayName)) {
 			const phase = phasesByNames.get(customDisplayName);
 			if (phase) {
+				for (const protectedRect of protectedRects) {
+					if (api.isInsideRect(api.getPosition([x, y, z]), protectedRect.from, protectedRect.to)) {
+						m(playerId, "Invalid placement, protected area.", s("gold"));
+						return undefined;
+					}
+				}
 				const above = api.getBlock(x, y + 1, z);
 				const above2 = api.getBlock(x, y + 2, z);
 				if (above === "Air" && above2 === "Air") {
@@ -367,7 +397,7 @@ class OneBlock {
 					const block = OneBlock.getRandomBlock(phase.blocks);
 					api.setBlock(x, y + 2, z, block[0]);
 				} else {
-					api.sendMessage(playerId, "Invalid placement.", { color: "gold" });
+					m(playerId, "Invalid placement, not enough space.", s("gold"));
 				}
 			}
 		}
@@ -400,6 +430,7 @@ class OneBlock {
 						}
 					}
 				} else {
+					m(playerId, "That's not yours.", s("gold"));
 					return "preventChange";
 				}
 			}
@@ -432,7 +463,7 @@ class OneBlock {
 						customDisplayName: phase.name,
 						customDescription: phase.description,
 					});
-					api.sendMessage(playerId, `You received ${phase.name}.`, { color: "gold" });
+					m(playerId, `You received ${phase.name}.`, s("gold"));
 					return false;
 				}
 			}
@@ -440,7 +471,7 @@ class OneBlock {
 		switch (chatMessage) {
 			case ".oneblock": {
 				const commands = Array.from(phasesByIds.values()).map((phase) => `.${phase.id}`).join(', ');
-				api.sendMessage(playerId, `OneBlock test commands: ${commands}`, { color: "gold" });
+				m(playerId, `OneBlock test commands: ${commands}`, s("gold"));
 				return false;
 			}
 			default: {
@@ -451,21 +482,21 @@ class OneBlock {
 	}
 }
 
+const playersIds = new Set();
+
 class TownSquare {
 	static onPlayerJoin(playerId: any) {
-		/**
-		 * @description Town Square
-		 */
-		api.setCantChangeBlockRect(playerId, [-64, -1024, -64], [64, 1024, 64]);
-
-		/**
-		 * @desecription ayuu_'s Jagannath
-		 */
-		api.setCantChangeBlockRect(playerId, [-11, -10, 65], [-21, -4, 82]);
+		for (const protectedRect of protectedRects) {
+			api.setCantChangeBlockRect(playerId, protectedRect.from, protectedRect.to);
+		}
+		playersIds.add(playerId);
+	}
+	static onPlayerLeave(playerId: any, _serverIsShuttingDown: any) {
+		playersIds.delete(playerId);
 	}
 	static onPlayerDamagingOtherPlayer(attackingPlayer: any, damagedPlayer: any) {
 		if (api.isInsideRect(api.getPosition(damagedPlayer), [-64, -1024, -64], [64, 1024, 64])) {
-			api.sendMessage(attackingPlayer, "Can't attack inside the town square.", { color: "gold" });
+			api.sendMessage(attackingPlayer, "Can't attack inside the town square.", s("gold"));
 			return "preventDamage";
 		}
 		return undefined;
@@ -474,12 +505,12 @@ class TownSquare {
 		switch (chatMessage) {
 			case ".lock": {
 				api.setCantChangeBlockRect(playerId, [-64, -1024, -64], [64, 1024, 64]);
-				api.sendMessage(playerId, "Locked spawn area.", { color: "gold" });
+				m(playerId, "Locked spawn area.", s("gold"));
 				return false;
 			}
 			case ".unlock": {
 				api.setCanChangeBlockRect(playerId, [-64, -1024, -64], [64, 1024, 64]);
-				api.sendMessage(playerId, "Unlocked spawn area.", { color: "gold" });
+				m(playerId, "Unlocked spawn area.", s("gold"));
 				return false;
 			}
 			default: {
@@ -496,6 +527,10 @@ class TownSquare {
 
 onPlayerJoin = (playerId: any) => {
 	return TownSquare.onPlayerJoin(playerId);
+};
+
+onPlayerLeave = (playerId: any, serverIsShuttingDown: any) => {
+	return TownSquare.onPlayerLeave(playerId, serverIsShuttingDown);
 };
 
 onPlayerAltAction = (playerId: any, x: any, y: any, z: any, block: any, targetEId: any) => {
