@@ -426,11 +426,11 @@ class OneBlock {
 				if (above === "Air" && above2 === "Air") {
 					api.setItemSlot(playerId, api.getSelectedInventorySlotI(playerId), "Air");
 					ChestStorage.init(playerId, x, y + 1, z);
-					ChestStorage.set(playerId, x, y + 1, z, 1, "one_block"); // type
-					ChestStorage.set(playerId, x, y + 1, z, 2, phase.id); // subtype
 					const block = OneBlock.getRandomBlock(phase.blocks);
 					api.setBlock(x, y + 2, z, block[1]);
-					ChestStorage.set(playerId, x, y + 1, z, 3, block);
+					const type = "one_block";
+					const subtype = phase.id;
+					ChestStorage.set(playerId, x, y + 1, z, 1, [type, subtype, ...block]);
 				} else {
 					m(playerId, "Invalid placement, not enough space.", s("gold"));
 				}
@@ -473,18 +473,21 @@ class OneBlock {
 			 * @description Block Displacement
 			 */
 			if (ChestStorage.isStorage(x, y - 1, z)) {
-				const type = ChestStorage.get(playerId, x, y - 1, z, 1);
+				const metadata = ChestStorage.get(playerId, x, y - 1, z, 1);
+				const type = metadata[0];
+				const subtype = metadata[1];
 				if (type === "one_block") {
-					const subtype = ChestStorage.get(playerId, x, y - 1, z, 2);
 					if (phasesByIds.has(subtype)) {
 						const phase = phasesByIds.get(subtype);
 						if (phase) {
 							let preventDrop = false;
-							const [_blockWeight, _blockName, itemName, itemMin, itemMax] = ChestStorage.get(playerId, x, y - 1, z, 3);
+							const itemName = metadata[4];
 							if (itemName) {
 								let amount = 1;
+								const itemMin = metadata[5];
 								if (itemMin) {
 									if (itemMax) {
+										const itemMax = metadata[6];
 										amount = OneBlock.randomInt(itemMin, itemMax);
 									} else {
 										amount = itemMin;
@@ -495,7 +498,7 @@ class OneBlock {
 							}
 							const block = OneBlock.getRandomBlock(phase.blocks);
 							api.setBlock(x, y, z, block[1]);
-							ChestStorage.set(playerId, x, y - 1, z, 3, block);
+							ChestStorage.set(playerId, x, y - 1, z, 1, [type, subtype, ...block]);
 							if (preventDrop) {
 								return "preventDrop";
 							}
