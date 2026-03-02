@@ -1,5 +1,13 @@
 # bloxd
 
+## Ideas
+
+#### Protector Chests
+
+- alternative to protectors which have limit of 8.
+- on chunk load, on chest placement, on chest displacement, modify the map of rects.
+- Map<chunkId, ProtectedRect[]>.
+
 ## Used
 
 #### Schematics
