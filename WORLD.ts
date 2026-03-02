@@ -97,6 +97,11 @@ const protectedRects: ProtectedRect[] = [
 	protectedAyuuJagannath,
 ];
 
+const protectedExceptions: Map<ProtectedRect, Set> = new Map([
+	[protectedTownSquare, new Set()],
+	[protectedAyuuJagannath, new Set()],
+]);
+
 // @ts-ignore
 globalThis.m = m;
 // @ts-ignore
@@ -266,7 +271,6 @@ const plains: Phase = {
 phasesByIds.set(plains.id, plains);
 phasesByNames.set(plains.name, plains);
 
-
 const hills: Phase = {
 	id: "hills",
 	name: "One Block (Hills)",
@@ -386,8 +390,13 @@ class OneBlock {
 						api.isInsideRect([x, y + 1, z], protectedRect.from, protectedRect.to)
 						|| api.isInsideRect([x, y + 2, z], protectedRect.from, protectedRect.to)
 					) {
-						m(playerId, "Invalid placement, protected area.", s("gold"));
-						return undefined;
+						const protectedException = protectedExceptions.get(protectedRect);
+						if (protectedException) {
+							if (!protectedException.has(playerId)) {
+								m(playerId, "Invalid placement, protected area.", s("gold"));
+								return undefined;
+							}
+						}
 					}
 				}
 				const above = api.getBlock(x, y + 1, z);
@@ -506,14 +515,22 @@ class TownSquare {
 	}
 	static onPlayerChat(playerId: any, chatMessage: any) {
 		switch (chatMessage) {
-			case ".lock": {
-				api.setCantChangeBlockRect(playerId, [-64, -1024, -64], [64, 1024, 64]);
-				m(playerId, "Locked spawn area.", s("gold"));
+			case ".unlock": {
+				const protectedException = protectedExceptions.get(protectedTownSquare);
+				if (protectedException) {
+					protectedException.add(playerId);
+				}
+				api.setCanChangeBlockRect(playerId, protectedTownSquare.from, protectedTownSquare.to);
+				m(playerId, "Unlocked spawn area.", s("gold"));
 				return false;
 			}
-			case ".unlock": {
-				api.setCanChangeBlockRect(playerId, [-64, -1024, -64], [64, 1024, 64]);
-				m(playerId, "Unlocked spawn area.", s("gold"));
+			case ".lock": {
+				const protectedException = protectedExceptions.get(protectedTownSquare);
+				if (protectedException) {
+					protectedException.delete(playerId);
+				}
+				api.setCantChangeBlockRect(playerId, protectedTownSquare.from, protectedTownSquare.to);
+				m(playerId, "Locked spawn area.", s("gold"));
 				return false;
 			}
 			default: {
