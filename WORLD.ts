@@ -538,6 +538,14 @@ class ProtectedChunks {
 
 const playersIds = new Set();
 
+const targetIds = new Set([
+		api.blockNameToBlockId("Loot Chest"),
+		api.blockNameToBlockId("Loot Chest|meta|rot1"),
+		api.blockNameToBlockId("Loot Chest|meta|rot2"),
+		api.blockNameToBlockId("Loot Chest|meta|rot3"),
+		api.blockNameToBlockId("Loot Chest|meta|rot4"),
+]);
+
 class TownSquare {
 	static onPlayerJoin(playerId: any) {
 		for (const protectedRect of protectedRects) {
@@ -563,13 +571,6 @@ class TownSquare {
 	static onPlayerChat(playerId: any, chatMessage: any) {
 		switch (chatMessage) {
 			case ".test": {
-        const targetIds = new Set([
-            api.blockNameToBlockId("Loot Chest"),
-            api.blockNameToBlockId("Loot Chest|meta|rot1"),
-            api.blockNameToBlockId("Loot Chest|meta|rot2"),
-            api.blockNameToBlockId("Loot Chest|meta|rot3"),
-            api.blockNameToBlockId("Loot Chest|meta|rot4"),
-        ]);
 				const chestId = api.blockNameToBlockId("Loot Chest");
 				const position = api.getPosition(playerId);
 				const chunkId = api.blockCoordToChunkId(position);
