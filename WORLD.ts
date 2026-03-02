@@ -563,6 +563,13 @@ class TownSquare {
 	static onPlayerChat(playerId: any, chatMessage: any) {
 		switch (chatMessage) {
 			case ".test": {
+        const targetIds = new Set([
+            api.blockNameToBlockId("Loot Chest"),
+            api.blockNameToBlockId("Loot Chest|meta|rot1"),
+            api.blockNameToBlockId("Loot Chest|meta|rot2"),
+            api.blockNameToBlockId("Loot Chest|meta|rot3"),
+            api.blockNameToBlockId("Loot Chest|meta|rot4"),
+        ]);
 				const chestId = api.blockNameToBlockId("Loot Chest");
 				const position = api.getPosition(playerId);
 				const chunkId = api.blockCoordToChunkId(position);
@@ -574,15 +581,7 @@ class TownSquare {
 							for (let z = 0; z < 32; z++) {
 								const id = chunkData.blockData.get(x, y, z);
 								const name = api.blockIdToBlockName(id);
-								if (name.includes("Loot Chest")) {
-									const worldX = chunkPosition[0] + x;
-									const worldY = chunkPosition[1] + y;
-									const worldZ = chunkPosition[2] + z;
-									if (ChestStorage.isStorage(worldX, worldY, worldZ)) {
-										b(`1 Chest Storage found at ${worldX}, ${worldY}, ${worldZ}.`, s("gold"));
-									}
-								}
-								if (id === chestId) {
+								if (targetIds.has(id)) {
 									const worldX = chunkPosition[0] + x;
 									const worldY = chunkPosition[1] + y;
 									const worldZ = chunkPosition[2] + z;
