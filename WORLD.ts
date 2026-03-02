@@ -502,6 +502,38 @@ class OneBlock {
 	}
 }
 
+const matches: unknown[] = [];
+
+class ProtectedChunks {
+	static onChunkLoaded (chunkId: string, _chunk: unknown, _wasPersistedChunk: boolean) {
+		const chestId = api.blockNameToBlockId("Loot Chest");
+		const chunkPosition = api.chunkIdToBotLeftCoord(chunkId);
+		const chunkData = api.getChunk(chunkPosition);
+		if (chunkData) {
+			for (let x = 0; x < 32; x++) {
+				for (let y = 0; y < 32; y++) {
+					for (let z = 0; z < 32; z++) {
+						const id = chunkData.blockData.get(x, y, z);
+						const name = api.blockIdToBlockName(id);
+						if (name.includes("Loot Chest")) {
+							matches.push([name, x, y, z]);
+						}
+						if (id === chestId) {
+							matches.push([id, x, y, z]);
+							const worldX = chunkPosition[0] + x;
+							const worldY = chunkPosition[1] + y;
+							const worldZ = chunkPosition[2] + z;
+							if (ChestStorage.isStorage(worldX, worldY, worldZ)) {
+								b(`Chest Storage found at ${worldX}, ${worldY}, ${worldZ}.`, s("gold"));
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 const playersIds = new Set();
 
 class TownSquare {
@@ -528,6 +560,10 @@ class TownSquare {
 	}
 	static onPlayerChat(playerId: any, chatMessage: any) {
 		switch (chatMessage) {
+			case ".test": {
+				b(JSON.stringify({ matches }), s("gold"));
+				return false;
+			}
 			case ".unlock": {
 				const protectedException = protectedExceptions.get(protectedTownSquare);
 				if (protectedException) {
@@ -559,34 +595,6 @@ class TownSquare {
 	}
 }
 
-class ProtectedChunks {
-	static onChunkLoaded (chunkId: string, _chunk: unknown, _wasPersistedChunk: boolean) {
-		const chestId = api.blockNameToBlockId("Loot Chest");
-		const chunkPosition = api.chunkIdToBotLeftCoord(chunkId);
-		const chunkData = api.getChunk(chunkPosition);
-		if (chunkData) {
-			for (let x = 0; x < 32; x++) {
-					for (let y = 0; y < 32; y++) {
-							for (let z = 0; z < 32; z++) {
-									const id = chunkData.blockData.get(x, y, z);
-									const name = api.blockIdToBlockName(id);
-									if (name.includes("Loot Chest")) {
-										b(JSON.stringify({ id, name }), s("gold"));
-									}
-									if (id === chestId) {
-											const worldX = chunkPosition[0] + x;
-											const worldY = chunkPosition[1] + y;
-											const worldZ = chunkPosition[2] + z;
-											if (ChestStorage.isStorage(worldX, worldY, worldZ)) {
-												b(`Chest Storage found at ${worldX}, ${worldY}, ${worldZ}.`, s("gold"));
-											}
-									}
-							}
-					}
-			}
-		}
-	}
-}
 
 /**
  * @description Global Event Handlers. return them, and chain them with "??".
