@@ -97,6 +97,9 @@ const protectedRects: ProtectedRect[] = [
 	protectedAyuuJagannath,
 ];
 
+/**
+ * @todo remove leaving players from here
+ */
 const protectedExceptions: Map<ProtectedRect, Set<string>> = new Map([
 	[protectedTownSquare, new Set()],
 	[protectedAyuuJagannath, new Set()],
