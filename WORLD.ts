@@ -569,6 +569,10 @@ class ProtectedChunks {
 					for (let y = 0; y < 32; y++) {
 							for (let z = 0; z < 32; z++) {
 									const id = chunkData.blockData.get(x, y, z);
+									const name = api.blockIdToBlockName(id);
+									if (name.includes("Loot Chest")) {
+										b(JSON.stringify({ id, name }), s("gold"));
+									}
 									if (id === chestId) {
 											const worldX = chunkPosition[0] + x;
 											const worldY = chunkPosition[1] + y;
