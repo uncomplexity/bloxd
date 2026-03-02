@@ -560,10 +560,12 @@ class TownSquare {
 }
 
 class ProtectedChunks {
-	static onChunkLoaded (chunkId: string, chunk: number[], _wasPersistedChunk: boolean) {
+	static onChunkLoaded (chunkId: string, _chunk: unknown, _wasPersistedChunk: boolean) {
+		const chestId = api.blockNameToBlockId("Chest");
 		const chunkPosition = api.chunkIdToBotLeftCoord(chunkId);
 		const chunkData = api.getChunk(chunkPosition);
-		const chestId = api.blockNameToBlockId("Chest");
+		b(JSON.stringify(chunkPosition), s("gold"));
+		b(JSON.stringify(chunkData), s("gold"));
     for (let x = 0; x < 32; x++) {
         for (let y = 0; y < 32; y++) {
             for (let z = 0; z < 32; z++) {
@@ -586,7 +588,7 @@ class ProtectedChunks {
  * @description Global Event Handlers. return them, and chain them with "??".
  */
 
-onChunkLoaded = (chunkId: string, chunk: number[], wasPersistedChunk: boolean) => {
+onChunkLoaded = (chunkId: string, chunk: unknown, wasPersistedChunk: boolean) => {
 	return ProtectedChunks.onChunkLoaded(chunkId, chunk, wasPersistedChunk);
 }
 
