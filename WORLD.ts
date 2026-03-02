@@ -495,7 +495,7 @@ class OneBlock {
 										amount = itemMin;
 									}
 								}
-								api.createItemDrop(x, y, z, itemName, amount, true, {}, 16000, null, {})
+								api.createItemDrop(x, y, z, itemName, amount, false, {}, 16000, null, {})
 								preventDrop = true;
 							}
 							const block = OneBlock.getRandomBlock(phase.blocks);
