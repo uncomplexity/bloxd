@@ -402,38 +402,39 @@ class OneBlock {
 	}
 
 	static onPlayerAltAction (playerId: any, x: any, y: any, z: any, _block: any, _targetEId: any) {
-		b(JSON.stringify({ x, y, z }), s("gold"));
-		const held = api.getHeldItem(playerId);
-		const customDisplayName = held?.attributes?.customDisplayName;
-		if (phasesByNames.has(customDisplayName)) {
-			const phase = phasesByNames.get(customDisplayName);
-			if (phase) {
-				for (const protectedRect of protectedRects) {
-					if (
-						api.isInsideRect([x, y + 1, z], protectedRect.from, protectedRect.to)
-						|| api.isInsideRect([x, y + 2, z], protectedRect.from, protectedRect.to)
-					) {
-						const protectedException = protectedExceptions.get(protectedRect);
-						if (protectedException) {
-							if (!protectedException.has(playerId)) {
-								m(playerId, "Invalid placement, protected area.", s("gold"));
-								return undefined;
+		if (typeof x === "number" && typeof y === "number" && typeof z === "number") {
+			const held = api.getHeldItem(playerId);
+			const customDisplayName = held?.attributes?.customDisplayName;
+			if (phasesByNames.has(customDisplayName)) {
+				const phase = phasesByNames.get(customDisplayName);
+				if (phase) {
+					for (const protectedRect of protectedRects) {
+						if (
+							api.isInsideRect([x, y + 1, z], protectedRect.from, protectedRect.to)
+							|| api.isInsideRect([x, y + 2, z], protectedRect.from, protectedRect.to)
+						) {
+							const protectedException = protectedExceptions.get(protectedRect);
+							if (protectedException) {
+								if (!protectedException.has(playerId)) {
+									m(playerId, "Invalid placement, protected area.", s("gold"));
+									return undefined;
+								}
 							}
 						}
 					}
-				}
-				const above = api.getBlock(x, y + 1, z);
-				const above2 = api.getBlock(x, y + 2, z);
-				if (above === "Air" && above2 === "Air") {
-					api.setItemSlot(playerId, api.getSelectedInventorySlotI(playerId), "Air");
-					ChestStorage.init(playerId, x, y + 1, z);
-					const block = OneBlock.getRandomBlock(phase.blocks);
-					api.setBlock(x, y + 2, z, block[1]);
-					const type = "one_block";
-					const subtype = phase.id;
-					ChestStorage.set(playerId, x, y + 1, z, 1, [type, subtype, ...block]);
-				} else {
-					m(playerId, "Invalid placement, not enough space.", s("gold"));
+					const above = api.getBlock(x, y + 1, z);
+					const above2 = api.getBlock(x, y + 2, z);
+					if (above === "Air" && above2 === "Air") {
+						api.setItemSlot(playerId, api.getSelectedInventorySlotI(playerId), "Air");
+						ChestStorage.init(playerId, x, y + 1, z);
+						const block = OneBlock.getRandomBlock(phase.blocks);
+						api.setBlock(x, y + 2, z, block[1]);
+						const type = "one_block";
+						const subtype = phase.id;
+						ChestStorage.set(playerId, x, y + 1, z, 1, [type, subtype, ...block]);
+					} else {
+						m(playerId, "Invalid placement, not enough space.", s("gold"));
+					}
 				}
 			}
 		}
