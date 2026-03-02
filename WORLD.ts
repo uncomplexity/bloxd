@@ -561,17 +561,17 @@ class TownSquare {
 
 class ProtectedChunks {
 	static onChunkLoaded (chunkId: string, chunk: number[], _wasPersistedChunk: boolean) {
-		const [baseX, baseY, baseZ] = api.chunkIdToBotLeftCoord(chunkId);
-		const chunkData = api.getChunk(chunk);
+		const chunkPosition = api.chunkIdToBotLeftCoord(chunkId);
+		const chunkData = api.getChunk(chunkPosition);
 		const chestId = api.blockNameToBlockId("Chest");
     for (let x = 0; x < 32; x++) {
         for (let y = 0; y < 32; y++) {
             for (let z = 0; z < 32; z++) {
                 const id = chunkData.blockData.get(x, y, z);
                 if (id === chestId) {
-                    const worldX = baseX + x;
-                    const worldY = baseY + y;
-                    const worldZ = baseZ + z;
+                    const worldX = chunkPosition[0] + x;
+                    const worldY = chunkPosition[1] + y;
+                    const worldZ = chunkPosition[2] + z;
                     if (ChestStorage.isStorage(worldX, worldY, worldZ)) {
 											b(`Chest Storage found at ${worldX}, ${worldY}, ${worldZ}.`, s("gold"));
                     }
