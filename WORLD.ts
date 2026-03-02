@@ -430,10 +430,7 @@ class OneBlock {
 					ChestStorage.set(playerId, x, y + 1, z, 2, phase.id); // subtype
 					const block = OneBlock.getRandomBlock(phase.blocks);
 					api.setBlock(x, y + 2, z, block[1]);
-					ChestStorage.set(playerId, x, y + 1, z, 3, block[1]); // BlockName
-					ChestStorage.set(playerId, x, y + 1, z, 4, block[2]); // ItemName
-					ChestStorage.set(playerId, x, y + 1, z, 5, block[3]); // ItemMin
-					ChestStorage.set(playerId, x, y + 1, z, 6, block[4]); // ItemMax
+					ChestStorage.set(playerId, x, y + 1, z, 3, block);
 				} else {
 					m(playerId, "Invalid placement, not enough space.", s("gold"));
 				}
@@ -483,12 +480,10 @@ class OneBlock {
 						const phase = phasesByIds.get(subtype);
 						if (phase) {
 							let preventDrop = false;
-							const itemName = ChestStorage.get(playerId, x, y - 1, z, 4);	
+							const [_blockWeight, _blockName, itemName, itemMin, itemMax] = ChestStorage.get(playerId, x, y - 1, z, 3);
 							if (itemName) {
 								let amount = 1;
-								const itemMin = ChestStorage.get(playerId, x, y - 1, z, 5);
 								if (itemMin) {
-									const itemMax = ChestStorage.get(playerId, x, y - 1, z, 6);
 									if (itemMax) {
 										amount = OneBlock.randomInt(itemMin, itemMax);
 									} else {
@@ -500,10 +495,7 @@ class OneBlock {
 							}
 							const block = OneBlock.getRandomBlock(phase.blocks);
 							api.setBlock(x, y, z, block[1]);
-							ChestStorage.set(playerId, x, y - 1, z, 3, block[1]); // BlockName
-							ChestStorage.set(playerId, x, y - 1, z, 4, block[2]); // ItemName
-							ChestStorage.set(playerId, x, y - 1, z, 5, block[3]); // ItemMin
-							ChestStorage.set(playerId, x, y - 1, z, 6, block[4]); // ItemMax
+							ChestStorage.set(playerId, x, y - 1, z, 3, block);
 							if (preventDrop) {
 								return "preventDrop";
 							}
