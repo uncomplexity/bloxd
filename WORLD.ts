@@ -97,7 +97,7 @@ const protectedRects: ProtectedRect[] = [
 	protectedAyuuJagannath,
 ];
 
-const protectedExceptions: Map<ProtectedRect, Set> = new Map([
+const protectedExceptions: Map<ProtectedRect, Set<string>> = new Map([
 	[protectedTownSquare, new Set()],
 	[protectedAyuuJagannath, new Set()],
 ]);
