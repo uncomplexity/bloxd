@@ -221,7 +221,10 @@ class ChestStorage {
 	}
 }
 
-type PhaseBlock = [string, number, string?];
+/**
+ * @description BlockName, Weight, ItemName = BlockName, ItemMin = 1, ItemMax = null
+ */
+type PhaseBlock = [string, number, string?, number?, number?];
 
 interface Phase {
 	id: string;
@@ -367,6 +370,17 @@ const saplings: Phase = {
 phasesByIds.set(saplings.id, saplings);
 phasesByNames.set(saplings.name, saplings);
 
+const coins: Phase = {
+	id: "coins",
+	name: "One Block (Coins)",
+	description: "Creates a one block for coins. Gold Coin.",
+	blocks: [
+		["Block of Gold", 1, "Gold Coin", 1, 10],
+	],
+};
+phasesByIds.set(coins.id, coins);
+phasesByNames.set(coins.name, coins);
+
 class OneBlock {
 	static randomInt(min: number, max: number) {
 		const minc = Math.ceil(min);
@@ -465,7 +479,20 @@ class OneBlock {
 						const phase = phasesByIds.get(subtype);
 						if (phase) {
 							const block = OneBlock.getRandomBlock(phase.blocks);
-							api.setBlock(x, y, z, block[0]);
+							if (block[2]) {
+								let amount = 1;
+								if (block[3]) {
+									if (block[4]) {
+										amount = OneBlock.randomInt(block[3], block[4]);
+									} else {
+										amount = block[3];
+									}
+								}
+								api.createItemDrop(x, y, z, block[2], amount, true, {}, 16000, null, {})
+								return "preventDrop";
+							} else {
+								api.setBlock(x, y, z, block[0]);
+							}
 						}
 					}
 				}
