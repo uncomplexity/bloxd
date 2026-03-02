@@ -448,9 +448,10 @@ class OneBlock {
 			 */
 			if (ChestStorage.isStorage(x, y, z)) {
 				if (ChestStorage.isOwnStorage(playerId, x, y, z)) {
-					const type = ChestStorage.get(playerId, x, y, z, 1);
+					const metadata = ChestStorage.get(playerId, x, y - 1, z, 1);
+					const type = metadata[0];
+					const subtype = metadata[1];
 					if (type === "one_block") {
-						const subtype = ChestStorage.get(playerId, x, y, z, 2);
 						if (phasesByIds.has(subtype)) {
 							const phase = phasesByIds.get(subtype);
 							if (phase) {
