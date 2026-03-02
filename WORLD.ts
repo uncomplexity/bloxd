@@ -561,7 +561,7 @@ class TownSquare {
 
 class ProtectedChunks {
 	static onChunkLoaded (chunkId: string, _chunk: unknown, _wasPersistedChunk: boolean) {
-		const chestId = api.blockNameToBlockId("Chest");
+		const chestId = api.blockNameToBlockId("Loot Chest");
 		const chunkPosition = api.chunkIdToBotLeftCoord(chunkId);
 		const chunkData = api.getChunk(chunkPosition);
 		if (chunkData) {
