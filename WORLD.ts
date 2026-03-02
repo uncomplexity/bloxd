@@ -398,7 +398,7 @@ class OneBlock {
 				return block;
 			}
 		}
-		return ["Air", 0];
+		return [0, "Air"];
 	}
 
 	static onPlayerAltAction (playerId: any, x: any, y: any, z: any, _block: any, _targetEId: any) {
