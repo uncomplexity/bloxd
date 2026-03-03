@@ -154,7 +154,7 @@ class RectControl {
 	}
 
 	static onPlayerJoin(playerId: string) {
-		RectControl.apply(playerId);
+		RectControl.lock(playerId);
 		playerIds.add(playerId);
 	}
 
