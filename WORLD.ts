@@ -165,11 +165,11 @@ class RectControl {
 
 	static onPlayerJoin(playerId: string) {
 		RectControl.lock(playerId);
-		playerIds.add(playerId);
+		RectControl.playerIds.add(playerId);
 	}
 
 	static onPlayerLeave(playerId: any, _serverIsShuttingDown: any) {
-		playerIds.delete(playerId);
+		RectControl.playerIds.delete(playerId);
 	}
 
 	static onPlayerChat(playerId: any, chatMessage: any) {
