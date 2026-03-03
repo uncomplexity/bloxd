@@ -94,10 +94,14 @@ type Rect = [Point, Point];
 
 class RectControl {
 	static playerIds = new Set<string>();
+
+	static unlockedPlayerIds = new Set<string>();
+
 	static blacklist = new Set<Rect>([
 		[[-64, -1024, -64], [64, 1024, 64]],
 		[[-11, -10, 65], [-21, -4, 82]],
 	]);
+
 	static whitelist = new Set<Rect>();
 
 	static unlock(playerId: string) {
@@ -107,6 +111,7 @@ class RectControl {
 		for (const rect of RectControl.whitelist.values()) {
     	api.setCanChangeBlockRect(playerId, rect[0], rect[1]);
 		}
+		RectControl.unlockedPlayerIds.add(playerId);
 		m(playerId, "Rects unlocked.", s("gold"));
 	}
 
@@ -130,7 +135,12 @@ class RectControl {
 		}
 	}
 
-	static isProtected(point: Point) {
+	static isProtected(point: Point, playerId?: string) {
+		if (typeof playerId === "string") {
+			if (RectControl.unlockedPlayerIds.has(playerId)) {
+				return true;
+			}
+		}
 		for (const rect of RectControl.whitelist.values()) {
 			if (api.isInsideRect(point, rect[0], rect[1])) {
 				return false;
