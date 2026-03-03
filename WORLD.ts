@@ -118,9 +118,11 @@ class RectControl {
 	static lock(playerId: string) {
 		RectControl.unlockedPlayerIds.delete(playerId);
 		for (const rect of RectControl.blacklist.values()) {
+			api.resetCanChangeBlockRect(playerId, rect[0], rect[1]);
     	api.setCantChangeBlockRect(playerId, rect[0], rect[1]);
 		}
 		for (const rect of RectControl.whitelist.values()) {
+			api.resetCanChangeBlockRect(playerId, rect[0], rect[1]);
     	api.setCanChangeBlockRect(playerId, rect[0], rect[1]);
 		}
 	}
@@ -131,9 +133,11 @@ class RectControl {
 				continue;
 			}
 			for (const rect of RectControl.blacklist.values()) {
+				api.resetCanChangeBlockRect(playerId, rect[0], rect[1]);
 				api.setCantChangeBlockRect(playerId, rect[0], rect[1]);
 			}
 			for (const rect of RectControl.whitelist.values()) {
+        api.resetCanChangeBlockRect(playerId, rect[0], rect[1]);
 				api.setCanChangeBlockRect(playerId, rect[0], rect[1]);
 			}
 		}
