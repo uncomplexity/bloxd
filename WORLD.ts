@@ -194,7 +194,7 @@ globalThis.s = s;
 class ChestStorage {
 	static init(playerId: any, x: any, y: any, z: any) {
 		if (api.getBlock(x, y, z) === "Air") {
-			api.setBlock(x, y, z, "Loot Chest");
+			api.setBlock(x, y, z, "Iron Chest");
 			api.setStandardChestItemSlot(
 				[x, y, z],
 				0,
@@ -211,7 +211,7 @@ class ChestStorage {
 		return false;
 	}
 	static isStorage(x: any, y: any, z: any) {
-		if (api.getBlock(x, y, z) === "Loot Chest") {
+		if (api.getBlock(x, y, z) === "Iron Chest") {
 			const item = api.getStandardChestItemSlot(
 				[x, y, z],
 				0,
@@ -224,7 +224,7 @@ class ChestStorage {
 		return false;
 	}
 	static isOwnStorage(playerId: any, x: any, y: any, z: any) {
-		if (api.getBlock(x, y, z) === "Loot Chest") {
+		if (api.getBlock(x, y, z) === "Iron Chest") {
 			const item = api.getStandardChestItemSlot(
 				[x, y, z],
 				0,
@@ -664,16 +664,6 @@ class OneBlock {
 		return undefined;
 	}
 }
-
-const playerIds = new Set();
-
-const targetIds = new Set([
-		api.blockNameToBlockId("Loot Chest"),
-		api.blockNameToBlockId("Loot Chest|meta|rot1"),
-		api.blockNameToBlockId("Loot Chest|meta|rot2"),
-		api.blockNameToBlockId("Loot Chest|meta|rot3"),
-		api.blockNameToBlockId("Loot Chest|meta|rot4"),
-]);
 
 class TownSquare {
 	static onPlayerDamagingOtherPlayer(attackingPlayer: any, damagedPlayer: any) {
