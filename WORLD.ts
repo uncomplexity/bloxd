@@ -100,6 +100,16 @@ class RectControl {
 	]);
 	static whitelist = new Set<Rect>();
 
+	static unlock(playerId: string) {
+		for (const rect of RectControl.blacklist.values()) {
+    	api.setCanChangeBlockRect(playerId, rect[0], rect[1]);
+		}
+		for (const rect of RectControl.whitelist.values()) {
+    	api.setCanChangeBlockRect(playerId, rect[0], rect[1]);
+		}
+		m(playerId, "Rects unlocked.", s("gold"));
+	}
+
 	static lock(playerId: string) {
 		for (const rect of RectControl.blacklist.values()) {
     	api.setCantChangeBlockRect(playerId, rect[0], rect[1]);
@@ -118,16 +128,6 @@ class RectControl {
 				api.setCantChangeBlockRect(playerId, rect[0], rect[1]);
 			}
 		}
-	}
-
-	static unlock(playerId) {
-		for (const rect of RectControl.blacklist.values()) {
-    	api.setCanChangeBlockRect(playerId, rect[0], rect[1]);
-		}
-		for (const rect of RectControl.whitelist.values()) {
-    	api.setCanChangeBlockRect(playerId, rect[0], rect[1]);
-		}
-		m(playerId, "Rects unlocked.", s("gold"));
 	}
 
 	static isProtected(point: Point) {
