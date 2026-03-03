@@ -332,7 +332,7 @@ const forest: Phase = {
 		[1, "Stone"],
 		[1, "Maple Leaves"],
 		[1, "Fruity Maple Leaves"],
-		[1, "Chest"],
+		[1, "Chest", "Gold Coin", 1, 2],
 	],
 };
 phasesByIds.set(forest.id, forest);
@@ -352,7 +352,7 @@ const plains: Phase = {
 		[1, "Stone"],
 		[1, "Plum Leaves"],
 		[1, "Fruity Plum Leaves"],
-		[1, "Chest"],
+		[1, "Chest", "Gold Coin", 1, 3],
 	],
 };
 phasesByIds.set(plains.id, plains);
@@ -374,7 +374,7 @@ const hills: Phase = {
 		[1, "Pear Log"],
 		[1, "Fruity Pear Leaves"],
 		[1, "Pear Leaves"],
-		[1, "Chest"],
+		[1, "Chest", "Gold Coin", 1, 4],
 	],
 };
 phasesByIds.set(hills.id, hills);
@@ -452,7 +452,7 @@ const coins: Phase = {
 	name: "One Block (Coins)",
 	description: "Creates a one block for coins. Gold Coin.",
 	blocks: [
-		[1, "Block of Gold", "Gold Coin", 1, 10],
+		[1, "Chest", "Gold Coin", 1],
 	],
 };
 phasesByIds.set(coins.id, coins);
@@ -555,29 +555,58 @@ class OneBlock {
 					if (phasesByIds.has(subtype)) {
 						const phase = phasesByIds.get(subtype);
 						if (phase) {
+							// type Metadata = [string, string, number, string, string?, number?, number?];
+							// type Metadata = [Type, Subtype, Weight, BlockName, ItemName = BlockName, ItemMin = 1, ItemMax = null];
 							let preventDrop = false;
-							const itemName = metadata[4];
-							if (itemName) {
-								let amount = 1;
-								const itemMin = metadata[5];
-								if (itemMin) {
-									const itemMax = metadata[6];
-									if (itemMax) {
-										amount = OneBlock.randomInt(itemMin, itemMax);
-									} else {
-										amount = itemMin;
+							const blockName = metadata[3];
+							if (blockName !== "Chest") { // if it's chest, we don't drop items.
+								const itemName = metadata[4];
+								if (itemName) {
+									let amount = 1;
+									const itemMin = metadata[5];
+									if (itemMin) {
+										const itemMax = metadata[6];
+										if (itemMax) {
+											amount = OneBlock.randomInt(itemMin, itemMax);
+										} else {
+											amount = itemMin;
+										}
 									}
+									api.createItemDrop(x + 0.50, y + 0.50 + Math.random(), z + 0.50, itemName, amount, false, {}, 16000, null, {})
+									preventDrop = true;
 								}
-								api.createItemDrop(x + 0.50, y + 0.50 + Math.random(), z + 0.50, itemName, amount, false, {}, 16000, null, {})
-								preventDrop = true;
 							}
+							// type PhaseBlock = [number, string, string?, number?, number?];
+							// type PhaseBlock = [Weight, BlockName, ItemName = BlockName, ItemMin = 1, ItemMax = null];
 							const block = OneBlock.getRandomBlock(phase.blocks);
 							api.setBlock(x, y, z, block[1]);
+							if (block[1] === "Chest") { // if it's chest, we put items inside.
+								if (typeof block[2] === "string") {
+									let amount = 1;
+									const itemMin = block[3];
+									if (itemMin) {
+										const itemMax = block[4];
+										if (itemMax) {
+											amount = OneBlock.randomInt(itemMin, itemMax);
+										} else {
+											amount = itemMin;
+										}
+									}
+									api.setStandardChestItemSlot(
+										[x, y, z],
+										0,
+										block[2],
+										amount,
+										playerId,
+										{},
+									);
+								}
+							}
 							ChestStorage.set(playerId, x, y - 1, z, 1, [type, subtype, ...block]);
 							if (preventDrop) {
 								return "preventDrop";
 							}
-							return [x + 0.50, y + 0.50, z + 0.50];
+							return [x + 0.50, y + 0.50 + Math.random(), z + 0.50];
 						}
 					}
 				}
