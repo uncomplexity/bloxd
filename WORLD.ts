@@ -106,41 +106,11 @@ class RectControl {
 
 	static unlock(playerId: string) {
 		RectControl.unlockedPlayerIds.add(playerId);
-		for (const rect of RectControl.blacklist.values()) {
-    	api.setCanChangeBlockRect(playerId, rect[0], rect[1]);
-		}
-		for (const rect of RectControl.whitelist.values()) {
-    	api.setCanChangeBlockRect(playerId, rect[0], rect[1]);
-		}
 		m(playerId, "Rects unlocked.", s("gold"));
 	}
 
 	static lock(playerId: string) {
 		RectControl.unlockedPlayerIds.delete(playerId);
-		for (const rect of RectControl.blacklist.values()) {
-			api.resetCanChangeBlockRect(playerId, rect[0], rect[1]);
-    	api.setCantChangeBlockRect(playerId, rect[0], rect[1]);
-		}
-		for (const rect of RectControl.whitelist.values()) {
-			api.resetCanChangeBlockRect(playerId, rect[0], rect[1]);
-    	api.setCanChangeBlockRect(playerId, rect[0], rect[1]);
-		}
-	}
-
-	static sync() {
-		for (const playerId of RectControl.playerIds.values()) {
-			if (RectControl.unlockedPlayerIds.has(playerId)) {
-				continue;
-			}
-			for (const rect of RectControl.blacklist.values()) {
-				api.resetCanChangeBlockRect(playerId, rect[0], rect[1]);
-				api.setCantChangeBlockRect(playerId, rect[0], rect[1]);
-			}
-			for (const rect of RectControl.whitelist.values()) {
-        api.resetCanChangeBlockRect(playerId, rect[0], rect[1]);
-				api.setCanChangeBlockRect(playerId, rect[0], rect[1]);
-			}
-		}
 	}
 
 	static isProtected(point: Point, playerId?: string) {
@@ -178,6 +148,20 @@ class RectControl {
 
 	static onPlayerLeave(playerId: any, _serverIsShuttingDown: any) {
 		RectControl.playerIds.delete(playerId);
+	}
+
+	static onPlayerChangeBlock (
+		playerId: string,
+		x: number, y: number, z: number,
+		fromBlock: BlockName, toBlock: BlockName,
+		droppedItem: BlockName | null,
+		fromBlockInfo: MultiBlockInfo, toBlockInfo: MultiBlockInfo
+	) {
+		if (RectControl.isProtected([x, y, z], playerId)) {
+			m(playerId, "That block is protected.", s("gold"));
+			return "preventChange";
+		}
+		return undefined;
 	}
 
 	static onPlayerChat(playerId: any, chatMessage: any) {
@@ -684,7 +668,8 @@ onPlayerAltAction = (playerId: any, x: any, y: any, z: any, block: any, targetEI
 }
 
 onPlayerChangeBlock = (playerId: any, x: any, y: number, z: any, fromBlock: string, toBlock: string, droppedItem: any, fromBlockInfo: any, toBlockInfo: any) => {
-	return OneBlock.onPlayerChangeBlock(playerId, x, y, z, fromBlock, toBlock, droppedItem, fromBlockInfo, toBlockInfo);
+	return RectControl.onPlayerChangeBlock(playerId, x, y, z, fromBlock, toBlock, droppedItem, fromBlockInfo, toBlockInfo)
+		?? OneBlock.onPlayerChangeBlock(playerId, x, y, z, fromBlock, toBlock, droppedItem, fromBlockInfo, toBlockInfo);
 };
 
 onPlayerDamagingOtherPlayer = (attackingPlayer: any, damagedPlayer: any) => {
