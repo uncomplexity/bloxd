@@ -576,6 +576,7 @@ class OneBlock {
 							if (preventDrop) {
 								return "preventDrop";
 							}
+							return [x + 0.50, y + 0.50, z + 0.50];
 						}
 					}
 				}
@@ -667,8 +668,8 @@ onPlayerAltAction = (playerId: any, x: any, y: any, z: any, block: any, targetEI
 }
 
 onPlayerChangeBlock = (playerId: any, x: any, y: number, z: any, fromBlock: string, toBlock: string, droppedItem: any, fromBlockInfo: any, toBlockInfo: any) => {
-	return RectControl.onPlayerChangeBlock(playerId, x, y, z, fromBlock, toBlock, droppedItem, fromBlockInfo, toBlockInfo)
-		?? OneBlock.onPlayerChangeBlock(playerId, x, y, z, fromBlock, toBlock, droppedItem, fromBlockInfo, toBlockInfo);
+	return OneBlock.onPlayerChangeBlock(playerId, x, y, z, fromBlock, toBlock, droppedItem, fromBlockInfo, toBlockInfo)
+		?? RectControl.onPlayerChangeBlock(playerId, x, y, z, fromBlock, toBlock, droppedItem, fromBlockInfo, toBlockInfo);
 };
 
 onPlayerDamagingOtherPlayer = (attackingPlayer: any, damagedPlayer: any) => {
