@@ -3,6 +3,9 @@
  * @todo currently blocked by discord issue below:
  * "Let `setCanChangeBlockRect` override `setCantChangeBlockRect`"
  * https://discord.com/channels/804347688946237472/1409474104289136713/1409826380853547140
+ * 
+ * @todo use onPlayerChangeBlock instead, which could be better approach
+ * https://claude.ai/share/87ea9562-5370-4e97-bcf5-ab2012440bc8
  */
 
 type Point = [number, number, number];
