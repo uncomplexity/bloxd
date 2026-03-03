@@ -301,8 +301,14 @@ class ChestStorage {
 		}
 	}
 	static onPlayerAttemptOpenChest = (playerId: any, x: any, y: any, z: any, _isMoonstoneChest: any, _isIronChest: any) => {
+		if (api.getBlock(x, y, z) === "Chest") {
+			if (ChestStorage.isStorage(x, y - 1, z)) {
+				m(playerId, "Break it to find out what's inside!", s("gold"));
+				return "preventOpen";
+			}
+		}
 		if (ChestStorage.isStorage(x, y, z)) {
-			m(playerId, "You can't open that.", s("gold"));
+			m(playerId, "That's a one block.", s("gold"));
 			return "preventOpen";
 		}
 		return undefined;
@@ -507,29 +513,6 @@ class OneBlock {
 						ChestStorage.init(playerId, x, y + 1, z);
 						const block = OneBlock.getRandomBlock(phase.blocks);
 						api.setBlock(x, y + 2, z, block[1]);
-
-						if (block[1] === "Chest") { // if it's chest, we put items inside.
-							if (typeof block[2] === "string") {
-								let amount = 1;
-								const itemMin = block[3];
-								if (itemMin) {
-									const itemMax = block[4];
-									if (itemMax) {
-										amount = OneBlock.randomInt(itemMin, itemMax);
-									} else {
-										amount = itemMin;
-									}
-								}
-								api.setStandardChestItemSlot(
-									[x, y + 2, z],
-									0,
-									block[2],
-									amount,
-									playerId,
-									{},
-								);
-							}
-						}
 						ChestStorage.set(playerId, x, y + 1, z, 1, ["one_block", phase.id, ...block]);
 					} else {
 						m(playerId, "Invalid placement, not enough space.", s("gold"));
@@ -586,60 +569,29 @@ class OneBlock {
 					if (phasesByIds.has(subtype)) {
 						const phase = phasesByIds.get(subtype);
 						if (phase) {
-							// type Metadata = [string, string, number, string, string?, number?, number?];
-							// type Metadata = [Type, Subtype, Weight, BlockName, ItemName = BlockName, ItemMin = 1, ItemMax = null];
 							let preventDrop = false;
-							const blockName = metadata[3];
-							if (blockName !== "Chest") { // if it's chest, we don't drop items.
-								const itemName = metadata[4];
-								if (itemName) {
-									let amount = 1;
-									const itemMin = metadata[5];
-									if (itemMin) {
-										const itemMax = metadata[6];
-										if (itemMax) {
-											amount = OneBlock.randomInt(itemMin, itemMax);
-										} else {
-											amount = itemMin;
-										}
+							const itemName = metadata[4];
+							if (itemName) {
+								let amount = 1;
+								const itemMin = metadata[5];
+								if (itemMin) {
+									const itemMax = metadata[6];
+									if (itemMax) {
+										amount = OneBlock.randomInt(itemMin, itemMax);
+									} else {
+										amount = itemMin;
 									}
-									api.createItemDrop(x + 0.50, y + 0.50 + Math.random(), z + 0.50, itemName, amount, false, {}, 16000, null, {})
-									preventDrop = true;
 								}
+								api.createItemDrop(x + 0.50, y + 0.50 + Math.random(), z + 0.50, itemName, amount, false, {}, 16000, null, {})
+								preventDrop = true;
 							}
-							// type PhaseBlock = [number, string, string?, number?, number?];
-							// type PhaseBlock = [Weight, BlockName, ItemName = BlockName, ItemMin = 1, ItemMax = null];
 							const block = OneBlock.getRandomBlock(phase.blocks);
 							api.setBlock(x, y, z, block[1]);
-
-							if (block[1] === "Chest") { // if it's chest, we put items inside.
-								if (typeof block[2] === "string") {
-									let amount = 1;
-									const itemMin = block[3];
-									if (itemMin) {
-										const itemMax = block[4];
-										if (itemMax) {
-											amount = OneBlock.randomInt(itemMin, itemMax);
-										} else {
-											amount = itemMin;
-										}
-									}
-									api.setStandardChestItemSlot(
-										[x, y, z],
-										0,
-										block[2],
-										amount,
-										playerId,
-										{},
-									);
-								}
-							}
-
 							ChestStorage.set(playerId, x, y - 1, z, 1, [type, subtype, ...block]);
 							if (preventDrop) {
 								return "preventDrop";
 							}
-							// return [x + 0.50, y + 0.50 + Math.random(), z + 0.50];
+							return [x + 0.50, y + 0.50 + Math.random(), z + 0.50];
 						}
 					}
 				}
