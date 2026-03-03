@@ -138,7 +138,7 @@ class RectControl {
 	static isProtected(point: Point, playerId?: string) {
 		if (typeof playerId === "string") {
 			if (RectControl.unlockedPlayerIds.has(playerId)) {
-				return true;
+				return false;
 			}
 		}
 		for (const rect of RectControl.whitelist.values()) {
