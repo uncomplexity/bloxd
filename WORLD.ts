@@ -88,11 +88,6 @@ const m = (playerId: string, message: string, style: MessageStyle) => api.sendMe
  */
 const s = (color: string, fontWeight?: number) => ({ color, fontWeight });
 
-interface Rect {
-	from: [number, number, number];
-	to: [number, number, number];
-}
-
 type Point = number[];
 
 type Rect = [Point[], Point[]];
