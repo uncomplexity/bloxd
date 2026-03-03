@@ -88,9 +88,9 @@ const m = (playerId: string, message: string, style: MessageStyle) => api.sendMe
  */
 const s = (color: string, fontWeight?: number) => ({ color, fontWeight });
 
-type Point = number[];
+type Point = [number, number, number];
 
-type Rect = [Point[], Point[]];
+type Rect = [Point, Point];
 
 class RectControl {
 	static playerIds = new Set<string>();
