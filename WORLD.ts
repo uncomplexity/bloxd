@@ -496,10 +496,30 @@ class OneBlock {
 						ChestStorage.init(playerId, x, y + 1, z);
 						const block = OneBlock.getRandomBlock(phase.blocks);
 						api.setBlock(x, y + 2, z, block[1]);
-						const type = "one_block";
-						const subtype = phase.id;
-						ChestStorage.set(playerId, x, y + 1, z, 1, [type, subtype, ...block]);
-						RectControl.whitelist.add([[x, y + 1, z], [x, y + 2, z]]);
+
+						if (block[1] === "Chest") { // if it's chest, we put items inside.
+							if (typeof block[2] === "string") {
+								let amount = 1;
+								const itemMin = block[3];
+								if (itemMin) {
+									const itemMax = block[4];
+									if (itemMax) {
+										amount = OneBlock.randomInt(itemMin, itemMax);
+									} else {
+										amount = itemMin;
+									}
+								}
+								api.setStandardChestItemSlot(
+									[x, y, z],
+									0,
+									block[2],
+									amount,
+									playerId,
+									{},
+								);
+							}
+						}
+						ChestStorage.set(playerId, x, y + 1, z, 1, ["one_block", phase.id, ...block]);
 					} else {
 						m(playerId, "Invalid placement, not enough space.", s("gold"));
 					}
@@ -580,6 +600,7 @@ class OneBlock {
 							// type PhaseBlock = [Weight, BlockName, ItemName = BlockName, ItemMin = 1, ItemMax = null];
 							const block = OneBlock.getRandomBlock(phase.blocks);
 							api.setBlock(x, y, z, block[1]);
+
 							if (block[1] === "Chest") { // if it's chest, we put items inside.
 								if (typeof block[2] === "string") {
 									let amount = 1;
@@ -602,6 +623,7 @@ class OneBlock {
 									);
 								}
 							}
+
 							ChestStorage.set(playerId, x, y - 1, z, 1, [type, subtype, ...block]);
 							if (preventDrop) {
 								return "preventDrop";
