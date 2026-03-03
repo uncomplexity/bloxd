@@ -111,6 +111,7 @@ class RectControl {
 
 	static lock(playerId: string) {
 		RectControl.unlockedPlayerIds.delete(playerId);
+		m(playerId, "Rects locked.", s("gold"));
 	}
 
 	static isProtected(point: Point, playerId?: string) {
