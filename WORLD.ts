@@ -107,6 +107,91 @@ const protectedExceptions: Map<ProtectedRect, Set<string>> = new Map([
 	[protectedAyuuJagannath, new Set()],
 ]);
 
+interface Rect {
+	from: [number, number, number];
+	to: [number, number, number];
+}
+
+type Point = number[];
+
+type Rect = [Point[], Point[]];
+
+class RectControl {
+	static playerIds = new Set<string>();
+	static blacklist = new Set<Rect>();
+	static whitelist = new Set<Rect>();
+
+	static lock(playerId) {
+		for (const rect of RectControl.blacklist.values()) {
+    	api.setCantChangeBlockRect(playerId, rect[0], rect[1]);
+		}
+		for (const rect of RectControl.whitelist.values()) {
+    	api.setCantChangeBlockRect(playerId, rect[0], rect[1]);
+		}
+	}
+
+	static lockAll() {
+		for (const playerId of RectControl.playerIds.values()) {
+			for (const rect of RectControl.blacklist.values()) {
+				api.setCantChangeBlockRect(playerId, rect[0], rect[1]);
+			}
+			for (const rect of RectControl.whitelist.values()) {
+				api.setCantChangeBlockRect(playerId, rect[0], rect[1]);
+			}
+		}
+	}
+
+	static unlock(playerId) {
+		for (const rect of RectControl.blacklist.values()) {
+    	api.setCanChangeBlockRect(playerId, rect[0], rect[1]);
+		}
+		for (const rect of RectControl.whitelist.values()) {
+    	api.setCanChangeBlockRect(playerId, rect[0], rect[1]);
+		}
+		m(playerId, "Rects unlocked.", s("gold"));
+	}
+
+	static isProtected(point: Point) {
+		for (const rect of RectControl.whitelist.values()) {
+			if (api.isInsideRect(point, rect[0], rect[1])) {
+				return false;
+			}
+		}
+		for (const rect of RectControl.blacklist.values()) {
+			if (api.isInsideRect(point, rect[0], rect[1])) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	static onPlayerJoin(playerId: string) {
+		RectControl.apply(playerId);
+		playerIds.add(playerId);
+	}
+
+	static onPlayerLeave(playerId: any, _serverIsShuttingDown: any) {
+		playerIds.delete(playerId);
+	}
+
+	static onPlayerChat(playerId: any, chatMessage: any) {
+		switch (chatMessage) {
+			case ".unlock": {
+				RectControl.unlock(playerId);
+				return false;
+			}
+			case ".lock": {
+				RectControl.lock(playerId);
+				return false;
+			}
+			default: {
+				break;
+			}
+		}
+		return undefined
+	}
+}
+
 // @ts-ignore
 globalThis.b = b;
 // @ts-ignore
@@ -408,19 +493,9 @@ class OneBlock {
 			if (phasesByNames.has(customDisplayName)) {
 				const phase = phasesByNames.get(customDisplayName);
 				if (phase) {
-					for (const protectedRect of protectedRects) {
-						if (
-							api.isInsideRect([x, y + 1, z], protectedRect.from, protectedRect.to)
-							|| api.isInsideRect([x, y + 2, z], protectedRect.from, protectedRect.to)
-						) {
-							const protectedException = protectedExceptions.get(protectedRect);
-							if (protectedException) {
-								if (!protectedException.has(playerId)) {
-									m(playerId, "Invalid placement, protected area.", s("gold"));
-									return undefined;
-								}
-							}
-						}
+					if (RectControl.isProtected([x, y + 1, z]) || RectControl.isProtected([x, y + 2, z])) {
+						m(playerId, "Invalid placement, protected area.", s("gold"));
+						return undefined;
 					}
 					const above = api.getBlock(x, y + 1, z);
 					const above2 = api.getBlock(x, y + 2, z);
@@ -551,7 +626,7 @@ class OneBlock {
 	}
 }
 
-const playersIds = new Set();
+const playerIds = new Set();
 
 const targetIds = new Set([
 		api.blockNameToBlockId("Loot Chest"),
@@ -562,20 +637,6 @@ const targetIds = new Set([
 ]);
 
 class TownSquare {
-	static onPlayerJoin(playerId: any) {
-		for (const protectedRect of protectedRects) {
-			api.setCantChangeBlockRect(playerId, protectedRect.from, protectedRect.to);
-		}
-		playersIds.add(playerId);
-	}
-
-	static onPlayerLeave(playerId: any, _serverIsShuttingDown: any) {
-		playersIds.delete(playerId);
-		for (const protectedException of protectedExceptions.values()) {
-			protectedException.delete(playerId);
-		}
-	}
-
 	static onPlayerDamagingOtherPlayer(attackingPlayer: any, damagedPlayer: any) {
 		if (api.isInsideRect(api.getPosition(damagedPlayer), [-64, -1024, -64], [64, 1024, 64])) {
 			api.sendMessage(attackingPlayer, "Can't attack inside the town square.", s("gold"));
@@ -583,24 +644,11 @@ class TownSquare {
 		}
 		return undefined;
 	}
+
 	static onPlayerChat(playerId: any, chatMessage: any) {
 		switch (chatMessage) {
-			case ".unlock": {
-				const protectedException = protectedExceptions.get(protectedTownSquare);
-				if (protectedException) {
-					protectedException.add(playerId);
-				}
-				api.setCanChangeBlockRect(playerId, protectedTownSquare.from, protectedTownSquare.to);
-				m(playerId, "Unlocked spawn area.", s("gold"));
-				return false;
-			}
-			case ".lock": {
-				const protectedException = protectedExceptions.get(protectedTownSquare);
-				if (protectedException) {
-					protectedException.delete(playerId);
-				}
-				api.setCantChangeBlockRect(playerId, protectedTownSquare.from, protectedTownSquare.to);
-				m(playerId, "Locked spawn area.", s("gold"));
+			case ".test": {
+				m(playerId, "Hello world!", s("gold"));
 				return false;
 			}
 			default: {
@@ -616,17 +664,16 @@ class TownSquare {
 	}
 }
 
-
 /**
  * @description Global Event Handlers. return them, and chain them with "??".
  */
 
 onPlayerJoin = (playerId: any) => {
-	return TownSquare.onPlayerJoin(playerId);
+	return RectControl.onPlayerJoin(playerId);
 };
 
 onPlayerLeave = (playerId: any, serverIsShuttingDown: any) => {
-	return TownSquare.onPlayerLeave(playerId, serverIsShuttingDown);
+	return RectControl.onPlayerLeave(playerId, serverIsShuttingDown);
 };
 
 onPlayerAltAction = (playerId: any, x: any, y: any, z: any, block: any, targetEId: any) => {
@@ -642,7 +689,9 @@ onPlayerDamagingOtherPlayer = (attackingPlayer: any, damagedPlayer: any) => {
 };
 
 onPlayerChat = (playerId: any, chatMessage: any) => {
-	return TownSquare.onPlayerChat(playerId, chatMessage) ?? OneBlock.onPlayerChat(playerId, chatMessage);
+	return TownSquare.onPlayerChat(playerId, chatMessage)
+		?? RectControl.onPlayerChat(playerId, chatMessage)
+		?? OneBlock.onPlayerChat(playerId, chatMessage);
 }
 
 onPlayerAttemptOpenChest = (playerId: any, x: any, y: any, z: any, isMoonstoneChest: any, isIronChest: any) => {
