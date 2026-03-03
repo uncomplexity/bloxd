@@ -154,9 +154,9 @@ class RectControl {
 	static onPlayerChangeBlock (
 		playerId: string,
 		x: number, y: number, z: number,
-		fromBlock: BlockName, toBlock: BlockName,
-		droppedItem: BlockName | null,
-		fromBlockInfo: MultiBlockInfo, toBlockInfo: MultiBlockInfo
+		_fromBlock: string, _toBlock: string,
+		_droppedItem: string | null,
+		_fromBlockInfo: unknown, _toBlockInfo: unknown
 	) {
 		if (RectControl.isProtected([x, y, z], playerId)) {
 			m(playerId, "That block is protected.", s("gold"));
