@@ -510,7 +510,7 @@ class OneBlock {
 									}
 								}
 								api.setStandardChestItemSlot(
-									[x, y, z],
+									[x, y + 2, z],
 									0,
 									block[2],
 									amount,
