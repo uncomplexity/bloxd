@@ -491,7 +491,7 @@ class OneBlock {
 			if (phasesByNames.has(customDisplayName)) {
 				const phase = phasesByNames.get(customDisplayName);
 				if (phase) {
-					if (RectControl.isProtected([x, y + 1, z]) || RectControl.isProtected([x, y + 2, z])) {
+					if (RectControl.isProtected([x, y + 1, z], playerId) || RectControl.isProtected([x, y + 2, z], playerId)) {
 						m(playerId, "Invalid placement, protected area.", s("gold"));
 						return undefined;
 					}
