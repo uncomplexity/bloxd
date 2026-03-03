@@ -137,22 +137,22 @@ class RectControl {
 	}
 
 	static isProtected(point: Point, playerId?: string) {
-		m(JSON.stringify({ playerId }), s("gold"));
+		b(JSON.stringify({ playerId }), s("gold"));
 		if (typeof playerId === "string") {
 			if (RectControl.unlockedPlayerIds.has(playerId)) {
-				m("in unlockedPlayerIds, so false", s("gold"));
+				b("in unlockedPlayerIds, so false", s("gold"));
 				return false;
 			}
 		}
 		for (const rect of RectControl.whitelist.values()) {
 			if (api.isInsideRect(point, rect[0], rect[1])) {
-				m("in whitelist, so false", s("gold"));
+				b("in whitelist, so false", s("gold"));
 				return false;
 			}
 		}
 		for (const rect of RectControl.blacklist.values()) {
 			if (api.isInsideRect(point, rect[0], rect[1])) {
-				m("in blacklist, so true", s("gold"));
+				b("in blacklist, so true", s("gold"));
 				return true;
 			}
 		}
