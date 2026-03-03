@@ -105,17 +105,18 @@ class RectControl {
 	static whitelist = new Set<Rect>();
 
 	static unlock(playerId: string) {
+		RectControl.unlockedPlayerIds.add(playerId);
 		for (const rect of RectControl.blacklist.values()) {
     	api.setCanChangeBlockRect(playerId, rect[0], rect[1]);
 		}
 		for (const rect of RectControl.whitelist.values()) {
     	api.setCanChangeBlockRect(playerId, rect[0], rect[1]);
 		}
-		RectControl.unlockedPlayerIds.add(playerId);
 		m(playerId, "Rects unlocked.", s("gold"));
 	}
 
 	static lock(playerId: string) {
+		RectControl.unlockedPlayerIds.delete(playerId);
 		for (const rect of RectControl.blacklist.values()) {
     	api.setCantChangeBlockRect(playerId, rect[0], rect[1]);
 		}
