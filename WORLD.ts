@@ -102,7 +102,18 @@ class RectControl {
 		[[-11, -10, 65], [-21, -4, 82]],
 	]);
 
-	static whitelist = new Set<Rect>();
+	static whitelist = new Set<Rect>([
+		[[0, 0, 18], [0, 1, 18]],
+		[[2, 0, 18], [2, 1, 18]],
+		[[4, 0, 18], [4, 1, 18]],
+		[[6, 0, 18], [6, 1, 18]],
+		[[8, 0, 18], [8, 1, 18]],
+		[[10, 0, 18], [10, 1, 18]],
+		[[12, 0, 18], [12, 1, 18]],
+		[[14, 0, 18], [14, 1, 18]],
+		[[16, 0, 18], [16, 1, 18]],
+		[[18, 0, 18], [18, 1, 18]],
+	]);
 
 	static unlock(playerId: string) {
 		RectControl.unlockedPlayerIds.add(playerId);
@@ -628,7 +639,7 @@ class OneBlock {
 							if (preventDrop) {
 								return "preventDrop";
 							}
-							return [x + 0.50, y + 0.50 + Math.random(), z + 0.50];
+							// return [x + 0.50, y + 0.50 + Math.random(), z + 0.50];
 						}
 					}
 				}
