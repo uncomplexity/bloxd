@@ -498,7 +498,6 @@ class OneBlock {
 						const subtype = phase.id;
 						ChestStorage.set(playerId, x, y + 1, z, 1, [type, subtype, ...block]);
 						RectControl.whitelist.add([[x, y + 1, z], [x, y + 2, z]]);
-						RectControl.sync();
 					} else {
 						m(playerId, "Invalid placement, not enough space.", s("gold"));
 					}
@@ -531,7 +530,6 @@ class OneBlock {
 									customDescription: phase.description,
 								});
 								RectControl.whitelistDelete([[x, y, z], [x, y + 1, z]]);
-								RectControl.sync();
 								return "preventDrop";
 							}
 						}
