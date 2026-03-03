@@ -148,6 +148,7 @@ class RectControl {
 
 	static onPlayerLeave(playerId: any, _serverIsShuttingDown: any) {
 		RectControl.playerIds.delete(playerId);
+    RectControl.unlockedPlayerIds.delete(playerId);
 	}
 
 	static onPlayerChangeBlock (
