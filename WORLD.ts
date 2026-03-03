@@ -121,7 +121,7 @@ class RectControl {
     	api.setCantChangeBlockRect(playerId, rect[0], rect[1]);
 		}
 		for (const rect of RectControl.whitelist.values()) {
-    	api.setCantChangeBlockRect(playerId, rect[0], rect[1]);
+    	api.setCanChangeBlockRect(playerId, rect[0], rect[1]);
 		}
 	}
 
