@@ -92,6 +92,26 @@ type Point = [number, number, number];
 
 type Rect = [Point, Point];
 
+
+/**
+ * @description
+ * 
+ * Be wary of Degenerate Whitelist Rects.
+ * 
+ * For example:
+ * 
+ * static whitelist = new Set<Rect>([
+ * 	 [[0, 0, 18], [0, 1, 18]],   // x: 0→0, z: 18→18
+ *   [[2, 0, 18], [2, 1, 18]],   // x: 2→2, z: 18→18
+ * ]);
+ * 
+ * Both corners of each rect share the same X and Z values — they only differ in Y.
+ * This makes them degenerate rects with zero width and depth (essentially a line segment, not a volume).
+ * api.isInsideRect almost certainly doesn't consider a point to be "inside" a zero-area/zero-volume shape.
+ * 
+ * The two corner points must differ in all three axes that isInsideRect can reason about.
+ * 
+ */
 class RectControl {
 	static playerIds = new Set<string>();
 
