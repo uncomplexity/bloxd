@@ -100,7 +100,7 @@ class RectControl {
 	]);
 	static whitelist = new Set<Rect>();
 
-	static lock(playerId) {
+	static lock(playerId: string) {
 		for (const rect of RectControl.blacklist.values()) {
     	api.setCantChangeBlockRect(playerId, rect[0], rect[1]);
 		}
