@@ -88,25 +88,6 @@ const m = (playerId: string, message: string, style: MessageStyle) => api.sendMe
  */
 const s = (color: string, fontWeight?: number) => ({ color, fontWeight });
 
-interface ProtectedRect {
-	from: [number, number, number];
-	to: [number, number, number];
-}
-
-const protectedTownSquare: ProtectedRect = { from: [-64, -1024, -64], to: [64, 1024, 64] };
-
-const protectedAyuuJagannath: ProtectedRect = { from: [-11, -10, 65], to: [-21, -4, 82] };
-
-const protectedRects: ProtectedRect[] = [
-	protectedTownSquare,
-	protectedAyuuJagannath,
-];
-
-const protectedExceptions: Map<ProtectedRect, Set<string>> = new Map([
-	[protectedTownSquare, new Set()],
-	[protectedAyuuJagannath, new Set()],
-]);
-
 interface Rect {
 	from: [number, number, number];
 	to: [number, number, number];
@@ -118,7 +99,10 @@ type Rect = [Point[], Point[]];
 
 class RectControl {
 	static playerIds = new Set<string>();
-	static blacklist = new Set<Rect>();
+	static blacklist = new Set<Rect>([
+		[[-64, -1024, -64], [64, 1024, 64]],
+		[[-11, -10, 65], [-21, -4, 82]],
+	]);
 	static whitelist = new Set<Rect>();
 
 	static lock(playerId) {
@@ -130,7 +114,7 @@ class RectControl {
 		}
 	}
 
-	static lockAll() {
+	static sync() {
 		for (const playerId of RectControl.playerIds.values()) {
 			for (const rect of RectControl.blacklist.values()) {
 				api.setCantChangeBlockRect(playerId, rect[0], rect[1]);
@@ -507,10 +491,9 @@ class OneBlock {
 						const type = "one_block";
 						const subtype = phase.id;
 						ChestStorage.set(playerId, x, y + 1, z, 1, [type, subtype, ...block]);
-						/**
-						 * @todo add y + 1 to ProtectedRect Whitelist
-						 * @link https://claude.ai/share/b8cf46d3-ef85-4287-8f5c-fbf43f4b57da
-						 */
+						RectControl.whitelist.add([x, y + 1, z]);
+						RectControl.whitelist.add([x, y + 2, z]);
+						RectControl.sync();
 					} else {
 						m(playerId, "Invalid placement, not enough space.", s("gold"));
 					}
@@ -542,9 +525,9 @@ class OneBlock {
 									customDisplayName: phase.name,
 									customDescription: phase.description,
 								});
-								/**
-								 * @todo remove y + 1 from ProtectedRect Whitelist
-								 */
+								RectControl.whitelist.delete([x, y, z]);
+								RectControl.whitelist.delete([x, y + 1, z]);
+								RectControl.sync();
 								return "preventDrop";
 							}
 						}
