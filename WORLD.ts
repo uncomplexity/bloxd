@@ -144,6 +144,15 @@ class RectControl {
 		return false;
 	}
 
+	static whitelistDelete(rect: Rect) {
+		for (const rect2 of RectControl.whitelist.values()) {
+			if (JSON.stringify(rect) === JSON.stringify(rect2)) {
+				RectControl.whitelist.delete(rect2);
+				return;
+			}
+		}
+	}
+
 	static onPlayerJoin(playerId: string) {
 		RectControl.apply(playerId);
 		playerIds.add(playerId);
@@ -486,8 +495,7 @@ class OneBlock {
 						const type = "one_block";
 						const subtype = phase.id;
 						ChestStorage.set(playerId, x, y + 1, z, 1, [type, subtype, ...block]);
-						RectControl.whitelist.add([x, y + 1, z]);
-						RectControl.whitelist.add([x, y + 2, z]);
+						RectControl.whitelist.add([[x, y + 1, z], [x, y + 2, z]]);
 						RectControl.sync();
 					} else {
 						m(playerId, "Invalid placement, not enough space.", s("gold"));
@@ -520,8 +528,7 @@ class OneBlock {
 									customDisplayName: phase.name,
 									customDescription: phase.description,
 								});
-								RectControl.whitelist.delete([x, y, z]);
-								RectControl.whitelist.delete([x, y + 1, z]);
+								RectControl.whitelistDelete([[x, y, z], [x, y + 1, z]]);
 								RectControl.sync();
 								return "preventDrop";
 							}
