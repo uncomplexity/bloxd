@@ -349,10 +349,12 @@ globalThis.phasesByIds = phasesByIds;
 // @ts-ignore
 globalThis.phasesByNames = phasesByNames;
 
+const usage = "Right click on the ground to place it. Destroy it to pick it up.";
+
 const forest: Phase = {
 	id: "forest",
 	name: "One Block (Forest)",
-	description: "Creates a one block for forest phase. Dirt, Grass Block, Maple Log, Stone, Maple Leaves, Fruity Maple Leaves, and Chest.",
+	description: `Creates a one block for forest phase. ${usage}`,
 	blocks: [
 		[1, "Dirt"],
 		[1, "Grass Block"],
@@ -369,7 +371,7 @@ phasesByNames.set(forest.name, forest);
 const plains: Phase = {
 	id: "plains",
 	name: "One Block (Plains)",
-	description: "Creates a one block for plains phase. Clay, Sand, Gravel, Dirt, Grass Block, Plum Log, Stone, Plum Leaves, Fruity Plum Leaves, and Chest.",
+	description: `Creates a one block for plains phase. ${usage}`,
 	blocks: [
 		[1, "Clay"],
 		[1, "Sand"],
@@ -389,7 +391,7 @@ phasesByNames.set(plains.name, plains);
 const hills: Phase = {
 	id: "hills",
 	name: "One Block (Hills)",
-	description: "Creates a one block for hills phase. Cedar Log, Cedar Leaves, Granite, Coal Ore, Iron Ore, Grass Block, Rocky Dirt, Stone, Pear Log, Fruity Pear Leaves, Pear Leaves, and Chest.",
+	description: `Creates a one block for hills phase. ${usage}`,
 	blocks: [
 		[1, "Cedar Log"],
 		[1, "Cedar Leaves"],
@@ -411,7 +413,7 @@ phasesByNames.set(hills.name, hills);
 const flowers: Phase = {
 	id: "flowers",
 	name: "One Block (Flowers)",
-	description: "Creates a one block for flowers. Dandelion, Poppy, Red Tulip, Pink Tulip, White Tulip, Orange Tulip, Daisy, Bluebell, Forget-me-not, Allium, Azure Bluet, Lily of the Valley, and Shadow Rose.",
+	description: `Creates a one block for flowers. ${usage}`,
 	blocks: [
 		[1, "Dandelion"],
 		[1, "Poppy"],
@@ -428,6 +430,7 @@ const flowers: Phase = {
 		[1, "Shadow Rose"],
 		[1, "Red Mushroom"],
 		[1, "Brown Mushroom"],
+		[1, "Fallen Pine Cone"],
 	],
 };
 phasesByIds.set(flowers.id, flowers);
@@ -436,7 +439,7 @@ phasesByNames.set(flowers.name, flowers);
 const logs: Phase = {
 	id: "logs",
 	name: "One Block (Logs)",
-	description: "Creates a one block for logs. Maple, Pine, Plum, Cedar, Aspen, Jungle, Palm, Pear, Cherry, Spectral, and Mango.",
+	description: `Creates a one block for logs. ${usage}`,
 	blocks: [
 		[1, "Maple Log"],
 		[1, "Pine Log"],
@@ -457,7 +460,7 @@ phasesByNames.set(logs.name, logs);
 const saplings: Phase = {
 	id: "saplings",
 	name: "One Block (Saplings)",
-	description: "Creates a one block for saplings. Maple, Pine, Plum, Cedar, Aspen, Jungle, Palm, Pear, Cherry, Spectral, and Mango.",
+	description: `Creates a one block for saplings. ${usage}`,
 	blocks: [
 		[1, "Maple Sapling"],
 		[1, "Pine Sapling"],
@@ -478,13 +481,38 @@ phasesByNames.set(saplings.name, saplings);
 const coins: Phase = {
 	id: "coins",
 	name: "One Block (Coins)",
-	description: "Creates a one block for coins. Gold Coin.",
+	description: `Creates a one block for gold coins. ${usage}`,
 	blocks: [
 		[1, "Chest", "Gold Coin", 1],
 	],
 };
 phasesByIds.set(coins.id, coins);
 phasesByNames.set(coins.name, coins);
+
+
+const fruits: Phase = {
+	id: "fruits",
+	name: "One Block (Fruits)",
+	description: `Creates a one block for fruits. ${usage}`,
+	blocks: [
+	[1, "Apple Block"],
+	[1, "Cherry Block"],
+	[1, "Coconut Block"],
+	[1, "Corn Block"],
+	[1, "Pear Block"],
+	[1, "Plum Block"],
+	[1, "Mango Block"],
+	[1, "Carrot Block"],
+	[1, "Potato Block"],
+	[1, "Beetroot Block"],
+	[1, "Chili Pepper Block"],
+	[1, "Banana Block"],
+	[1, "Watermelon"],
+	[1, "Melon"],
+	],
+};
+phasesByIds.set(coins.id, fruits);
+phasesByNames.set(coins.name, fruits);
 
 const colors = [
 	"White",
@@ -510,7 +538,7 @@ const suffixes = ["Planks", "Wool", "Baked Clay", "Chalk", "Chalk Bricks", "Conc
 for (const suffix of suffixes) {
 	const lcase = suffix.replace(' ', '').toLocaleLowerCase();
 	const phase: Phase = {
-		id: lcase,
+		id: lcase,``
 		name: `One Block (${suffix})`,
 		description: `Creates a one block for Colored ${suffix}. Right click on the ground to place it. Destroy it to pick it up.`,
 		blocks: [
@@ -524,7 +552,6 @@ for (const suffix of suffixes) {
 	phasesByIds.set(phase.id, phase);
 	phasesByNames.set(phase.name, phase);
 }
-
 
 class OneBlock {
 	static randomInt(min: number, max: number) {
