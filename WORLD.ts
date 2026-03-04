@@ -668,33 +668,16 @@ class OneBlock {
 					if (phasesByIds.has(subtype)) {
 						const phase = phasesByIds.get(subtype);
 						if (phase) {
-							let preventDrop = false;
-							/**
-							 * @todo itemName = metadata[4] ?? blockName;
-							 * always return preventDrop? this way we can drop portal etc.
-							 */
-							const itemName = metadata[4];
-							if (itemName) {
-								let amount = 1;
-								const itemMin = metadata[5];
-								if (itemMin) {
-									const itemMax = metadata[6];
-									if (itemMax) {
-										amount = OneBlock.randomInt(itemMin, itemMax);
-									} else {
-										amount = itemMin;
-									}
-								}
-								api.createItemDrop(x + 0.50, y + 0.50 + Math.random(), z + 0.50, itemName, amount, false, {}, 16000, null, {})
-								preventDrop = true;
+							const itemName = metadata[4] ?? metadata[3];
+							let amount = metadata[5] ?? 1;
+							if (metadata[6]) {
+								amount = OneBlock.randomInt(metadata[5], metadata[6]);
 							}
+							api.createItemDrop(x + 0.50, y + 0.50 + Math.random(), z + 0.50, itemName, amount, false, {}, 16000, null, {})
 							const block = OneBlock.getRandomBlock(phase.blocks);
 							api.setBlock(x, y, z, block[1]);
 							ChestStorage.set(playerId, x, y - 1, z, 1, [type, subtype, ...block]);
-							if (preventDrop) {
-								return "preventDrop";
-							}
-							return [x + 0.50, y + 0.50 + Math.random(), z + 0.50];
+							return "preventDrop";
 						}
 					}
 				}
