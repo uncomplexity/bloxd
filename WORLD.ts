@@ -505,7 +505,7 @@ const coins: Phase = {
 phasesByIds.set(coins.id, coins);
 phasesByNames.set(coins.name, coins);
 
-const suffixes = ["Planks", "Wool", "Baked Clay", "Chalk", "Concrete", "Ceramic", "Glass", "Patterned Glass"];
+const suffixes = ["Planks", "Wool", "Baked Clay", "Chalk", "Chalk Bricks", "Concrete", "Ceramic", "Glass", "Patterned Glass", "Banner", "Carpet", "Portal"];
 
 for (const suffix of suffixes) {
 	const lcase = suffix.replace(' ', '').toLocaleLowerCase();
