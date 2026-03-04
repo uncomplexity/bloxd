@@ -635,7 +635,7 @@ class OneBlock {
 						ChestStorage.init(playerId, x, y + 1, z);
 						const block = OneBlock.getRandomBlock(phase.blocks);
 						api.setBlock(x, y + 2, z, block[1]);
-						const limit = api.isInsideRect(x, y + 1, [-64, -1024, -64], [64, 1024, 64]) ? 16 : 0;
+						const limit = api.isInsideRect([x, y + 1, z], [-64, -1024, -64], [64, 1024, 64]) ? 16 : 0;
 						const counter = api.now() / 60000;
 						const current = 0;
 						ChestStorage.set(playerId, x, y + 1, z, 1, ["one_block", phase.id, ...block, limit, counter, current]);
@@ -694,7 +694,7 @@ class OneBlock {
 					if (phasesByIds.has(subtype)) {
 						const phase = phasesByIds.get(subtype);
 						if (phase) {
-							const limit = metadata[7] ?? api.isInsideRect(x, y + 1, [-64, -1024, -64], [64, 1024, 64]) ? 16 : 0;
+							const limit = metadata[7] ?? api.isInsideRect([x, y - 1, z], [-64, -1024, -64], [64, 1024, 64]) ? 16 : 0;
 							let counter = metadata[8] ?? api.now() / 60000;
 							let current = metadata[9] ?? 0;
 
