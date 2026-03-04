@@ -530,6 +530,7 @@ const fruits: Phase = {
 	[1, "Banana Block"],
 	[1, "Watermelon"],
 	[1, "Melon"],
+	[1, "Pumpkin"],
 	],
 };
 phasesByIds.set(fruits.id, fruits);
