@@ -457,6 +457,27 @@ const logs: Phase = {
 phasesByIds.set(logs.id, logs);
 phasesByNames.set(logs.name, logs);
 
+const leaves: Phase = {
+	id: "leaves",
+	name: "One Block (Leaves)",
+	description: `Creates a one block for leaves. ${usage}`,
+	blocks: [
+		[1, "Maple Leaves"],
+		[1, "Pine Leaves"],
+		[1, "Plum Leaves"],
+		[1, "Cedar Leaves"],
+		[1, "Aspen Leaves"],
+		[1, "Jungle Leaves"],
+		[1, "Palm Leaves"],
+		[1, "Pear Leaves"],
+		[1, "Cherry Leaves"],
+		[1, "Spectral Leaves"],
+		[1, "Mango Leaves"],
+	],
+};
+phasesByIds.set(leaves.id, leaves);
+phasesByNames.set(leaves.name, leaves);
+
 const saplings: Phase = {
 	id: "saplings",
 	name: "One Block (Saplings)",
