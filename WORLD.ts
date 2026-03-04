@@ -498,7 +498,7 @@ const colors = [
 	"Lime",
 	"Green",
 	"Cyan",
-	"Light",
+	"Light Blue",
 	"Blue",
 	"Purple",
 	"Magenta",
