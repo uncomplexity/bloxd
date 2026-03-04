@@ -182,7 +182,7 @@ class RectControl {
 		_fromBlockInfo: unknown, _toBlockInfo: unknown
 	) {
 		if (RectControl.isProtected([x, y, z], playerId)) {
-			m(playerId, "That block is protected.", s("gold"));
+			m(playerId, "That area is protected.", s("gold"));
 			return "preventChange";
 		}
 		return undefined;
@@ -680,10 +680,7 @@ class OneBlock {
 						}
 					}
 				} else {
-					/**
-					 * @todo show who owns this. maybe getEntityName?
-					 */
-					m(playerId, "That's not yours.", s("gold"));
+					m(playerId, "That one block is not yours.", s("gold"));
 					return "preventChange";
 				}
 			}
