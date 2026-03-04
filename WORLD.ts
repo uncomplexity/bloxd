@@ -669,6 +669,10 @@ class OneBlock {
 						const phase = phasesByIds.get(subtype);
 						if (phase) {
 							let preventDrop = false;
+							/**
+							 * @todo itemName = metadata[4] ?? blockName;
+							 * always return preventDrop? this way we can drop portal etc.
+							 */
 							const itemName = metadata[4];
 							if (itemName) {
 								let amount = 1;
