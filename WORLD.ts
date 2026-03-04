@@ -699,8 +699,8 @@ class OneBlock {
 							let current = metadata[9] ?? 0;
 
 							if (limit > 0) {
-								const counter2 = api.now() / 60000;
-								if (counter !== counter2) {
+								const counter2 = Math.floor(api.now() / 60000);
+								if (counter < counter2) {
 									counter = counter2;
 									current = 0;
 								}
