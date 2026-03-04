@@ -349,25 +349,6 @@ globalThis.phasesByIds = phasesByIds;
 // @ts-ignore
 globalThis.phasesByNames = phasesByNames;
 
-const colors = [
-	"White",
-	"Light",
-	"Gray",
-	"Black",
-	"Brown",
-	"Red",
-	"Orange",
-	"Yellow",
-	"Lime",
-	"Green",
-	"Cyan",
-	"Light",
-	"Blue",
-	"Purple",
-	"Magenta",
-	"Pink",
-];
-
 const forest: Phase = {
 	id: "forest",
 	name: "One Block (Forest)",
@@ -504,6 +485,25 @@ const coins: Phase = {
 };
 phasesByIds.set(coins.id, coins);
 phasesByNames.set(coins.name, coins);
+
+const colors = [
+	"White",
+	"Light Gray",
+	"Gray",
+	"Black",
+	"Brown",
+	"Red",
+	"Orange",
+	"Yellow",
+	"Lime",
+	"Green",
+	"Cyan",
+	"Light",
+	"Blue",
+	"Purple",
+	"Magenta",
+	"Pink",
+];
 
 const suffixes = ["Planks", "Wool", "Baked Clay", "Chalk", "Chalk Bricks", "Concrete", "Ceramic", "Glass", "Patterned Glass", "Banner", "Carpet", "Portal"];
 
