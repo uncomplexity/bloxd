@@ -515,7 +515,7 @@ for (const suffix of suffixes) {
 		description: `Creates a one block for Colored ${suffix}. Right click on the ground to place it. Destroy it to pick it up.`,
 		blocks: [
 			...colors.map((color) => {
-				const blockName = suffix === "Patterned Glass" ? `${color} ${suffix}` : `Patterned ${color} Glass`;
+				const blockName = suffix === "Patterned Glass" ? `Patterned ${color} Glass` : `${color} ${suffix}`;
 				const block: PhaseBlock = [1, blockName, blockName, 1];
 				return block;
 			}),
