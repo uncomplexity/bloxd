@@ -511,8 +511,8 @@ const fruits: Phase = {
 	[1, "Melon"],
 	],
 };
-phasesByIds.set(coins.id, fruits);
-phasesByNames.set(coins.name, fruits);
+phasesByIds.set(fruits.id, fruits);
+phasesByNames.set(fruits.name, fruits);
 
 const colors = [
 	"White",
