@@ -326,10 +326,12 @@ class ChestStorage {
 	}
 }
 
+type Nullable<T> = T | null;
+
 /**
  * @description Weight, BlockName, ItemName = BlockName, ItemMin = 1, ItemMax = null
  */
-type PhaseBlock = [number, string, string?, number?, number?];
+type PhaseBlock = [number, string, Nullable<string>?, Nullable<number>?, Nullable<number>?];
 
 interface Phase {
 	id: string;
@@ -575,6 +577,23 @@ for (const suffix of suffixes) {
 	phasesByNames.set(phase.name, phase);
 }
 
+for (const phase of phasesByIds.values()) {
+	for (const block of phase.blocks) {
+		// ItemName = BlockName
+		if (!block[2]) {
+			block[2] = block[1];
+		}
+		// ItemMin = null ?? 1
+		if (!block[3]) {
+			block[3] = null;
+		}
+		// ItemMax = null
+		if (!block[4]) {
+			block[4] = null;
+		}
+	}
+}
+
 class OneBlock {
 	static randomInt(min: number, max: number) {
 		const minc = Math.ceil(min);
@@ -596,6 +615,9 @@ class OneBlock {
 	}
 
 	static onPlayerAltAction (playerId: any, x: any, y: any, z: any, _block: any, _targetEId: any) {
+		/**
+		 * @description One Block Placement
+		 */
 		if (typeof x === "number" && typeof y === "number" && typeof z === "number") {
 			const held = api.getHeldItem(playerId);
 			const customDisplayName = held?.attributes?.customDisplayName;
@@ -613,7 +635,10 @@ class OneBlock {
 						ChestStorage.init(playerId, x, y + 1, z);
 						const block = OneBlock.getRandomBlock(phase.blocks);
 						api.setBlock(x, y + 2, z, block[1]);
-						ChestStorage.set(playerId, x, y + 1, z, 1, ["one_block", phase.id, ...block]);
+						const limit = 0;
+						const counter = api.now() / 60000;
+						const current = 0;
+						ChestStorage.set(playerId, x, y + 1, z, 1, ["one_block", phase.id, ...block, limit, counter, current]);
 					} else {
 						m(playerId, "Invalid placement, not enough space.", s("gold"));
 					}
@@ -669,6 +694,23 @@ class OneBlock {
 					if (phasesByIds.has(subtype)) {
 						const phase = phasesByIds.get(subtype);
 						if (phase) {
+							const limit = metadata[7] ?? 0;
+							let counter = metadata[8] ?? api.now() / 60000;
+							let current = metadata[9] ?? 0;
+
+							if (limit > 0) {
+								const counter2 = api.now() / 60000;
+								if (counter < counter2) {
+									counter = counter2;
+									current = 0;
+								}
+								current += 1;
+								if (current > limit) {
+									const timeToReset = Math.floor((60000 - (Date.now() % 60000)) / 1000);
+									m(playerId, `This one block has reached its rate limit of ${limit} blocks per minute! Resets in ${timeToReset} seconds!`, s("gold"));
+									return "preventChange";
+								}
+							}
 							const itemName = metadata[4] ?? metadata[3];
 							let amount = metadata[5] ?? 1;
 							if (metadata[6]) {
@@ -677,7 +719,7 @@ class OneBlock {
 							api.createItemDrop(x + 0.50, y + 0.50 + Math.random(), z + 0.50, itemName, amount, false, {}, 16000, null, {})
 							const block = OneBlock.getRandomBlock(phase.blocks);
 							api.setBlock(x, y, z, block[1]);
-							ChestStorage.set(playerId, x, y - 1, z, 1, [type, subtype, ...block]);
+							ChestStorage.set(playerId, x, y - 1, z, 1, [type, subtype, ...block, limit, counter, current]);
 							return "preventDrop";
 						}
 					}
