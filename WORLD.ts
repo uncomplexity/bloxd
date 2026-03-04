@@ -505,7 +505,7 @@ const coins: Phase = {
 phasesByIds.set(coins.id, coins);
 phasesByNames.set(coins.name, coins);
 
-const suffixes = ["Planks", "Wool", "Baked Clay", "Chalk", "Concrete", "Glass", "Patterned Glass"];
+const suffixes = ["Planks", "Wool", "Baked Clay", "Chalk", "Concrete", "Ceramic", "Glass", "Patterned Glass"];
 
 for (const suffix of suffixes) {
 	const lcase = suffix.replace(' ', '').toLocaleLowerCase();
@@ -515,7 +515,7 @@ for (const suffix of suffixes) {
 		description: `Creates a one block for Colored ${suffix}. Right click on the ground to place it. Destroy it to pick it up.`,
 		blocks: [
 			...colors.map((color) => {
-				const blockName = `${color} ${suffix}`;
+				const blockName = suffix === "Patterned Glass" ? `${color} ${suffix}` : `Patterned ${color} Glass`;
 				const block: PhaseBlock = [1, blockName, blockName, 1];
 				return block;
 			}),
