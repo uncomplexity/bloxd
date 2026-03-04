@@ -708,7 +708,7 @@ class OneBlock {
 								current += 1;
 								if (current > limit) {
 									const timeToReset = Math.floor((60000 - (Date.now() % 60000)) / 1000);
-									m(playerId, `This one block preview has reached its rate limit of ${limit} blocks per minute! Resets in ${timeToReset} seconds!`, s("gold"));
+									m(playerId, `This one block preview has reached its rate limit of ${limit} blocks per minute, it will reset in ${timeToReset} seconds. Buy it for no limits.`, s("gold"));
 									return "preventChange";
 								}
 							}
