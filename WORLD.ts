@@ -538,7 +538,7 @@ const suffixes = ["Planks", "Wool", "Baked Clay", "Chalk", "Chalk Bricks", "Conc
 for (const suffix of suffixes) {
 	const lcase = suffix.replace(' ', '').toLocaleLowerCase();
 	const phase: Phase = {
-		id: lcase,``
+		id: lcase,
 		name: `One Block (${suffix})`,
 		description: `Creates a one block for Colored ${suffix}. Right click on the ground to place it. Destroy it to pick it up.`,
 		blocks: [
