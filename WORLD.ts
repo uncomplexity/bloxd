@@ -290,10 +290,10 @@ class ChestStorage {
 					return JSON.parse(item?.attributes?.customDescription);
 				}
 			} else {
-				m(playerId, "Storage.set: Invalid index.", s("red"));
+				m(playerId, "Storage.get: Invalid index.", s("red"));
 			}
 		} else {
-				m(playerId, "Storage.set: Invalid block.", s("red"));
+				m(playerId, "Storage.get: Invalid block.", s("red"));
 		}
 		return null;
 	}
