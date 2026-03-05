@@ -532,6 +532,65 @@ const soils: Phase = {
 phasesByIds.set(soils.id, soils);
 phasesByNames.set(soils.name, soils);
 
+const bricks: Phase = {
+	id: "bricks",
+	name: "One Block (Bricks)",
+	description: `Creates a one block for bricks. ${usage}`,
+	blocks: [
+		[1, "Bricks"],
+		[1, "Stone Bricks"],
+		[1, "Andesite Bricks"],
+		[1, "Granite Bricks"],
+		[1, "Diorite Bricks"],
+		[1, "Mossy Stone Bricks"],
+		[1, "Sandstone Bricks"],
+		[1, "Red Sandstone Bricks"],
+		[1, "Green Bricks"],
+		[1, "Dark Green Bricks"],
+		[1, "Dark Red Brick"],
+		[1, "Ice Bricks"],
+	],
+};
+phasesByIds.set(bricks.id, bricks);
+phasesByNames.set(bricks.name, bricks);
+
+const polished: Phase = {
+	id: "polished",
+	name: "One Block (Polished)",
+	description: `Creates a one block for polished stones. ${usage}`,
+	blocks: [
+		[1, "Smooth Stone"],
+		[1, "Smooth Andesite"],
+		[1, "Smooth Granite"],
+		[1, "Smooth Diorite"],
+		[1, "Smooth Sandstone"],
+		[1, "Smooth Red Sandstone"],
+		[1, "Block of Quartz"],
+	],
+};
+phasesByIds.set(polished.id, polished);
+phasesByNames.set(polished.name, polished);
+
+
+const engraved: Phase = {
+	id: "engraved",
+	name: "One Block (Engraved)",
+	description: `Creates a one block for engraved stones. ${usage}`,
+	blocks: [
+		[1, "Engraved Stone"],
+		[1, "Engraved Andesite"],
+		[1, "Engraved Granite"],
+		[1, "Engraved Diorite"],
+		[1, "Engraved Sandstone"],
+		[1, "Engraved Red Sandstone"],
+		[1, "Marked Sandstone"],
+		[1, "Marked Red Sandstone"],
+		[1, "Chiseled of Quartz"],
+	],
+};
+phasesByIds.set(engraved.id, engraved);
+phasesByNames.set(engraved.name, engraved);
+
 const coins: Phase = {
 	id: "coins",
 	name: "One Block (Coins)",
