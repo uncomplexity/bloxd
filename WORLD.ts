@@ -501,6 +501,37 @@ const saplings: Phase = {
 phasesByIds.set(saplings.id, saplings);
 phasesByNames.set(saplings.name, saplings);
 
+const soils: Phase = {
+	id: "soils",
+	name: "One Block (Soils)",
+	description: `Creates a one block for natural soils. ${usage}`,
+	blocks: [
+		[1, "Gravel"],
+		[1, "Rocky Dirt"],
+		[1, "Messy Dirt"],
+		[4, "Grass Block"],
+		[4, "Dirt"],
+		[4, "Stone"],
+		[4, "Messy Stone"],
+		[4, "Diorite"],
+		[4, "Granite"],
+		[4, "Andesite"],
+		[4, "Sand"],
+		[4, "Red Sand"],
+		[4, "Snow"],
+		[4, "Ice"],
+		[2, "Clay"],
+		[2, "Chalk"],
+		[2, "Mossy Messy Stone"],
+		[2, "Dark Red Stone"],
+		[2, "Sandstone"],
+		[2, "Red Sandstone"],
+		[2, "Green Stone"],
+	],
+};
+phasesByIds.set(soils.id, soils);
+phasesByNames.set(soils.name, soils);
+
 const coins: Phase = {
 	id: "coins",
 	name: "One Block (Coins)",
