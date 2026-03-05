@@ -586,7 +586,7 @@ const engraved: Phase = {
 		[1, "Engraved Red Sandstone"],
 		[1, "Marked Sandstone"],
 		[1, "Marked Red Sandstone"],
-		[1, "Chiseled of Quartz"],
+		[1, "Chiseled Block of Quartz"],
 	],
 };
 phasesByIds.set(engraved.id, engraved);
