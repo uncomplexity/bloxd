@@ -539,10 +539,11 @@ const bricks: Phase = {
 	blocks: [
 		[1, "Bricks"],
 		[1, "Stone Bricks"],
+		[1, "Mossy Stone Bricks"],
+		[1, "Cracked Stone Bricks"],
 		[1, "Andesite Bricks"],
 		[1, "Granite Bricks"],
 		[1, "Diorite Bricks"],
-		[1, "Mossy Stone Bricks"],
 		[1, "Sandstone Bricks"],
 		[1, "Red Sandstone Bricks"],
 		[1, "Green Bricks"],
