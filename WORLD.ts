@@ -639,11 +639,11 @@ class OneBlock {
 	}
 
 	static getRandomBlock(blocks: PhaseBlock[]): PhaseBlock {
-		if (!totals.has(blocks)) {
+		if (!OneBlock.totals.has(blocks)) {
 			const total = blocks.reduce((acc: number, block: PhaseBlock) => acc + block[0], 0);
-			totals.set(blocks, total);
+			OneBlock.totals.set(blocks, total);
 		}
-		const total = totals.get(blocks);
+		const total = OneBlock.totals.get(blocks);
 		if (total) {
 			const random = OneBlock.randomInt(1, total);
 			let sum = 0;
