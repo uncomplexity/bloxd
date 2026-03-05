@@ -630,6 +630,8 @@ const isInsideTownSquare = (point: Point) => {
 };
 
 class OneBlock {
+	static totals = new Map<unknown[], number>();
+
 	static randomInt(min: number, max: number) {
 		const minc = Math.ceil(min);
 		const maxf = Math.floor(max);
@@ -637,13 +639,19 @@ class OneBlock {
 	}
 
 	static getRandomBlock(blocks: PhaseBlock[]): PhaseBlock {
-		const total = blocks.reduce((acc: any, block: any[]) => acc + block[0], 0);
-		const random = OneBlock.randomInt(1, total);
-		let sum = 0;
-		for (const block of blocks) {
-			sum += block[0];
-			if (random <= sum) {
-				return block;
+		if (!totals.has(blocks)) {
+			const total = blocks.reduce((acc: number, block: PhaseBlock) => acc + block[0], 0);
+			totals.set(blocks, total);
+		}
+		const total = totals.get(blocks);
+		if (total) {
+			const random = OneBlock.randomInt(1, total);
+			let sum = 0;
+			for (const block of blocks) {
+				sum += block[0];
+				if (random <= sum) {
+					return block;
+				}
 			}
 		}
 		return [0, "Air"];
