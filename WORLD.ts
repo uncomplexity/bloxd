@@ -652,17 +652,22 @@ const suffixes = ["Planks", "Wool", "Baked Clay", "Chalk", "Chalk Bricks", "Conc
 
 for (const suffix of suffixes) {
 	const lcase = suffix.replace(' ', '').toLocaleLowerCase();
+	const blocks: PhaseBlock[] = [
+		...colors.map((color) => {
+			const blockName = suffix === "Patterned Glass" ? `Patterned ${color} Glass` : `${color} ${suffix}`;
+			const block: PhaseBlock = [1, blockName, blockName, 1];
+			return block;
+		}),
+	];
+	if (suffix === "Banner") {
+		blocks.push( [1, "Skull Banner", "Skull Banner", 1]);
+		blocks.push( [1, "Rainbow Banner", "Rainbow Banner", 1]);
+	}
 	const phase: Phase = {
 		id: lcase,
 		name: `One Block (${suffix})`,
 		description: `Creates a one block for Colored ${suffix}. Right click on the ground to place it. Destroy it to pick it up.`,
-		blocks: [
-			...colors.map((color) => {
-				const blockName = suffix === "Patterned Glass" ? `Patterned ${color} Glass` : `${color} ${suffix}`;
-				const block: PhaseBlock = [1, blockName, blockName, 1];
-				return block;
-			}),
-		],
+		blocks,
 	};
 	phasesByIds.set(phase.id, phase);
 	phasesByNames.set(phase.name, phase);
