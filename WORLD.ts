@@ -648,7 +648,13 @@ const colors = [
 	"Pink",
 ];
 
-const suffixes = ["Planks", "Wool", "Baked Clay", "Chalk", "Chalk Bricks", "Concrete", "Ceramic", "Glass", "Patterned Glass", "Banner", "Carpet", "Portal"];
+const suffixes = [
+	"Planks", "Wool", "Baked Clay", "Chalk", "Chalk Bricks", "Concrete", "Ceramic",
+	"Glass", "Patterned Glass",
+	"Banner", "Carpet",
+	"Paintball Explosive", "Quick Paintball Explosive", "Seeking Paintball Explosive", "Sticky Paintball Explosive",
+	"Portal",
+];
 
 for (const suffix of suffixes) {
 	const lcase = suffix.replace(' ', '').toLocaleLowerCase();
