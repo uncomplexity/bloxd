@@ -657,7 +657,7 @@ const suffixes = [
 ];
 
 for (const suffix of suffixes) {
-	const lcase = suffix.replace(' ', '').toLocaleLowerCase();
+	const lcase = suffix.replace(' ', '').replace(' ', '').toLocaleLowerCase();
 	const blocks: PhaseBlock[] = [
 		...colors.map((color) => {
 			const blockName = suffix === "Patterned Glass" ? `Patterned ${color} Glass` : `${color} ${suffix}`;
