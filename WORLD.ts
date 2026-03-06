@@ -753,14 +753,14 @@ class OneBlock {
 						if (phasesByIds.has(subtype)) {
 							const phase = phasesByIds.get(subtype);
 							if (phase) {
-								const metadata = ChestStorage.get(playerId, x, y, z, 1);
+								const count = metadata[2];
 								api.giveItem(playerId, "Stick", 1, {
 									customDisplayName: phase.name,
 									customDescription: phase.description,
 									customAttributes: {
-										type: metadata[0],
-										subtype: metadata[1],
-										count: metadata[2],
+										type,
+										subtype,
+										count,
 									},
 								});
 								ChestStorage.teardown(playerId, x, y, z);
