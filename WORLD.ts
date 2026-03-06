@@ -753,7 +753,7 @@ class OneBlock {
 						if (phasesByIds.has(subtype)) {
 							const phase = phasesByIds.get(subtype);
 							if (phase) {
-								const metadata = ChestStorage.get(playerId, x, y - 1, z, 1);
+								const metadata = ChestStorage.get(playerId, x, y, z, 1);
 								api.giveItem(playerId, "Stick", 1, {
 									customDisplayName: phase.name,
 									customDescription: phase.description,
@@ -809,10 +809,10 @@ class OneBlock {
 
 							// preferred item drops
 							let block = metadata.slice(6);
-							const itemName = metadata[2] ?? metadata[1];
-							let amount = metadata[3] ?? 1;
-							if (metadata[4]) {
-								amount = OneBlock.randomInt(amount, metadata[4]);
+							const itemName = block[2] ?? block[1];
+							let amount = block[3] ?? 1;
+							if (block[4]) {
+								amount = OneBlock.randomInt(amount, block[4]);
 							}
 							api.createItemDrop(x + 0.50, y + 0.50 + Math.random(), z + 0.50, itemName, amount, false, {}, 16000, null, {});
 
