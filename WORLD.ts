@@ -701,6 +701,8 @@ const isInsideTownSquare = (point: Point) => {
 };
 
 class OneBlock {
+	static type = "one_block";
+
 	static totals = new Map<unknown[], number>();
 
 	static randomInt(min: number, max: number) {
@@ -752,7 +754,7 @@ class OneBlock {
 						const limit = isInsideTownSquare([x, y + 1, z]) ? 16 : 0;
 						const counter = Math.floor(api.now() / 60000);
 						const current = 0;
-						ChestStorage.set(playerId, x, y + 1, z, 1, ["one_block", phase.id, ...block, limit, counter, current]);
+						ChestStorage.set(playerId, x, y + 1, z, 1, [OneBlock.type, phase.id, ...block, limit, counter, current]);
 					} else {
 						m(playerId, "Invalid placement, not enough space.", s("gold"));
 					}
@@ -774,7 +776,7 @@ class OneBlock {
 					const metadata = ChestStorage.get(playerId, x, y, z, 1);
 					const type = metadata[0];
 					const subtype = metadata[1];
-					if (type === "one_block") {
+					if (type === OneBlock.type) {
 						if (phasesByIds.has(subtype)) {
 							const phase = phasesByIds.get(subtype);
 							if (phase) {
@@ -801,7 +803,7 @@ class OneBlock {
 				const metadata = ChestStorage.get(playerId, x, y - 1, z, 1);
 				const type = metadata[0];
 				const subtype = metadata[1];
-				if (type === "one_block") {
+				if (type === OneBlock.type) {
 					if (phasesByIds.has(subtype)) {
 						const phase = phasesByIds.get(subtype);
 						if (phase) {
