@@ -785,7 +785,11 @@ class OneBlock {
 					if (phasesByIds.has(subtype)) {
 						const phase = phasesByIds.get(subtype);
 						if (phase) {
+							// count increment
 							let count = metadata[2];
+							count += 1;
+
+							// rate limits
 							const rl_limit = metadata[3] ?? (isInsideTownSquare([x, y - 1, z]) ? 16 : 0);
 							let rl_counter = metadata[4] ?? api.now() / 60000;
 							let rl_count = metadata[5] ?? 0;
@@ -802,17 +806,24 @@ class OneBlock {
 									return "preventChange";
 								}
 							}
-							// Weight, BlockName, ItemName = BlockName, ItemMin = 1, ItemMax = null
+
+							// preferred item drops
 							let block = metadata.slice(6);
 							const itemName = metadata[2] ?? metadata[1];
 							let amount = metadata[3] ?? 1;
 							if (metadata[4]) {
 								amount = OneBlock.randomInt(amount, metadata[4]);
 							}
-							api.createItemDrop(x + 0.50, y + 0.50 + Math.random(), z + 0.50, itemName, amount, false, {}, 16000, null, {})
+							api.createItemDrop(x + 0.50, y + 0.50 + Math.random(), z + 0.50, itemName, amount, false, {}, 16000, null, {});
+
+							// block replacement
 							block = OneBlock.getRandomBlock(phase.blocks);
 							api.setBlock(x, y, z, block[1]);
-							ChestStorage.set(playerId, x, y - 1, z, 1, [type, subtype, rl_limit, rl_counter, rl_count, ...block]);
+
+							// data persistence
+							ChestStorage.set(playerId, x, y - 1, z, 1, [type, subtype, count, rl_limit, rl_counter, rl_count, ...block]);
+
+							// prevent default item drops
 							return "preventDrop";
 						}
 					}
