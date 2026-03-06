@@ -824,7 +824,7 @@ class OneBlock {
 							ChestStorage.set(playerId, x, y - 1, z, 1, [type, subtype, count, rl_limit, rl_counter, rl_count, ...block]);
 
 							// visual feedback
-							api.sendFlyingMiddleMessage(playerId, `${count}!`, 125, 125);
+							api.sendFlyingMiddleMessage(playerId, `${count}!`, 62.50, 250);
 
 							// prevent default item drops
 							return "preventDrop";
