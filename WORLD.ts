@@ -872,7 +872,8 @@ type BlockName = string;
 type WorldBlockChangedInfo = Record<string, unknown>;
 
 class TownSquare {
-	static onWorldChangeBlock (x: number, y: number, z: number, fromBlock: BlockName, toBlock: BlockName, initiatorDbId: string | null, extraInfo: WorldBlockChangedInfo) {
+	static onWorldChangeBlock (x: number, y: number, z: number, _fromBlock: BlockName, _toBlock: BlockName, initiatorDbId: string | null, _extraInfo: WorldBlockChangedInfo) {
+		b(JSON.stringify({ _extraInfo }), s("gold"));
 		if (api.isInsideRect([x, y, z], [-64, -1024, -64], [64, 1024, 64])) {
 			if (initiatorDbId) {
 				api.sendMessage(initiatorDbId, "Can't destroy blocks inside the town square.", s("gold"));
