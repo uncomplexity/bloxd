@@ -344,12 +344,9 @@ interface Phase {
  * @url https://bloxd-io.fandom.com/wiki/One_Block
  */
 const phasesByIds = new Map<string, Phase>();
-const phasesByNames = new Map<string, Phase>();
 
 // @ts-ignore
 globalThis.phasesByIds = phasesByIds;
-// @ts-ignore
-globalThis.phasesByNames = phasesByNames;
 
 const usage = "Right click on the ground to place it. Destroy it to pick it up.";
 
@@ -368,7 +365,6 @@ const forest: Phase = {
 	],
 };
 phasesByIds.set(forest.id, forest);
-phasesByNames.set(forest.name, forest);
 
 const plains: Phase = {
 	id: "plains",
@@ -388,7 +384,6 @@ const plains: Phase = {
 	],
 };
 phasesByIds.set(plains.id, plains);
-phasesByNames.set(plains.name, plains);
 
 const hills: Phase = {
 	id: "hills",
@@ -410,7 +405,6 @@ const hills: Phase = {
 	],
 };
 phasesByIds.set(hills.id, hills);
-phasesByNames.set(hills.name, hills);
 
 const flowers: Phase = {
 	id: "flowers",
@@ -436,7 +430,6 @@ const flowers: Phase = {
 	],
 };
 phasesByIds.set(flowers.id, flowers);
-phasesByNames.set(flowers.name, flowers);
 
 const logs: Phase = {
 	id: "logs",
@@ -457,7 +450,6 @@ const logs: Phase = {
 	],
 };
 phasesByIds.set(logs.id, logs);
-phasesByNames.set(logs.name, logs);
 
 const leaves: Phase = {
 	id: "leaves",
@@ -478,7 +470,6 @@ const leaves: Phase = {
 	],
 };
 phasesByIds.set(leaves.id, leaves);
-phasesByNames.set(leaves.name, leaves);
 
 const saplings: Phase = {
 	id: "saplings",
@@ -499,7 +490,6 @@ const saplings: Phase = {
 	],
 };
 phasesByIds.set(saplings.id, saplings);
-phasesByNames.set(saplings.name, saplings);
 
 const soils: Phase = {
 	id: "soils",
@@ -530,7 +520,6 @@ const soils: Phase = {
 	],
 };
 phasesByIds.set(soils.id, soils);
-phasesByNames.set(soils.name, soils);
 
 const bricks: Phase = {
 	id: "bricks",
@@ -553,7 +542,6 @@ const bricks: Phase = {
 	],
 };
 phasesByIds.set(bricks.id, bricks);
-phasesByNames.set(bricks.name, bricks);
 
 const polished: Phase = {
 	id: "polished",
@@ -570,7 +558,6 @@ const polished: Phase = {
 	],
 };
 phasesByIds.set(polished.id, polished);
-phasesByNames.set(polished.name, polished);
 
 
 const engraved: Phase = {
@@ -590,7 +577,6 @@ const engraved: Phase = {
 	],
 };
 phasesByIds.set(engraved.id, engraved);
-phasesByNames.set(engraved.name, engraved);
 
 const coins: Phase = {
 	id: "coins",
@@ -601,7 +587,6 @@ const coins: Phase = {
 	],
 };
 phasesByIds.set(coins.id, coins);
-phasesByNames.set(coins.name, coins);
 
 
 const fruits: Phase = {
@@ -627,7 +612,6 @@ const fruits: Phase = {
 	],
 };
 phasesByIds.set(fruits.id, fruits);
-phasesByNames.set(fruits.name, fruits);
 
 const colors = [
 	"White",
@@ -676,24 +660,6 @@ for (const suffix of suffixes) {
 		blocks,
 	};
 	phasesByIds.set(phase.id, phase);
-	phasesByNames.set(phase.name, phase);
-}
-
-for (const phase of phasesByIds.values()) {
-	for (const block of phase.blocks) {
-		// ItemName = BlockName
-		if (!block[2]) {
-			block[2] = block[1];
-		}
-		// ItemMin = null ?? 1
-		if (!block[3]) {
-			block[3] = null;
-		}
-		// ItemMax = null
-		if (!block[4]) {
-			block[4] = null;
-		}
-	}
 }
 
 const isInsideTownSquare = (point: Point) => {
@@ -741,28 +707,29 @@ class OneBlock {
 			const type = held?.attributes?.customAttributes?.type;
 			const subtype = held?.attributes?.customAttributes?.subtype;
 			const count = held?.attributes?.customAttributes?.count;
-			b(JSON.stringify({ type, subtype, count }), s("gold"));
 
-			if (phasesByNames.has(customDisplayName)) {
-				const phase = phasesByNames.get(customDisplayName);
-				if (phase) {
-					if (RectControl.isProtected([x, y + 1, z], playerId) || RectControl.isProtected([x, y + 2, z], playerId)) {
-						m(playerId, "Invalid placement, protected area.", s("gold"));
-						return undefined;
-					}
-					const above = api.getBlock(x, y + 1, z);
-					const above2 = api.getBlock(x, y + 2, z);
-					if (above === "Air" && above2 === "Air") {
-						api.setItemSlot(playerId, api.getSelectedInventorySlotI(playerId), "Air");
-						ChestStorage.init(playerId, x, y + 1, z);
-						const block = OneBlock.getRandomBlock(phase.blocks);
-						api.setBlock(x, y + 2, z, block[1]);
-						const limit = isInsideTownSquare([x, y + 1, z]) ? 16 : 0;
-						const counter = Math.floor(api.now() / 60000);
-						const current = 0;
-						ChestStorage.set(playerId, x, y + 1, z, 1, [OneBlock.type, phase.id, ...block, limit, counter, current]);
-					} else {
-						m(playerId, "Invalid placement, not enough space.", s("gold"));
+			if (type === OneBlock.type) {
+				if (phasesByIds.has(subtype)) {
+					const phase = phasesByIds.get(subtype);
+					if (phase) {
+						if (RectControl.isProtected([x, y + 1, z], playerId) || RectControl.isProtected([x, y + 2, z], playerId)) {
+							m(playerId, "Invalid placement, protected area.", s("gold"));
+							return undefined;
+						}
+						const above = api.getBlock(x, y + 1, z);
+						const above2 = api.getBlock(x, y + 2, z);
+						if (above === "Air" && above2 === "Air") {
+							api.setItemSlot(playerId, api.getSelectedInventorySlotI(playerId), "Air");
+							ChestStorage.init(playerId, x, y + 1, z);
+							const block = OneBlock.getRandomBlock(phase.blocks);
+							api.setBlock(x, y + 2, z, block[1]);
+							const rl_limit = isInsideTownSquare([x, y + 1, z]) ? 16 : 0;
+							const rl_counter = Math.floor(api.now() / 60000);
+							const rl_count = 0;
+							ChestStorage.set(playerId, x, y + 1, z, 1, [type, subtype, count, rl_limit, rl_counter, rl_count, ...block]);
+						} else {
+							m(playerId, "Invalid placement, not enough space.", s("gold"));
+						}
 					}
 				}
 			}
@@ -786,13 +753,18 @@ class OneBlock {
 						if (phasesByIds.has(subtype)) {
 							const phase = phasesByIds.get(subtype);
 							if (phase) {
-								ChestStorage.teardown(playerId, x, y, z);
-								api.setBlock(x, y + 1, z, "Air");
+								const metadata = ChestStorage.get(playerId, x, y - 1, z, 1);
 								api.giveItem(playerId, "Stick", 1, {
 									customDisplayName: phase.name,
 									customDescription: phase.description,
+									customAttributes: {
+										type: metadata[0],
+										subtype: metadata[1],
+										count: metadata[2],
+									},
 								});
-								RectControl.whitelistDelete([[x, y, z], [x, y + 1, z]]);
+								ChestStorage.teardown(playerId, x, y, z);
+								api.setBlock(x, y + 1, z, "Air");
 								return "preventDrop";
 							}
 						}
@@ -813,31 +785,34 @@ class OneBlock {
 					if (phasesByIds.has(subtype)) {
 						const phase = phasesByIds.get(subtype);
 						if (phase) {
-							const limit = metadata[7] ?? (isInsideTownSquare([x, y - 1, z]) ? 16 : 0);
-							let counter = metadata[8] ?? api.now() / 60000;
-							let current = metadata[9] ?? 0;
-							if (limit > 0) {
-								const counter2 = Math.floor(api.now() / 60000);
-								if (counter < counter2) {
-									counter = counter2;
-									current = 0;
+							let count = metadata[2];
+							const rl_limit = metadata[3] ?? (isInsideTownSquare([x, y - 1, z]) ? 16 : 0);
+							let rl_counter = metadata[4] ?? api.now() / 60000;
+							let rl_count = metadata[5] ?? 0;
+							if (rl_limit > 0) {
+								const rl_counter_current = Math.floor(api.now() / 60000);
+								if (rl_counter < rl_counter_current) {
+									rl_counter = rl_counter_current;
+									rl_count = 0;
 								}
-								current += 1;
-								if (current > limit) {
+								rl_count += 1;
+								if (rl_count > rl_limit) {
 									const timeToReset = Math.floor((60000 - (api.now() % 60000)) / 1000);
-									m(playerId, `This one block preview has reached its rate limit of ${limit} blocks per minute, it will reset in ${timeToReset} seconds. Buy it for no limits.`, s("gold"));
+									m(playerId, `This one block preview has limit of ${limit} blocks per minute, it will reset in ${timeToReset} seconds. Buy it to have no limits.`, s("gold"));
 									return "preventChange";
 								}
 							}
-							const itemName = metadata[4] ?? metadata[3];
-							let amount = metadata[5] ?? 1;
-							if (metadata[6]) {
-								amount = OneBlock.randomInt(metadata[5], metadata[6]);
+							// Weight, BlockName, ItemName = BlockName, ItemMin = 1, ItemMax = null
+							let block = metadata.slice(6);
+							const itemName = metadata[2] ?? metadata[1];
+							let amount = metadata[3] ?? 1;
+							if (metadata[4]) {
+								amount = OneBlock.randomInt(amount, metadata[4]);
 							}
 							api.createItemDrop(x + 0.50, y + 0.50 + Math.random(), z + 0.50, itemName, amount, false, {}, 16000, null, {})
-							const block = OneBlock.getRandomBlock(phase.blocks);
+							block = OneBlock.getRandomBlock(phase.blocks);
 							api.setBlock(x, y, z, block[1]);
-							ChestStorage.set(playerId, x, y - 1, z, 1, [type, subtype, ...block, limit, counter, current]);
+							ChestStorage.set(playerId, x, y - 1, z, 1, [type, subtype, rl_limit, rl_counter, rl_count, ...block]);
 							return "preventDrop";
 						}
 					}
