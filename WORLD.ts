@@ -737,6 +737,12 @@ class OneBlock {
 		if (typeof x === "number" && typeof y === "number" && typeof z === "number") {
 			const held = api.getHeldItem(playerId);
 			const customDisplayName = held?.attributes?.customDisplayName;
+
+			const type = held?.attributes?.customAttributes?.type;
+			const subtype = held?.attributes?.customAttributes?.subtype;
+			const count = held?.attributes?.customAttributes?.count;
+			b(JSON.stringify({ type, subtype, count }), s("gold"));
+
 			if (phasesByNames.has(customDisplayName)) {
 				const phase = phasesByNames.get(customDisplayName);
 				if (phase) {
@@ -810,7 +816,6 @@ class OneBlock {
 							const limit = metadata[7] ?? (isInsideTownSquare([x, y - 1, z]) ? 16 : 0);
 							let counter = metadata[8] ?? api.now() / 60000;
 							let current = metadata[9] ?? 0;
-
 							if (limit > 0) {
 								const counter2 = Math.floor(api.now() / 60000);
 								if (counter < counter2) {
@@ -850,6 +855,11 @@ class OneBlock {
 					api.giveItem(playerId, "Stick", 1, {
 						customDisplayName: phase.name,
 						customDescription: phase.description,
+						customAttributes: {
+							type: "one_block",
+							subtype: phase.id,
+							count: 0,
+						},
 					});
 					m(playerId, `You received ${phase.name}.`, s("gold"));
 					return false;
