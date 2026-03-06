@@ -753,7 +753,7 @@ class OneBlock {
 						if (phasesByIds.has(subtype)) {
 							const phase = phasesByIds.get(subtype);
 							if (phase) {
-								const count = metadata[2];
+								const count = metadata[2] ?? 0;
 								api.giveItem(playerId, "Stick", 1, {
 									customDisplayName: phase.name,
 									customDescription: phase.description,
