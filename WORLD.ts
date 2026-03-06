@@ -802,7 +802,7 @@ class OneBlock {
 								rl_count += 1;
 								if (rl_count > rl_limit) {
 									const timeToReset = Math.floor((60000 - (api.now() % 60000)) / 1000);
-									m(playerId, `This one block preview has limit of ${limit} blocks per minute, it will reset in ${timeToReset} seconds. Buy it to have no limits.`, s("gold"));
+									m(playerId, `This one block preview has limit of ${rl_limit} blocks per minute, it will reset in ${timeToReset} seconds. Buy it for no limits.`, s("gold"));
 									return "preventChange";
 								}
 							}
