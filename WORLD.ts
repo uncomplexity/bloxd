@@ -791,7 +791,7 @@ class OneBlock {
 
 							// rate limits
 							const rl_limit = metadata[3] ?? (isInsideTownSquare([x, y - 1, z]) ? 16 : 0);
-							let rl_counter = metadata[4] ?? api.now() / 60000;
+							let rl_counter = metadata[4] ?? Math.floor(api.now() / 60000);
 							let rl_count = metadata[5] ?? 0;
 							if (rl_limit > 0) {
 								const rl_counter_current = Math.floor(api.now() / 60000);
