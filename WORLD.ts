@@ -868,7 +868,19 @@ class OneBlock {
 	}
 }
 
+type BlockName = string;
+type WorldBlockChangedInfo = Record<string, unknown>;
+
 class TownSquare {
+	static onWorldChangeBlock (x: number, y: number, z: number, fromBlock: BlockName, toBlock: BlockName, initiatorDbId: string | null, extraInfo: WorldBlockChangedInfo) {
+		if (api.isInsideRect([x, y, z], [-64, -1024, -64], [64, 1024, 64])) {
+			if (initiatorDbId) {
+				api.sendMessage(initiatorDbId, "Can't destroy blocks inside the town square.", s("gold"));
+			}
+			return "preventChange";
+		}
+	}
+
 	static onPlayerDamagingOtherPlayer(attackingPlayer: any, damagedPlayer: any) {
 		if (api.isInsideRect(api.getPosition(damagedPlayer), [-64, -1024, -64], [64, 1024, 64])) {
 			api.sendMessage(attackingPlayer, "Can't attack inside the town square.", s("gold"));
@@ -916,6 +928,10 @@ onPlayerChangeBlock = (playerId: any, x: any, y: number, z: any, fromBlock: stri
 	return OneBlock.onPlayerChangeBlock(playerId, x, y, z, fromBlock, toBlock, droppedItem, fromBlockInfo, toBlockInfo)
 		?? RectControl.onPlayerChangeBlock(playerId, x, y, z, fromBlock, toBlock, droppedItem, fromBlockInfo, toBlockInfo);
 };
+
+onWorldChangeBlock = (x: number, y: number, z: number, fromBlock: BlockName, toBlock: BlockName, initiatorDbId: string | null, extraInfo: WorldBlockChangedInfo) => {
+	return TownSquare.onWorldChangeBlock(x, y, z, fromBlock, toBlock, initiatorDbId, extraInfo);
+}
 
 onPlayerDamagingOtherPlayer = (attackingPlayer: any, damagedPlayer: any) => {
 	return TownSquare.onPlayerDamagingOtherPlayer(attackingPlayer, damagedPlayer);
