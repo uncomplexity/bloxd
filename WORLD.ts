@@ -880,6 +880,7 @@ class TownSquare {
 			}
 			return "preventChange";
 		}
+		return undefined;
 	}
 
 	static onPlayerDamagingOtherPlayer(attackingPlayer: any, damagedPlayer: any) {
