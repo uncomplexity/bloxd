@@ -730,7 +730,6 @@ class OneBlock {
 				case 1: {
 					m(playerId, "That one block is not yours.", s("gold"));
 					return "preventChange";
-					break;
 				}
 				case 2: {
 					const key = `${x}|${y}|${z}`;
@@ -866,7 +865,7 @@ type BlockName = string;
 type WorldBlockChangedInfo = Record<string, unknown>;
 
 class TownSquare {
-	static onWorldChangeBlock (x: number, y: number, z: number, _fromBlock: BlockName, _toBlock: BlockName, initiatorDbId: string | null, extraInfo: WorldBlockChangedInfo) {
+	static onWorldChangeBlock (x: number, y: number, z: number, _fromBlock: BlockName, _toBlock: BlockName, _initiatorDbId: string | null, extraInfo: WorldBlockChangedInfo) {
 		if (extraInfo?.cause === "Explosion") {
 			if (api.isInsideRect([x, y, z], [-64, -1024, -64], [64, 1024, 64])) {
 				return "preventChange";
