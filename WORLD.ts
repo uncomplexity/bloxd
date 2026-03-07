@@ -352,7 +352,7 @@ class ChestStorage {
 		return false;
 	}
 
-	static isStorage(x: number, y: number, z: number) {
+	static isStorage(x: number, y: number, z: number, playerId?: string) {
 		if (api.getBlock(x, y, z) === "Iron Chest") {
 			const item = api.getStandardChestItemSlot(
 				[x, y, z],
@@ -360,27 +360,16 @@ class ChestStorage {
 			);
 			const customDisplayName = item?.attributes?.customDisplayName;
 			if (customDisplayName === ChestStorage.id) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	static isOwnStorage(playerId: string, x: number, y: number, z: number) {
-		if (api.getBlock(x, y, z) === "Iron Chest") {
-			const item = api.getStandardChestItemSlot(
-				[x, y, z],
-				0,
-			);
-			const customDisplayName = item?.attributes?.customDisplayName;
-			const customDescription = item?.attributes?.customDescription;
-			if (customDisplayName === ChestStorage.id) {
-				if (customDescription === api.getPlayerDbId(playerId)) {
-					return true;
+				if (playerId) {
+					const customDescription = item?.attributes?.customDescription;
+					if (customDescription === api.getPlayerDbId(playerId)) {
+						return 2;
+					}
 				}
+				return 1;
 			}
 		}
-		return false;
+		return 0;
 	}
 
 	static set(playerId: string, x: number, y: number, z: number, index: number, value: any) {
@@ -737,35 +726,43 @@ class OneBlock {
 			/**
 			 * @description One Block Displacement
 			 */
-			if (ChestStorage.isOwnStorage(playerId, x, y, z)) {
-				const key = `${x}|${y}|${z}`;
-				const metadata = OneBlock.cache.has(key) ? OneBlock.cache.get(key) : ChestStorage.get(playerId, x, y, z, 1);
-				const type = metadata[0];
-				const subtype = metadata[1];
-				if (type === OneBlock.type) {
-					if (phasesByIds.has(subtype)) {
-						const phase = phasesByIds.get(subtype);
-						if (phase) {
-							const count = metadata[2] ?? 0;
-							api.giveItem(playerId, "Stick", 1, {
-								customDisplayName: phase.name,
-								customDescription: phase.description,
-								customAttributes: {
-									type,
-									subtype,
-									count,
-								},
-							});
-							ChestStorage.teardown(playerId, x, y, z);
-							OneBlock.cache.delete(key);
-							api.setBlock(x, y + 1, z, "Air");
-							return "preventDrop";
+			switch (ChestStorage.isStorage(playerId, x, y, z)) {
+				case 1: {
+					m(playerId, "That one block is not yours.", s("gold"));
+					return "preventChange";
+					break;
+				}
+				case 2: {
+					const key = `${x}|${y}|${z}`;
+					const metadata = OneBlock.cache.has(key) ? OneBlock.cache.get(key) : ChestStorage.get(playerId, x, y, z, 1);
+					const type = metadata[0];
+					const subtype = metadata[1];
+					if (type === OneBlock.type) {
+						if (phasesByIds.has(subtype)) {
+							const phase = phasesByIds.get(subtype);
+							if (phase) {
+								const count = metadata[2] ?? 0;
+								api.giveItem(playerId, "Stick", 1, {
+									customDisplayName: phase.name,
+									customDescription: phase.description,
+									customAttributes: {
+										type,
+										subtype,
+										count,
+									},
+								});
+								ChestStorage.teardown(playerId, x, y, z);
+								OneBlock.cache.delete(key);
+								api.setBlock(x, y + 1, z, "Air");
+								return "preventDrop";
+							}
 						}
 					}
+					break;
 				}
-			} else {
-				m(playerId, "That one block is not yours.", s("gold"));
-				return "preventChange";
+				default: {
+					break;
+				}
 			}
 			/**
 			 * @description Block Displacement
