@@ -816,7 +816,7 @@ class OneBlock {
 							OneBlock.cache.set(key, metadata);
 
 							// visual feedback
-							api.sendFlyingMiddleMessage(playerId, `${count}!`, 62.50, 250);
+							api.sendFlyingMiddleMessage(playerId, `${count}!`, 20, 1000);
 
 							// prevent default item drops
 							return "preventDrop";
