@@ -286,7 +286,7 @@ class RectControl {
 		RectControl.playerIds.add(playerId);
 	}
 
-	static onPlayerLeave(playerId: any, _serverIsShuttingDown: any) {
+	static onPlayerLeave(playerId: string, _serverIsShuttingDown: any) {
 		RectControl.playerIds.delete(playerId);
     RectControl.unlockedPlayerIds.delete(playerId);
 	}
@@ -305,7 +305,7 @@ class RectControl {
 		return undefined;
 	}
 
-	static onPlayerChat(playerId: any, chatMessage: any) {
+	static onPlayerChat(playerId: string, chatMessage: any) {
 		switch (chatMessage) {
 			case ".unlock": {
 				RectControl.unlock(playerId);
@@ -331,7 +331,9 @@ globalThis.m = m;
 globalThis.s = s;
 
 class ChestStorage {
-	static init(playerId: any, x: any, y: any, z: any) {
+	static id = "__STORAGE__"
+
+	static init(playerId: string, x: number, y: number, z: number) {
 		if (api.getBlock(x, y, z) === "Air") {
 			api.setBlock(x, y, z, "Iron Chest");
 			api.setStandardChestItemSlot(
@@ -341,7 +343,7 @@ class ChestStorage {
 				1,
 				playerId,
 				{
-					customDisplayName: "__STORAGE__",
+					customDisplayName: ChestStorage.id,
 					customDescription: api.getPlayerDbId(playerId),
 				},
 			);
@@ -349,20 +351,22 @@ class ChestStorage {
 		}
 		return false;
 	}
-	static isStorage(x: any, y: any, z: any) {
+
+	static isStorage(x: number, y: number, z: number) {
 		if (api.getBlock(x, y, z) === "Iron Chest") {
 			const item = api.getStandardChestItemSlot(
 				[x, y, z],
 				0,
 			);
 			const customDisplayName = item?.attributes?.customDisplayName;
-			if (customDisplayName === "__STORAGE__") {
+			if (customDisplayName === ChestStorage.id) {
 				return true;
 			}
 		}
 		return false;
 	}
-	static isOwnStorage(playerId: any, x: any, y: any, z: any) {
+
+	static isOwnStorage(playerId: string, x: number, y: number, z: number) {
 		if (api.getBlock(x, y, z) === "Iron Chest") {
 			const item = api.getStandardChestItemSlot(
 				[x, y, z],
@@ -370,7 +374,7 @@ class ChestStorage {
 			);
 			const customDisplayName = item?.attributes?.customDisplayName;
 			const customDescription = item?.attributes?.customDescription;
-			if (customDisplayName === "__STORAGE__") {
+			if (customDisplayName === ChestStorage.id) {
 				if (customDescription === api.getPlayerDbId(playerId)) {
 					return true;
 				}
@@ -378,57 +382,51 @@ class ChestStorage {
 		}
 		return false;
 	}
-	static set(playerId: any, x: any, y: any, z: any, index: number, value: any) {
-		if (ChestStorage.isStorage(x, y, z)) {
-			if (0 < index && index <= 35) {
-				api.setStandardChestItemSlot(
-					[x, y, z],
-					index,
-					"Stick",
-					1,
-					playerId,
-					{ customDescription: JSON.stringify(value) },
-				);
-			} else {
-				m(playerId, "Storage.set: Invalid index.", s("red"));
-			}
+
+	static set(playerId: string, x: number, y: number, z: number, index: number, value: any) {
+		if (0 < index && index <= 35) {
+			api.setStandardChestItemSlot(
+				[x, y, z],
+				index,
+				"Stick",
+				1,
+				playerId,
+				{ customDescription: JSON.stringify(value) },
+			);
 		} else {
-			m(playerId, "Storage.set: Invalid block.", s("red"));
+			m(playerId, "Storage.set: Invalid index.", s("red"));
 		}
 	}
-	static get(playerId: any, x: any, y: any, z: any, index: number) {
-		if (ChestStorage.isStorage(x, y, z)) {
-			if (0 < index && index <= 35) {
-				const item = api.getStandardChestItemSlot(
-					[x, y, z],
-					index,
-				);
-				if (item?.attributes?.customDescription) {
-					return JSON.parse(item?.attributes?.customDescription);
-				}
-			} else {
-				m(playerId, "Storage.get: Invalid index.", s("red"));
+
+	static get(playerId: string, x: number, y: number, z: number, index: number) {
+		if (0 < index && index <= 35) {
+			const item = api.getStandardChestItemSlot(
+				[x, y, z],
+				index,
+			);
+			if (item?.attributes?.customDescription) {
+				return JSON.parse(item?.attributes?.customDescription);
 			}
 		} else {
-				m(playerId, "Storage.get: Invalid block.", s("red"));
+			m(playerId, "Storage.get: Invalid index.", s("red"));
 		}
 		return null;
 	}
-	static teardown(playerId: any, x: any, y: any, z: any) {
-		if (ChestStorage.isStorage(x, y, z)) {
-			for (let index = 0; index <= 35; index += 1) {
-				api.setStandardChestItemSlot(
-					[x, y, z],
-					index,
-					"Air",
-					0,
-					playerId,
-					{},
-				);
-			}
+
+	static teardown(playerId: string, x: number, y: number, z: number) {
+		for (let index = 0; index <= 35; index += 1) {
+			api.setStandardChestItemSlot(
+				[x, y, z],
+				index,
+				"Air",
+				0,
+				playerId,
+				{},
+			);
 		}
 	}
-	static onPlayerAttemptOpenChest = (playerId: any, x: any, y: any, z: any, _isMoonstoneChest: any, _isIronChest: any) => {
+
+	static onPlayerAttemptOpenChest = (playerId: string, x: number, y: number, z: number, _isMoonstoneChest: any, _isIronChest: any) => {
 		if (api.getBlock(x, y, z) === "Chest") {
 			if (ChestStorage.isStorage(x, y - 1, z)) {
 				m(playerId, "Break it to find out what's inside!", s("gold"));
@@ -436,7 +434,7 @@ class ChestStorage {
 			}
 		}
 		if (ChestStorage.isStorage(x, y, z)) {
-			m(playerId, "That's a one block.", s("gold"));
+			m(playerId, "That's a one block!", s("gold"));
 			return "preventOpen";
 		}
 		return undefined;
@@ -690,7 +688,7 @@ class OneBlock {
 		return [0, "Air"];
 	}
 
-	static onPlayerAltAction (playerId: any, x: any, y: any, z: any, _block: any, _targetEId: any) {
+	static onPlayerAltAction (playerId: string, x: number, y: number, z: number, _block: any, _targetEId: any) {
 		/**
 		 * @description One Block Placement
 		 */
@@ -730,7 +728,7 @@ class OneBlock {
 		}
 	}
 
-	static onPlayerChangeBlock(playerId: any, x: any, y: number, z: any, _fromBlock: string, toBlock: string, _droppedItem: any, _fromBlockInfo: any, _toBlockInfo: any) {
+	static onPlayerChangeBlock(playerId: string, x: any, y: number, z: any, _fromBlock: string, toBlock: string, _droppedItem: any, _fromBlockInfo: any, _toBlockInfo: any) {
 		/**
 		 * @description Displacement
 		 */
@@ -738,35 +736,33 @@ class OneBlock {
 			/**
 			 * @description One Block Displacement
 			 */
-			if (ChestStorage.isStorage(x, y, z)) {
-				if (ChestStorage.isOwnStorage(playerId, x, y, z)) {
-					const metadata = ChestStorage.get(playerId, x, y, z, 1);
-					const type = metadata[0];
-					const subtype = metadata[1];
-					if (type === OneBlock.type) {
-						if (phasesByIds.has(subtype)) {
-							const phase = phasesByIds.get(subtype);
-							if (phase) {
-								const count = metadata[2] ?? 0;
-								api.giveItem(playerId, "Stick", 1, {
-									customDisplayName: phase.name,
-									customDescription: phase.description,
-									customAttributes: {
-										type,
-										subtype,
-										count,
-									},
-								});
-								ChestStorage.teardown(playerId, x, y, z);
-								api.setBlock(x, y + 1, z, "Air");
-								return "preventDrop";
-							}
+			if (ChestStorage.isOwnStorage(playerId, x, y, z)) {
+				const metadata = ChestStorage.get(playerId, x, y, z, 1);
+				const type = metadata[0];
+				const subtype = metadata[1];
+				if (type === OneBlock.type) {
+					if (phasesByIds.has(subtype)) {
+						const phase = phasesByIds.get(subtype);
+						if (phase) {
+							const count = metadata[2] ?? 0;
+							api.giveItem(playerId, "Stick", 1, {
+								customDisplayName: phase.name,
+								customDescription: phase.description,
+								customAttributes: {
+									type,
+									subtype,
+									count,
+								},
+							});
+							ChestStorage.teardown(playerId, x, y, z);
+							api.setBlock(x, y + 1, z, "Air");
+							return "preventDrop";
 						}
 					}
-				} else {
-					m(playerId, "That one block is not yours.", s("gold"));
-					return "preventChange";
 				}
+			} else {
+				m(playerId, "That one block is not yours.", s("gold"));
+				return "preventChange";
 			}
 			/**
 			 * @description Block Displacement
@@ -830,7 +826,7 @@ class OneBlock {
 		return undefined;
 	}
 
-	static onPlayerChat(playerId: any, chatMessage: any) {
+	static onPlayerChat(playerId: string, chatMessage: any) {
 		for (const key of phasesByIds.keys()) {
 			if (chatMessage === `.${key}`) {
 				const phase = phasesByIds.get(key);
@@ -884,7 +880,7 @@ class TownSquare {
 		return undefined;
 	}
 
-	static onPlayerChat(playerId: any, chatMessage: any) {
+	static onPlayerChat(playerId: string, chatMessage: any) {
 		switch (chatMessage) {
 			case ".test": {
 				m(playerId, "Hello world!", s("gold"));
@@ -907,19 +903,19 @@ class TownSquare {
  * @description Global Event Handlers. return them, and chain them with "??".
  */
 
-onPlayerJoin = (playerId: any) => {
+onPlayerJoin = (playerId: string) => {
 	return RectControl.onPlayerJoin(playerId);
 };
 
-onPlayerLeave = (playerId: any, serverIsShuttingDown: any) => {
+onPlayerLeave = (playerId: string, serverIsShuttingDown: any) => {
 	return RectControl.onPlayerLeave(playerId, serverIsShuttingDown);
 };
 
-onPlayerAltAction = (playerId: any, x: any, y: any, z: any, block: any, targetEId: any) => {
+onPlayerAltAction = (playerId: string, x: number, y: number, z: number, block: any, targetEId: any) => {
 	return OneBlock.onPlayerAltAction(playerId, x, y, z, block, targetEId);
 }
 
-onPlayerChangeBlock = (playerId: any, x: any, y: number, z: any, fromBlock: string, toBlock: string, droppedItem: any, fromBlockInfo: any, toBlockInfo: any) => {
+onPlayerChangeBlock = (playerId: string, x: any, y: number, z: any, fromBlock: string, toBlock: string, droppedItem: any, fromBlockInfo: any, toBlockInfo: any) => {
 	return OneBlock.onPlayerChangeBlock(playerId, x, y, z, fromBlock, toBlock, droppedItem, fromBlockInfo, toBlockInfo)
 		?? RectControl.onPlayerChangeBlock(playerId, x, y, z, fromBlock, toBlock, droppedItem, fromBlockInfo, toBlockInfo);
 };
@@ -932,12 +928,12 @@ onPlayerDamagingOtherPlayer = (attackingPlayer: any, damagedPlayer: any) => {
 	return TownSquare.onPlayerDamagingOtherPlayer(attackingPlayer, damagedPlayer);
 };
 
-onPlayerChat = (playerId: any, chatMessage: any) => {
+onPlayerChat = (playerId: string, chatMessage: any) => {
 	return TownSquare.onPlayerChat(playerId, chatMessage)
 		?? RectControl.onPlayerChat(playerId, chatMessage)
 		?? OneBlock.onPlayerChat(playerId, chatMessage);
 }
 
-onPlayerAttemptOpenChest = (playerId: any, x: any, y: any, z: any, isMoonstoneChest: any, isIronChest: any) => {
+onPlayerAttemptOpenChest = (playerId: string, x: number, y: number, z: number, isMoonstoneChest: any, isIronChest: any) => {
 	return ChestStorage.onPlayerAttemptOpenChest(playerId, x, y, z, isMoonstoneChest, isIronChest)
 };
