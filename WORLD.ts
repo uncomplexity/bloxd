@@ -726,7 +726,7 @@ class OneBlock {
 			/**
 			 * @description One Block Displacement
 			 */
-			switch (ChestStorage.isStorage(playerId, x, y, z)) {
+			switch (ChestStorage.isStorage(x, y, z, playerId)) {
 				case 1: {
 					m(playerId, "That one block is not yours.", s("gold"));
 					return "preventChange";
