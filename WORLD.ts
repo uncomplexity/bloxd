@@ -1,3 +1,7 @@
+/**
+ * @todo performance fixes https://claude.ai/share/954b0445-248e-4769-a896-bc1f3f5db794
+ */
+
 const flowers_ = [
 	"Dandelion",
 	"Poppy",
