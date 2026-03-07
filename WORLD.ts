@@ -1,3 +1,116 @@
+const flowers_ = [
+	"Dandelion",
+	"Poppy",
+	"Red Tulip",
+	"Pink Tulip",
+	"White Tulip",
+	"Orange Tulip",
+	"Daisy",
+	"Bluebell",
+	"Forget-me-not",
+	"Allium",
+	"Azure Bluet",
+	"Lily of the Valley",
+	"Shadow Rose",
+	"Red Mushroom",
+	"Brown Mushroom",
+	"Fallen Pine Cone",
+];
+
+const trees_ = [
+	"Maple",
+	"Pine",
+	"Plum",
+	"Cedar",
+	"Aspen",
+	"Jungle",
+	"Palm",
+	"Pear",
+	"Cherry",
+	"Spectral",
+	"Mango",
+];
+
+const soils_ = [
+	"Gravel",
+	"Rocky Dirt",
+	"Messy Dirt",
+	"Grass Block",
+	"Dirt",
+	"Stone",
+	"Messy Stone",
+	"Diorite",
+	"Granite",
+	"Andesite",
+	"Sand",
+	"Red Sand",
+	"Snow",
+	"Ice",
+	"Clay",
+	"Chalk",
+	"Mossy Messy Stone",
+	"Dark Red Stone",
+	"Sandstone",
+	"Red Sandstone",
+	"Green Stone",
+];
+
+const bricks_ = [
+	"Bricks",
+	"Stone Bricks",
+	"Mossy Stone Bricks",
+	"Cracked Stone Bricks",
+	"Andesite Bricks",
+	"Granite Bricks",
+	"Diorite Bricks",
+	"Sandstone Bricks",
+	"Red Sandstone Bricks",
+	"Green Bricks",
+	"Dark Green Bricks",
+	"Dark Red Brick",
+	"Ice Bricks",
+];
+
+const polished_ = [
+	"Smooth Stone",
+	"Smooth Andesite",
+	"Smooth Granite",
+	"Smooth Diorite",
+	"Smooth Sandstone",
+	"Smooth Red Sandstone",
+	"Block of Quartz",
+];
+
+const engraved_ = [
+	"Engraved Stone",
+	"Engraved Andesite",
+	"Engraved Granite",
+	"Engraved Diorite",
+	"Engraved Sandstone",
+	"Engraved Red Sandstone",
+	"Marked Sandstone",
+	"Marked Red Sandstone",
+	"Chiseled Block of Quartz",
+];
+
+const fruits_ =  [
+	"Apple Block",
+	"Cherry Block",
+	"Coconut Block",
+	"Corn Block",
+	"Pear Block",
+	"Plum Block",
+	"Mango Block",
+	"Carrot Block",
+	"Potato Block",
+	"Beetroot Block",
+	"Chili Pepper Block",
+	"Banana Block",
+	"Watermelon",
+	"Melon",
+	"Pumpkin",
+];
+
 type GenericFunction = (...args: any[]) => any;
 
 declare const api: {
@@ -410,24 +523,7 @@ const flowers: Phase = {
 	id: "flowers",
 	name: "One Block (Flowers)",
 	description: `Creates a one block for flowers. ${usage}`,
-	blocks: [
-		[1, "Dandelion"],
-		[1, "Poppy"],
-		[1, "Red Tulip"],
-		[1, "Pink Tulip"],
-		[1, "White Tulip"],
-		[1, "Orange Tulip"],
-		[1, "Daisy"],
-		[1, "Bluebell"],
-		[1, "Forget-me-not"],
-		[1, "Allium"],
-		[1, "Azure Bluet"],
-		[1, "Lily of the Valley"],
-		[1, "Shadow Rose"],
-		[1, "Red Mushroom"],
-		[1, "Brown Mushroom"],
-		[1, "Fallen Pine Cone"],
-	],
+	blocks: flowers_.map((block) => [1, block]),
 };
 phasesByIds.set(flowers.id, flowers);
 
@@ -435,19 +531,7 @@ const logs: Phase = {
 	id: "logs",
 	name: "One Block (Logs)",
 	description: `Creates a one block for logs. ${usage}`,
-	blocks: [
-		[1, "Maple Log"],
-		[1, "Pine Log"],
-		[1, "Plum Log"],
-		[1, "Cedar Log"],
-		[1, "Aspen Log"],
-		[1, "Jungle Log"],
-		[1, "Palm Log"],
-		[1, "Pear Log"],
-		[1, "Cherry Log"],
-		[1, "Spectral Log"],
-		[1, "Mango Log"],
-	],
+	blocks: trees_.map((tree) => [1, `${tree} Log`]),
 };
 phasesByIds.set(logs.id, logs);
 
@@ -455,19 +539,7 @@ const leaves: Phase = {
 	id: "leaves",
 	name: "One Block (Leaves)",
 	description: `Creates a one block for leaves. ${usage}`,
-	blocks: [
-		[1, "Maple Leaves"],
-		[1, "Pine Leaves"],
-		[1, "Plum Leaves"],
-		[1, "Cedar Leaves"],
-		[1, "Aspen Leaves"],
-		[1, "Jungle Leaves"],
-		[1, "Palm Leaves"],
-		[1, "Pear Leaves"],
-		[1, "Cherry Leaves"],
-		[1, "Spectral Leaves"],
-		[1, "Mango Leaves"],
-	],
+	blocks: trees_.map((tree) => [1, `${tree} Leaves`]),
 };
 phasesByIds.set(leaves.id, leaves);
 
@@ -475,19 +547,7 @@ const saplings: Phase = {
 	id: "saplings",
 	name: "One Block (Saplings)",
 	description: `Creates a one block for saplings. ${usage}`,
-	blocks: [
-		[1, "Maple Sapling"],
-		[1, "Pine Sapling"],
-		[1, "Plum Sapling"],
-		[1, "Cedar Sapling"],
-		[1, "Aspen Sapling"],
-		[1, "Jungle Sapling"],
-		[1, "Palm Sapling"],
-		[1, "Pear Sapling"],
-		[1, "Cherry Sapling"],
-		[1, "Spectral Sapling"],
-		[1, "Mango Sapling"],
-	],
+	blocks: trees_.map((tree) => [1, `${tree} Sapling`]),
 };
 phasesByIds.set(saplings.id, saplings);
 
@@ -495,29 +555,7 @@ const soils: Phase = {
 	id: "soils",
 	name: "One Block (Soils)",
 	description: `Creates a one block for natural soils. ${usage}`,
-	blocks: [
-		[1, "Gravel"],
-		[1, "Rocky Dirt"],
-		[1, "Messy Dirt"],
-		[4, "Grass Block"],
-		[4, "Dirt"],
-		[4, "Stone"],
-		[4, "Messy Stone"],
-		[4, "Diorite"],
-		[4, "Granite"],
-		[4, "Andesite"],
-		[4, "Sand"],
-		[4, "Red Sand"],
-		[4, "Snow"],
-		[4, "Ice"],
-		[2, "Clay"],
-		[2, "Chalk"],
-		[2, "Mossy Messy Stone"],
-		[2, "Dark Red Stone"],
-		[2, "Sandstone"],
-		[2, "Red Sandstone"],
-		[2, "Green Stone"],
-	],
+	blocks: soils_.map((block) => [1, block]),
 };
 phasesByIds.set(soils.id, soils);
 
@@ -525,21 +563,7 @@ const bricks: Phase = {
 	id: "bricks",
 	name: "One Block (Bricks)",
 	description: `Creates a one block for bricks. ${usage}`,
-	blocks: [
-		[1, "Bricks"],
-		[1, "Stone Bricks"],
-		[1, "Mossy Stone Bricks"],
-		[1, "Cracked Stone Bricks"],
-		[1, "Andesite Bricks"],
-		[1, "Granite Bricks"],
-		[1, "Diorite Bricks"],
-		[1, "Sandstone Bricks"],
-		[1, "Red Sandstone Bricks"],
-		[1, "Green Bricks"],
-		[1, "Dark Green Bricks"],
-		[1, "Dark Red Brick"],
-		[1, "Ice Bricks"],
-	],
+	blocks: bricks_.map((block) => [1, block]),
 };
 phasesByIds.set(bricks.id, bricks);
 
@@ -547,15 +571,7 @@ const polished: Phase = {
 	id: "polished",
 	name: "One Block (Polished)",
 	description: `Creates a one block for polished stones. ${usage}`,
-	blocks: [
-		[1, "Smooth Stone"],
-		[1, "Smooth Andesite"],
-		[1, "Smooth Granite"],
-		[1, "Smooth Diorite"],
-		[1, "Smooth Sandstone"],
-		[1, "Smooth Red Sandstone"],
-		[1, "Block of Quartz"],
-	],
+	blocks: polished_.map((block) => [1, block]),
 };
 phasesByIds.set(polished.id, polished);
 
@@ -564,17 +580,7 @@ const engraved: Phase = {
 	id: "engraved",
 	name: "One Block (Engraved)",
 	description: `Creates a one block for engraved stones. ${usage}`,
-	blocks: [
-		[1, "Engraved Stone"],
-		[1, "Engraved Andesite"],
-		[1, "Engraved Granite"],
-		[1, "Engraved Diorite"],
-		[1, "Engraved Sandstone"],
-		[1, "Engraved Red Sandstone"],
-		[1, "Marked Sandstone"],
-		[1, "Marked Red Sandstone"],
-		[1, "Chiseled Block of Quartz"],
-	],
+	blocks: engraved_.map((block) => [1, block]),
 };
 phasesByIds.set(engraved.id, engraved);
 
@@ -593,23 +599,7 @@ const fruits: Phase = {
 	id: "fruits",
 	name: "One Block (Fruits)",
 	description: `Creates a one block for fruits. ${usage}`,
-	blocks: [
-	[1, "Apple Block"],
-	[1, "Cherry Block"],
-	[1, "Coconut Block"],
-	[1, "Corn Block"],
-	[1, "Pear Block"],
-	[1, "Plum Block"],
-	[1, "Mango Block"],
-	[1, "Carrot Block"],
-	[1, "Potato Block"],
-	[1, "Beetroot Block"],
-	[1, "Chili Pepper Block"],
-	[1, "Banana Block"],
-	[1, "Watermelon"],
-	[1, "Melon"],
-	[1, "Pumpkin"],
-	],
+	blocks: fruits_.map((block) => [1, block]),
 };
 phasesByIds.set(fruits.id, fruits);
 
@@ -656,7 +646,7 @@ for (const suffix of suffixes) {
 	const phase: Phase = {
 		id: lcase,
 		name: `One Block (${suffix})`,
-		description: `Creates a one block for Colored ${suffix}. Right click on the ground to place it. Destroy it to pick it up.`,
+		description: `Creates a one block for Colored ${suffix}. ${usage}`,
 		blocks,
 	};
 	phasesByIds.set(phase.id, phase);
