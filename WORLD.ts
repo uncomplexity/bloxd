@@ -660,6 +660,7 @@ const isInsideTownSquare = (point: Point) => {
 
 class OneBlock {
 	static type = "one_block";
+	static cache = new Map<string, unknown[]>();
 
 	static totals = new Map<unknown[], number>();
 
@@ -694,12 +695,9 @@ class OneBlock {
 		 */
 		if (typeof x === "number" && typeof y === "number" && typeof z === "number") {
 			const held = api.getHeldItem(playerId);
-			const customDisplayName = held?.attributes?.customDisplayName;
-
 			const type = held?.attributes?.customAttributes?.type;
 			const subtype = held?.attributes?.customAttributes?.subtype;
 			const count = held?.attributes?.customAttributes?.count;
-
 			if (type === OneBlock.type) {
 				if (phasesByIds.has(subtype)) {
 					const phase = phasesByIds.get(subtype);
@@ -718,7 +716,10 @@ class OneBlock {
 							const rl_limit = isInsideTownSquare([x, y + 1, z]) ? 16 : 0;
 							const rl_counter = Math.floor(api.now() / 60000);
 							const rl_count = 0;
-							ChestStorage.set(playerId, x, y + 1, z, 1, [type, subtype, count, rl_limit, rl_counter, rl_count, ...block]);
+							const metadata = [type, subtype, count, rl_limit, rl_counter, rl_count, ...block];
+							ChestStorage.set(playerId, x, y + 1, z, 1, metadata);
+							const key = `${x}|${y + 1}|${z}`;
+							OneBlock.cache.set(key, metadata);
 						} else {
 							m(playerId, "Invalid placement, not enough space.", s("gold"));
 						}
@@ -737,7 +738,8 @@ class OneBlock {
 			 * @description One Block Displacement
 			 */
 			if (ChestStorage.isOwnStorage(playerId, x, y, z)) {
-				const metadata = ChestStorage.get(playerId, x, y, z, 1);
+				const key = `${x}|${y}|${z}`;
+				const metadata = OneBlock.cache.has(key) ? OneBlock.cache.get(key) : ChestStorage.get(playerId, x, y, z, 1);
 				const type = metadata[0];
 				const subtype = metadata[1];
 				if (type === OneBlock.type) {
@@ -755,6 +757,7 @@ class OneBlock {
 								},
 							});
 							ChestStorage.teardown(playerId, x, y, z);
+							OneBlock.cache.delete(key);
 							api.setBlock(x, y + 1, z, "Air");
 							return "preventDrop";
 						}
@@ -768,7 +771,8 @@ class OneBlock {
 			 * @description Block Displacement
 			 */
 			if (ChestStorage.isStorage(x, y - 1, z)) {
-				const metadata = ChestStorage.get(playerId, x, y - 1, z, 1);
+				const key = `${x}|${y - 1}|${z}`;
+				let metadata = OneBlock.cache.has(key) ? OneBlock.cache.get(key) : ChestStorage.get(playerId, x, y - 1, z, 1);
 				const type = metadata[0];
 				const subtype = metadata[1];
 				if (type === OneBlock.type) {
@@ -811,7 +815,9 @@ class OneBlock {
 							api.setBlock(x, y, z, block[1]);
 
 							// data persistence
-							ChestStorage.set(playerId, x, y - 1, z, 1, [type, subtype, count, rl_limit, rl_counter, rl_count, ...block]);
+							metadata = [type, subtype, count, rl_limit, rl_counter, rl_count, ...block];
+							ChestStorage.set(playerId, x, y - 1, z, 1, metadata);
+							OneBlock.cache.set(key, metadata);
 
 							// visual feedback
 							api.sendFlyingMiddleMessage(playerId, `${count}!`, 62.50, 250);
