@@ -345,7 +345,7 @@ class ChestStorage {
 
 	static init(playerId: string, position: [number, number, number]) {
 		const facing = getFacingMeta(playerId);
-		api.setBlock(position[0], position[1], position[2], `Iron Chest|${facing}`);
+		api.setBlock(position[0], position[1], position[2], `Iron Chest|meta|${facing}`);
 		api.setStandardChestItemSlot(
 			position,
 			0,
@@ -703,10 +703,10 @@ class OneBlock {
 						const target = api.getPlayerTargetInfo(playerId);
 						let placement: Point;
 						const position: Point = api.getPlayerTargetInfo(playerId).position;
+						const adjacent: Point = api.getPlayerTargetInfo(playerId).adjacent;
 						if (api.getBlock(position[0], position[1], position[2]) === "Air") {
 							placement = position;
 						} else if (api.getBlock(adjacent[0], adjacent[1], adjacent[2]) === "Air") {
-							const adjacent: Point = api.getPlayerTargetInfo(playerId).adjacent;
 							placement = adjacent;
 						} else {
 							m(playerId, "Invalid placement, not enough space.", s("gold"));
