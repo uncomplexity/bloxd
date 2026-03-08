@@ -332,26 +332,32 @@ globalThis.m = m;
 // @ts-ignore
 globalThis.s = s;
 
+const getFacingMeta = (playerId: string) => {
+	const { angleDir } = api.getPlayerFacingInfo(playerId)
+	const yaw = (angleDir.horizontal + Math.PI) % (Math.PI * 2)
+	const normalized = ((yaw / (Math.PI * 2)) * 4 + 0.5) % 4
+	const dirs = ["S", "W", "N", "E"]
+	return dirs[Math.floor(normalized)]
+}
+
 class ChestStorage {
 	static id = "__STORAGE__";
 
-	static init(playerId: string, x: number, y: number, z: number) {
-		if (api.getBlock(x, y, z) === "Air") {
-			api.setBlock(x, y, z, "Iron Chest");
-			api.setStandardChestItemSlot(
-				[x, y, z],
-				0,
-				"Stick",
-				1,
-				playerId,
-				{
-					customDisplayName: ChestStorage.id,
-					customDescription: api.getPlayerDbId(playerId),
-				},
-			);
-			return true;
-		}
-		return false;
+	static init(playerId: string, adjacent: [number, number, number]) {
+		const facing = getFacingMeta(playerId);
+		api.setBlock(adjacent[0], adjacent[1], adjacent[2], `Iron Chest|${facing}`);
+		api.setStandardChestItemSlot(
+			adjacent,
+			0,
+			"Stick",
+			1,
+			playerId,
+			{
+				customDisplayName: ChestStorage.id,
+				customDescription: api.getPlayerDbId(playerId),
+			},
+		);
+		return adjacent;
 	}
 
 	static isStorage(x: number, y: number, z: number, playerId?: string) {
@@ -695,27 +701,30 @@ class OneBlock {
 				if (phasesByIds.has(subtype)) {
 					const phase = phasesByIds.get(subtype);
 					if (phase) {
-						if (RectControl.isProtected([x, y + 1, z], playerId) || RectControl.isProtected([x, y + 2, z], playerId)) {
+						const adjacent = api.getPlayerTargetInfo(playerId).adjacent;
+						const above = [adjacent[0], adjacent[1] + 1, adjacent[2]];
+						if (RectControl.isProtected(adjacent, playerId) || RectControl.isProtected(above, playerId)) {
 							m(playerId, "Invalid placement, protected area.", s("gold"));
 							return undefined;
 						}
-						const above = api.getBlock(x, y + 1, z);
-						const above2 = api.getBlock(x, y + 2, z);
-						if (above === "Air" && above2 === "Air") {
-							api.setItemSlot(playerId, api.getSelectedInventorySlotI(playerId), "Air");
-							ChestStorage.init(playerId, x, y + 1, z);
-							const block = OneBlock.getRandomBlock(phase.blocks);
-							api.setBlock(x, y + 2, z, block[1]);
-							const rl_limit = isInsideTownSquare([x, y + 1, z]) ? 16 : 0;
-							const rl_counter = Math.floor(api.now() / 60000);
-							const rl_count = 0;
-							const metadata = [type, subtype, count, rl_limit, rl_counter, rl_count, ...block];
-							ChestStorage.set(playerId, x, y + 1, z, 1, metadata);
-							const key = `${x}|${y + 1}|${z}`;
-							OneBlock.cache.set(key, metadata);
-						} else {
-							m(playerId, "Invalid placement, not enough space.", s("gold"));
+						if (api.getBlock(adjacent[0], adjacent[1], adjacent[2])) {
+							if (api.getBlock(above[0], above[1], above[2])) {
+								api.setItemSlot(playerId, api.getSelectedInventorySlotI(playerId), "Air");
+								ChestStorage.init(playerId, adjacent);
+								const block = OneBlock.getRandomBlock(phase.blocks);
+								api.setBlock(above[0], above[1], above[2], block[1]);
+								const rl_limit = isInsideTownSquare(adjacent) ? 16 : 0;
+								const rl_counter = Math.floor(api.now() / 60000);
+								const rl_count = 0;
+								const metadata = [type, subtype, count, rl_limit, rl_counter, rl_count, ...block];
+								ChestStorage.set(playerId, adjacent[0], adjacent[1], adjacent[2], 1, metadata);
+								const key = `${adjacent[0]}|${adjacent[1]}|${adjacent[2]}`;
+								OneBlock.cache.set(key, metadata);
+								return undefined;
+							}
 						}
+						m(playerId, "Invalid placement, not enough space.", s("gold"));
+						return undefined;
 					}
 				}
 			}
