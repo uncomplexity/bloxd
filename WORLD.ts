@@ -331,7 +331,7 @@ globalThis.m = m;
 globalThis.s = s;
 
 class ChestStorage {
-	static id = "__STORAGE__"
+	static id = "__STORAGE__";
 
 	static init(playerId: string, x: number, y: number, z: number) {
 		if (api.getBlock(x, y, z) === "Air") {
