@@ -688,6 +688,7 @@ class OneBlock {
 	}
 
 	static onPlayerAltAction (playerId: string, x: number, y: number, z: number, _block: any, _targetEId: any) {
+		b(JSON.stringify({x, y, z}), s("gold"));
 		/**
 		 * @description One Block Placement
 		 */
@@ -701,7 +702,12 @@ class OneBlock {
 					const phase = phasesByIds.get(subtype);
 					if (phase) {
 						const target = api.getPlayerTargetInfo(playerId);
+						b(JSON.stringify(target), s("gold"));
 						const position: Point = target.position;
+						const normal: Point = target.normal;
+						position[0] = position[0] + normal[0];
+						position[1] = position[1] + normal[1];
+						position[2] = position[2] + normal[2];
 						const adjacent: Point = target.adjacent;
 						let placement: Point;
 						if (api.getBlock(position[0], position[1], position[2]) === "Air") {
