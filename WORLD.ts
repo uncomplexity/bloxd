@@ -702,13 +702,18 @@ class OneBlock {
 					const phase = phasesByIds.get(subtype);
 					if (phase) {
 						const target = api.getPlayerTargetInfo(playerId);
-						b(JSON.stringify(target), s("gold"));
+						b(JSON.stringify({target}), s("gold"));
+
 						const position: Point = target.position;
 						const normal: Point = target.normal;
 						position[0] = position[0] + normal[0];
 						position[1] = position[1] + normal[1];
 						position[2] = position[2] + normal[2];
+						b(JSON.stringify({position}), s("gold"));
+
 						const adjacent: Point = target.adjacent;
+						b(JSON.stringify({adjacent}), s("gold"));
+
 						let placement: Point;
 						if (api.getBlock(position[0], position[1], position[2]) === "Air") {
 							placement = position;
