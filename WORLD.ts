@@ -333,11 +333,11 @@ globalThis.m = m;
 globalThis.s = s;
 
 const getFacingMeta = (playerId: string) => {
-	const { angleDir } = api.getPlayerFacingInfo(playerId)
-	const yaw = (angleDir.horizontal + Math.PI) % (Math.PI * 2)
-	const normalized = ((yaw / (Math.PI * 2)) * 4 + 0.5) % 4
-	const dirs = ["S", "W", "N", "E"]
-	return dirs[Math.floor(normalized)]
+	const { angleDir } = api.getPlayerFacingInfo(playerId);
+	const yaw = (angleDir.theta + Math.PI) % (Math.PI * 2);
+	const normalized = ((yaw / (Math.PI * 2)) * 4 + 0.5) % 4;
+	const dirs = ["S", "W", "N", "E"];
+	return dirs[Math.floor(normalized)];
 }
 
 class ChestStorage {
