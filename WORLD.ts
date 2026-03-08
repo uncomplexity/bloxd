@@ -336,7 +336,7 @@ const getFacingMeta = (playerId: string) => {
 	const { angleDir } = api.getPlayerFacingInfo(playerId);
 	const yaw = (angleDir.theta + Math.PI) % (Math.PI * 2);
 	const normalized = ((yaw / (Math.PI * 2)) * 4 + 0.5) % 4;
-	const dirs = ["S", "W", "N", "E"];
+	const dirs = ["rot1", "rot2", "rot3", "rot4"];
 	return dirs[Math.floor(normalized)];
 }
 
@@ -345,7 +345,7 @@ class ChestStorage {
 
 	static init(playerId: string, adjacent: [number, number, number]) {
 		const facing = getFacingMeta(playerId);
-		api.setBlock(adjacent[0], adjacent[1], adjacent[2], `Iron Chest|${facing}`);
+		api.setBlock(adjacent[0], adjacent[1], adjacent[2], `Iron Chest|meta|${facing}`);
 		api.setStandardChestItemSlot(
 			adjacent,
 			0,
