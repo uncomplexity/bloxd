@@ -193,12 +193,12 @@ interface MessageStyle {
 }
 
 /**
- * @description message
+ * @description broadcast message
  */
 const b = (message: string, style: MessageStyle) => api.broadcastMessage(message, style);
 
 /**
- * @description message
+ * @description unicast message
  */
 const m = (playerId: string, message: string, style: MessageStyle) => api.sendMessage(playerId, message, style);
 
@@ -688,7 +688,6 @@ class OneBlock {
 	}
 
 	static onPlayerAltAction (playerId: string, x: number, y: number, z: number, _block: any, _targetEId: any) {
-		b(JSON.stringify({x, y, z}), s("gold"));
 		/**
 		 * @description One Block Placement
 		 */
