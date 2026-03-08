@@ -291,7 +291,7 @@ class RectControl {
     RectControl.unlockedPlayerIds.delete(playerId);
 	}
 
-	static onPlayerChangeBlock (
+	static onPlayerChangeBlock(
 		playerId: string,
 		x: number, y: number, z: number,
 		_fromBlock: string, _toBlock: string,
