@@ -305,7 +305,7 @@ class RectControl {
 		return undefined;
 	}
 
-	static onPlayerChat(playerId: string, chatMessage: any) {
+	static onPlayerChat(playerId: string, chatMessage: string) {
 		switch (chatMessage) {
 			case ".unlock": {
 				RectControl.unlock(playerId);
@@ -877,7 +877,7 @@ class TownSquare {
 		return undefined;
 	}
 
-	static onPlayerDamagingOtherPlayer(attackingPlayer: any, damagedPlayer: any) {
+	static onPlayerDamagingOtherPlayer(attackingPlayer: string, damagedPlayer: string) {
 		if (api.isInsideRect(api.getPosition(damagedPlayer), [-64, -1024, -64], [64, 1024, 64])) {
 			api.sendMessage(attackingPlayer, "Can't attack inside the town square.", s("gold"));
 			return "preventDamage";
@@ -885,7 +885,7 @@ class TownSquare {
 		return undefined;
 	}
 
-	static onPlayerChat(playerId: string, chatMessage: any) {
+	static onPlayerChat(playerId: string, chatMessage: string) {
 		switch (chatMessage) {
 			case ".test": {
 				m(playerId, "Hello world!", s("gold"));
@@ -929,11 +929,11 @@ onWorldChangeBlock = (x: number, y: number, z: number, fromBlock: BlockName, toB
 	return TownSquare.onWorldChangeBlock(x, y, z, fromBlock, toBlock, initiatorDbId, extraInfo);
 }
 
-onPlayerDamagingOtherPlayer = (attackingPlayer: any, damagedPlayer: any) => {
+onPlayerDamagingOtherPlayer = (attackingPlayer: string, damagedPlayer: string) => {
 	return TownSquare.onPlayerDamagingOtherPlayer(attackingPlayer, damagedPlayer);
 };
 
-onPlayerChat = (playerId: string, chatMessage: any) => {
+onPlayerChat = (playerId: string, chatMessage: string) => {
 	return TownSquare.onPlayerChat(playerId, chatMessage)
 		?? RectControl.onPlayerChat(playerId, chatMessage)
 		?? OneBlock.onPlayerChat(playerId, chatMessage);
