@@ -439,6 +439,8 @@ type Nullable<T> = T | null;
  */
 type PhaseBlock = [number, string, Nullable<string>?, Nullable<number>?, Nullable<number>?];
 
+type Metadata = [string, string, number, number, number, number, ...PhaseBlock]
+
 interface Phase {
 	id: string;
 	name: string;
@@ -651,7 +653,7 @@ const isInsideTownSquare = (point: Point) => {
 
 class OneBlock {
 	static type = "one_block";
-	static cache = new Map<string, unknown[]>();
+	static cache = new Map<string, Metadata[]>();
 
 	static totals = new Map<unknown[], number>();
 
