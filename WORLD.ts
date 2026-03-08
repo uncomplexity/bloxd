@@ -701,8 +701,8 @@ class OneBlock {
 				if (phasesByIds.has(subtype)) {
 					const phase = phasesByIds.get(subtype);
 					if (phase) {
-						const adjacent = api.getPlayerTargetInfo(playerId).adjacent;
-						const above = [adjacent[0], adjacent[1] + 1, adjacent[2]];
+						const adjacent: Point = api.getPlayerTargetInfo(playerId).adjacent;
+						const above: Point = [adjacent[0], adjacent[1] + 1, adjacent[2]];
 						if (RectControl.isProtected(adjacent, playerId) || RectControl.isProtected(above, playerId)) {
 							m(playerId, "Invalid placement, protected area.", s("gold"));
 							return undefined;
