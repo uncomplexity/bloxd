@@ -762,68 +762,68 @@ class OneBlock {
 					break;
 				}
 				default: {
-					break;
-				}
-			}
-			/**
-			 * @description Block Displacement
-			 */
-			if (ChestStorage.isStorage(x, y - 1, z)) {
-				const key = `${x}|${y - 1}|${z}`;
-				let metadata = OneBlock.cache.has(key) ? OneBlock.cache.get(key) : ChestStorage.get(playerId, x, y - 1, z, 1);
-				const type = metadata[0];
-				const subtype = metadata[1];
-				if (type === OneBlock.type) {
-					if (phasesByIds.has(subtype)) {
-						const phase = phasesByIds.get(subtype);
-						if (phase) {
-							// count increment
-							let count = metadata[2];
-							count += 1;
+					/**
+					 * @description Block Displacement
+					 */
+					if (ChestStorage.isStorage(x, y - 1, z)) {
+						const key = `${x}|${y - 1}|${z}`;
+						let metadata = OneBlock.cache.has(key) ? OneBlock.cache.get(key) : ChestStorage.get(playerId, x, y - 1, z, 1);
+						const type = metadata[0];
+						const subtype = metadata[1];
+						if (type === OneBlock.type) {
+							if (phasesByIds.has(subtype)) {
+								const phase = phasesByIds.get(subtype);
+								if (phase) {
+									// count increment
+									let count = metadata[2];
+									count += 1;
 
-							// rate limits
-							const rl_limit = metadata[3] ?? (isInsideTownSquare([x, y - 1, z]) ? 16 : 0);
-							let rl_counter = metadata[4] ?? Math.floor(api.now() / 60000);
-							let rl_count = metadata[5] ?? 0;
-							if (rl_limit > 0) {
-								const rl_counter_current = Math.floor(api.now() / 60000);
-								if (rl_counter < rl_counter_current) {
-									rl_counter = rl_counter_current;
-									rl_count = 0;
-								}
-								rl_count += 1;
-								if (rl_count > rl_limit) {
-									const timeToReset = Math.floor((60000 - (api.now() % 60000)) / 1000);
-									m(playerId, `This one block preview has limit of ${rl_limit} blocks per minute, it will reset in ${timeToReset} seconds. Buy it for no limits.`, s("gold"));
-									return "preventChange";
+									// rate limits
+									const rl_limit = metadata[3] ?? (isInsideTownSquare([x, y - 1, z]) ? 16 : 0);
+									let rl_counter = metadata[4] ?? Math.floor(api.now() / 60000);
+									let rl_count = metadata[5] ?? 0;
+									if (rl_limit > 0) {
+										const rl_counter_current = Math.floor(api.now() / 60000);
+										if (rl_counter < rl_counter_current) {
+											rl_counter = rl_counter_current;
+											rl_count = 0;
+										}
+										rl_count += 1;
+										if (rl_count > rl_limit) {
+											const timeToReset = Math.floor((60000 - (api.now() % 60000)) / 1000);
+											m(playerId, `This one block preview has limit of ${rl_limit} blocks per minute, it will reset in ${timeToReset} seconds. Buy it for no limits.`, s("gold"));
+											return "preventChange";
+										}
+									}
+
+									// preferred item drops
+									let block = metadata.slice(6);
+									const itemName = block[2] ?? block[1];
+									let amount = block[3] ?? 1;
+									if (block[4]) {
+										amount = OneBlock.randomInt(amount, block[4]);
+									}
+									api.createItemDrop(x + 0.50, y + 0.50 + Math.random(), z + 0.50, itemName, amount, false, {}, 16000, null, {});
+
+									// block replacement
+									block = OneBlock.getRandomBlock(phase.blocks);
+									api.setBlock(x, y, z, block[1]);
+
+									// data persistence
+									metadata = [type, subtype, count, rl_limit, rl_counter, rl_count, ...block];
+									ChestStorage.set(playerId, x, y - 1, z, 1, metadata);
+									OneBlock.cache.set(key, metadata);
+
+									// visual feedback
+									api.sendFlyingMiddleMessage(playerId, `${count}!`, 20, 1000);
+
+									// prevent default item drops
+									return "preventDrop";
 								}
 							}
-
-							// preferred item drops
-							let block = metadata.slice(6);
-							const itemName = block[2] ?? block[1];
-							let amount = block[3] ?? 1;
-							if (block[4]) {
-								amount = OneBlock.randomInt(amount, block[4]);
-							}
-							api.createItemDrop(x + 0.50, y + 0.50 + Math.random(), z + 0.50, itemName, amount, false, {}, 16000, null, {});
-
-							// block replacement
-							block = OneBlock.getRandomBlock(phase.blocks);
-							api.setBlock(x, y, z, block[1]);
-
-							// data persistence
-							metadata = [type, subtype, count, rl_limit, rl_counter, rl_count, ...block];
-							ChestStorage.set(playerId, x, y - 1, z, 1, metadata);
-							OneBlock.cache.set(key, metadata);
-
-							// visual feedback
-							api.sendFlyingMiddleMessage(playerId, `${count}!`, 20, 1000);
-
-							// prevent default item drops
-							return "preventDrop";
 						}
 					}
+					break;
 				}
 			}
 		}
