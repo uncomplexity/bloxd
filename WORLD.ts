@@ -718,7 +718,7 @@ class OneBlock {
 		}
 	}
 
-	static onPlayerChangeBlock(playerId: string, x: any, y: number, z: any, _fromBlock: string, toBlock: string, _droppedItem: any, _fromBlockInfo: any, _toBlockInfo: any) {
+	static onPlayerChangeBlock(playerId: string, x: number, y: number, z: number, _fromBlock: string, toBlock: string, _droppedItem: any, _fromBlockInfo: any, _toBlockInfo: any) {
 		/**
 		 * @description Displacement
 		 */
@@ -828,33 +828,36 @@ class OneBlock {
 		return undefined;
 	}
 
-	static onPlayerChat(playerId: string, chatMessage: any) {
-		for (const key of phasesByIds.keys()) {
-			if (chatMessage === `.${key}`) {
-				const phase = phasesByIds.get(key);
-				if (phase) {
-					api.giveItem(playerId, "Stick", 1, {
-						customDisplayName: phase.name,
-						customDescription: phase.description,
-						customAttributes: {
-							type: "one_block",
-							subtype: phase.id,
-							count: 0,
-						},
-					});
-					m(playerId, `You received ${phase.name}.`, s("gold"));
+	static onPlayerChat(playerId: string, chatMessage: string) {
+		if (api.getPlayerDbId(playerId) === api.ownerDbId) {
+			switch (chatMessage) {
+				case ".oneblock": {
+					const commands = Array.from(phasesByIds.values()).map((phase) => `.${phase.id}`).join(', ');
+					m(playerId, `OneBlock test commands: ${commands}`, s("gold"));
 					return false;
 				}
-			}
-		}
-		switch (chatMessage) {
-			case ".oneblock": {
-				const commands = Array.from(phasesByIds.values()).map((phase) => `.${phase.id}`).join(', ');
-				m(playerId, `OneBlock test commands: ${commands}`, s("gold"));
-				return false;
-			}
-			default: {
-				break;
+				default: {
+					if (chatMessage.startsWith(".")) {
+						const key = chatMessage.slice(1);
+						if (phasesByIds.has(key)) {
+							const phase = phasesByIds.get(key);
+							if (phase) {
+								api.giveItem(playerId, "Stick", 1, {
+									customDisplayName: phase.name,
+									customDescription: phase.description,
+									customAttributes: {
+										type: "one_block",
+										subtype: phase.id,
+										count: 0,
+									},
+								});
+								m(playerId, `You received ${phase.name}.`, s("gold"));
+								return false;
+							}
+						}
+					}
+					break;
+				}
 			}
 		}
 		return undefined;
@@ -917,7 +920,7 @@ onPlayerAltAction = (playerId: string, x: number, y: number, z: number, block: a
 	return OneBlock.onPlayerAltAction(playerId, x, y, z, block, targetEId);
 }
 
-onPlayerChangeBlock = (playerId: string, x: any, y: number, z: any, fromBlock: string, toBlock: string, droppedItem: any, fromBlockInfo: any, toBlockInfo: any) => {
+onPlayerChangeBlock = (playerId: string, x: number, y: number, z: number, fromBlock: string, toBlock: string, droppedItem: any, fromBlockInfo: any, toBlockInfo: any) => {
 	return OneBlock.onPlayerChangeBlock(playerId, x, y, z, fromBlock, toBlock, droppedItem, fromBlockInfo, toBlockInfo)
 		?? RectControl.onPlayerChangeBlock(playerId, x, y, z, fromBlock, toBlock, droppedItem, fromBlockInfo, toBlockInfo);
 };
