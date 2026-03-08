@@ -360,7 +360,7 @@ class ChestStorage {
 	}
 
 	static isStorage(x: number, y: number, z: number, playerId?: string) {
-		if (api.getBlock(x, y, z) === "Iron Chest") {
+		if (api.getBlock(x, y, z).startsWith("Iron Chest")) {
 			const item = api.getStandardChestItemSlot(
 				[x, y, z],
 				0,
@@ -701,9 +701,9 @@ class OneBlock {
 					const phase = phasesByIds.get(subtype);
 					if (phase) {
 						const target = api.getPlayerTargetInfo(playerId);
+						const position: Point = target.position;
+						const adjacent: Point = target.adjacent;
 						let placement: Point;
-						const position: Point = api.getPlayerTargetInfo(playerId).position;
-						const adjacent: Point = api.getPlayerTargetInfo(playerId).adjacent;
 						if (api.getBlock(position[0], position[1], position[2]) === "Air") {
 							placement = position;
 						} else if (api.getBlock(adjacent[0], adjacent[1], adjacent[2]) === "Air") {
@@ -756,8 +756,8 @@ class OneBlock {
 				case 2: {
 					const key = `${x}|${y}|${z}`;
 					const metadata = OneBlock.cache.has(key) ? OneBlock.cache.get(key) : ChestStorage.get(playerId, x, y, z, 1);
-					const type = metadata[0];
-					const subtype = metadata[1];
+					const type = metadata[0] ?? null;
+					const subtype = metadata[1] ?? null;
 					if (type === OneBlock.type) {
 						if (phasesByIds.has(subtype)) {
 							const phase = phasesByIds.get(subtype);
@@ -788,8 +788,8 @@ class OneBlock {
 					if (ChestStorage.isStorage(x, y - 1, z)) {
 						const key = `${x}|${y - 1}|${z}`;
 						let metadata = OneBlock.cache.has(key) ? OneBlock.cache.get(key) : ChestStorage.get(playerId, x, y - 1, z, 1);
-						const type = metadata[0];
-						const subtype = metadata[1];
+						const type = metadata[0] ?? null;
+						const subtype = metadata[1] ?? null;
 						if (type === OneBlock.type) {
 							if (phasesByIds.has(subtype)) {
 								const phase = phasesByIds.get(subtype);
