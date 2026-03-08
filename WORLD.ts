@@ -622,17 +622,17 @@ const suffixes = [
 ];
 
 for (const suffix of suffixes) {
-	const lcase = suffix.replace(' ', '').replace(' ', '').toLocaleLowerCase();
+	const lcase = suffix.replaceAll(' ', '').toLocaleLowerCase();
 	const blocks: PhaseBlock[] = [
 		...colors.map((color) => {
 			const blockName = suffix === "Patterned Glass" ? `Patterned ${color} Glass` : `${color} ${suffix}`;
-			const block: PhaseBlock = [1, blockName, blockName, 1];
+			const block: PhaseBlock = [1, blockName];
 			return block;
 		}),
 	];
 	if (suffix === "Banner") {
-		blocks.push( [1, "Skull Banner", "Skull Banner", 1]);
-		blocks.push( [1, "Rainbow Banner", "Rainbow Banner", 1]);
+		blocks.push([1, "Skull Banner"]);
+		blocks.push([1, "Rainbow Banner"]);
 	}
 	const phase: Phase = {
 		id: lcase,
