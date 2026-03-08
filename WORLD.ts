@@ -707,8 +707,8 @@ class OneBlock {
 							m(playerId, "Invalid placement, protected area.", s("gold"));
 							return undefined;
 						}
-						if (api.getBlock(adjacent[0], adjacent[1], adjacent[2])) {
-							if (api.getBlock(above[0], above[1], above[2])) {
+						if (api.getBlock(adjacent[0], adjacent[1], adjacent[2]) === "Air") {
+							if (api.getBlock(above[0], above[1], above[2]) === "Air") {
 								api.setItemSlot(playerId, api.getSelectedInventorySlotI(playerId), "Air");
 								ChestStorage.init(playerId, adjacent);
 								const block = OneBlock.getRandomBlock(phase.blocks);
