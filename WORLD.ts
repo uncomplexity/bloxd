@@ -1,5 +1,7 @@
 /**
  * @todo performance fixes https://claude.ai/share/78e81612-ad37-4bbd-babe-cb323d1a9af0
+ * 
+ * @todo fix rotatation https://notebooklm.google.com/notebook/2da5b619-828d-4dec-b061-5fa59de95a1f
  */
 
 const flowers_ = [
