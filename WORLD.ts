@@ -240,7 +240,7 @@ class RectControl {
 	]);
 
 	static whitelist = new Set<Rect>([
-		[[2, 0, 18], [18, 1, 18]],
+		[[2, 0, 18], [50, 1, 18]],
 	]);
 
 	static unlock(playerId: string) {
