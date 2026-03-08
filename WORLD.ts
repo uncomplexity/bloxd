@@ -939,6 +939,6 @@ onPlayerChat = (playerId: string, chatMessage: string) => {
 		?? OneBlock.onPlayerChat(playerId, chatMessage);
 }
 
-onPlayerAttemptOpenChest = (playerId: string, x: number, y: number, z: number, isMoonstoneChest: any, isIronChest: any) => {
+onPlayerAttemptOpenChest = (playerId: string, x: number, y: number, z: number, isMoonstoneChest: boolean, isIronChest: boolean) => {
 	return ChestStorage.onPlayerAttemptOpenChest(playerId, x, y, z, isMoonstoneChest, isIronChest)
 };
