@@ -702,27 +702,8 @@ class OneBlock {
 					const phase = phasesByIds.get(subtype);
 					if (phase) {
 						const target = api.getPlayerTargetInfo(playerId);
-						b(JSON.stringify({target}), s("gold"));
-
-						const position: Point = target.position;
 						const normal: Point = target.normal;
-						position[0] = position[0] + normal[0];
-						position[1] = position[1] + normal[1];
-						position[2] = position[2] + normal[2];
-						b(JSON.stringify({position}), s("gold"));
-
-						const adjacent: Point = target.adjacent;
-						b(JSON.stringify({adjacent}), s("gold"));
-
-						let placement: Point;
-						if (api.getBlock(position[0], position[1], position[2]) === "Air") {
-							placement = position;
-						} else if (api.getBlock(adjacent[0], adjacent[1], adjacent[2]) === "Air") {
-							placement = adjacent;
-						} else {
-							m(playerId, "Invalid placement, not enough space.", s("gold"));
-							return undefined;
-						}
+						const placement: Point = [x + normal[0], y + normal[1], z + normal[2]];
 						const above: Point = [placement[0], placement[1] + 1, placement[2]];
 						if (api.getBlock(above[0], above[1], above[2]) === "Air") {
 							if (RectControl.isProtected(placement, playerId) || RectControl.isProtected(above, playerId)) {
