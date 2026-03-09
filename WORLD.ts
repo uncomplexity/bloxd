@@ -409,8 +409,16 @@ class ChestStorage {
 		return null;
 	}
 
-	static teardown(playerId: string, x: number, y: number, z: number) {
-		for (let index = 0; index <= 35; index += 1) {
+	/**
+	 * 
+	 * @param playerId 
+	 * @param x 
+	 * @param y 
+	 * @param z 
+	 * @param length 0 to 35
+	 */
+	static teardown(playerId: string, x: number, y: number, z: number, length: number) {
+		for (let index = 0; index <= length; index += 1) {
 			api.setStandardChestItemSlot(
 				[x, y, z],
 				index,
@@ -763,7 +771,7 @@ class OneBlock {
 										count,
 									},
 								});
-								ChestStorage.teardown(playerId, x, y, z);
+								ChestStorage.teardown(playerId, x, y, z, 1);
 								OneBlock.cache.delete(key);
 								api.setBlock(x, y + 1, z, "Air");
 								return "preventDrop";
