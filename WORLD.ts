@@ -948,7 +948,7 @@ onPlayerDamagingOtherPlayer = (attackingPlayer: string, damagedPlayer: string) =
 
 playerCommand = (playerId: string, command: string) => {
 	m(playerId, JSON.stringify({ command }), s("gold"));
-	return false
+	return undefined;
 }
 
 onPlayerChat = (playerId: string, chatMessage: string) => {
