@@ -946,6 +946,11 @@ onPlayerDamagingOtherPlayer = (attackingPlayer: string, damagedPlayer: string) =
 	return TownSquare.onPlayerDamagingOtherPlayer(attackingPlayer, damagedPlayer);
 };
 
+playerCommand = (playerId: string, command: string) => {
+	m(playerId, JSON.stringify({ command }), s("gold"));
+	return false
+}
+
 onPlayerChat = (playerId: string, chatMessage: string) => {
 	return TownSquare.onPlayerChat(playerId, chatMessage)
 		?? RectControl.onPlayerChat(playerId, chatMessage)
@@ -955,3 +960,8 @@ onPlayerChat = (playerId: string, chatMessage: string) => {
 onPlayerAttemptOpenChest = (playerId: string, x: number, y: number, z: number, isMoonstoneChest: boolean, isIronChest: boolean) => {
 	return ChestStorage.onPlayerAttemptOpenChest(playerId, x, y, z, isMoonstoneChest, isIronChest)
 };
+
+api.setCallbackValueFallback("onWorldChangeBlock", "preventChange");
+api.setCallbackValueFallback("onPlayerChangeBlock", "preventChange");
+api.setCallbackValueFallback("onPlayerDamagingOtherPlayer", "preventDamage");
+api.setCallbackValueFallback("onPlayerAttemptOpenChest", "preventOpen");
