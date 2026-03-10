@@ -1,8 +1,281 @@
-/**
- * @todo performance fixes https://claude.ai/share/78e81612-ad37-4bbd-babe-cb323d1a9af0
- * 
- * @todo fix rotatation https://notebooklm.google.com/notebook/2da5b619-828d-4dec-b061-5fa59de95a1f
- */
+type Nullable<T> = T | null;
+
+type GenericFunction = (...args: any[]) => any;
+
+declare const api: {
+	[key: string]: GenericFunction;
+}
+
+declare let tick: GenericFunction;
+declare let onClose: GenericFunction;
+declare let onPlayerJoin: GenericFunction;
+declare let onPlayerLeave: GenericFunction;
+declare let onPlayerJump: GenericFunction;
+declare let onRespawnRequest: GenericFunction;
+declare let playerCommand: GenericFunction;
+declare let onPlayerChat: GenericFunction;
+declare let onPlayerChangeBlock: GenericFunction;
+declare let onPlayerDropItem: GenericFunction;
+declare let onPlayerPickedUpItem: GenericFunction;
+declare let onPlayerSelectInventorySlot: GenericFunction;
+declare let onBlockStand: GenericFunction;
+declare let onPlayerAttemptCraft: GenericFunction;
+declare let onPlayerCraft: GenericFunction;
+declare let onPlayerAttemptOpenChest: GenericFunction;
+declare let onPlayerOpenedChest: GenericFunction;
+declare let onPlayerMoveItemOutOfInventory: GenericFunction;
+declare let onPlayerMoveInvenItem: GenericFunction;
+declare let onPlayerMoveItemIntoIdxs: GenericFunction;
+declare let onPlayerSwapInvenSlots: GenericFunction;
+declare let onPlayerMoveInvenItemWithAmt: GenericFunction;
+declare let onPlayerAttemptAltAction: GenericFunction;
+declare let onPlayerAltAction: GenericFunction;
+declare let onPlayerClick: GenericFunction;
+declare let onClientOptionUpdated: GenericFunction;
+declare let onMobSettingUpdated: GenericFunction;
+declare let onInventoryUpdated: GenericFunction;
+declare let onChestUpdated: GenericFunction;
+declare let onWorldChangeBlock: GenericFunction;
+declare let onCreateBloxdMeshEntity: GenericFunction;
+declare let onEntityCollision: GenericFunction;
+declare let onPlayerAttemptSpawnMob: GenericFunction;
+declare let onWorldAttemptSpawnMob: GenericFunction;
+declare let onPlayerSpawnMob: GenericFunction;
+declare let onWorldSpawnMob: GenericFunction;
+declare let onWorldAttemptDespawnMob: GenericFunction;
+declare let onMobDespawned: GenericFunction;
+declare let onPlayerAttack: GenericFunction;
+declare let onPlayerDamagingOtherPlayer: GenericFunction;
+declare let onPlayerDamagingMob: GenericFunction;
+declare let onMobDamagingPlayer: GenericFunction;
+declare let onMobDamagingOtherMob: GenericFunction;
+declare let onAttemptKillPlayer: GenericFunction;
+declare let onPlayerKilledOtherPlayer: GenericFunction;
+declare let onMobKilledPlayer: GenericFunction;
+declare let onPlayerKilledMob: GenericFunction;
+declare let onMobKilledOtherMob: GenericFunction;
+declare let onPlayerPotionEffect: GenericFunction;
+declare let onPlayerDamagingMeshEntity: GenericFunction;
+declare let onPlayerBreakMeshEntity: GenericFunction;
+declare let onPlayerUsedThrowable: GenericFunction;
+declare let onPlayerThrowableHitTerrain: GenericFunction;
+declare let onTouchscreenActionButton: GenericFunction;
+declare let onTaskClaimed: GenericFunction;
+declare let onChunkLoaded: GenericFunction;
+declare let onPlayerRequestChunk: GenericFunction;
+declare let onItemDropCreated: GenericFunction;
+declare let onPlayerStartChargingItem: GenericFunction;
+declare let onPlayerFinishChargingItem: GenericFunction;
+declare let onPlayerFinishQTE: GenericFunction;
+declare let onPlayerBoughtShopItem: GenericFunction;
+declare let doPeriodicSave: GenericFunction;
+
+type Point = [number, number, number];
+
+type Rect = [Point, Point];
+
+class RectControl {
+	static playerIds = new Set<string>();
+
+	static unlockedPlayerIds = new Set<string>();
+
+	static blacklist = new Set<Rect>([
+		[[-64, -1024, -64], [64, 1024, 64]],
+		[[-11, -10, 65], [-21, -4, 82]],
+	]);
+
+	static whitelist = new Set<Rect>([
+		[[2, 0, 18], [50, 1, 18]],
+	]);
+
+	static unlock(playerId: string) {
+		RectControl.unlockedPlayerIds.add(playerId);
+		api.sendMessage(playerId, "Rects unlocked.", { color: "gold" });
+	}
+
+	static lock(playerId: string) {
+		RectControl.unlockedPlayerIds.delete(playerId);
+		api.sendMessage(playerId, "Rects locked.", { color: "gold" });
+	}
+
+	static isProtected(point: Point, playerId?: string) {
+		if (typeof playerId === "string") {
+			if (RectControl.unlockedPlayerIds.has(playerId)) {
+				return false;
+			}
+		}
+		for (const rect of RectControl.whitelist.values()) {
+			if (api.isInsideRect(point, rect[0], rect[1])) {
+				return false;
+			}
+		}
+		for (const rect of RectControl.blacklist.values()) {
+			if (api.isInsideRect(point, rect[0], rect[1])) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	static whitelistDelete(rect: Rect) {
+		for (const rect2 of RectControl.whitelist.values()) {
+			if (JSON.stringify(rect) === JSON.stringify(rect2)) {
+				RectControl.whitelist.delete(rect2);
+				return;
+			}
+		}
+	}
+
+	static onPlayerJoin(playerId: string) {
+		RectControl.lock(playerId);
+		RectControl.playerIds.add(playerId);
+	}
+
+	static onPlayerLeave(playerId: string, _serverIsShuttingDown: any) {
+		RectControl.playerIds.delete(playerId);
+    RectControl.unlockedPlayerIds.delete(playerId);
+	}
+
+	static onPlayerChangeBlock(
+		playerId: string,
+		x: number, y: number, z: number,
+		_fromBlock: string, _toBlock: string,
+		_droppedItem: string | null,
+		_fromBlockInfo: unknown, _toBlockInfo: unknown
+	) {
+		if (RectControl.isProtected([x, y, z], playerId)) {
+			api.sendMessage(playerId, "That area is protected.", { color: "gold" });
+			return "preventChange";
+		}
+		return undefined;
+	}
+
+	static onPlayerChat(playerId: string, chatMessage: string) {
+		switch (chatMessage) {
+			case ".unlock": {
+				RectControl.unlock(playerId);
+				return false;
+			}
+			case ".lock": {
+				RectControl.lock(playerId);
+				return false;
+			}
+			default: {
+				break;
+			}
+		}
+		return undefined
+	}
+}
+
+const getFacingMeta = (playerId: string) => {
+	const { angleDir } = api.getPlayerFacingInfo(playerId);
+	const yaw = (angleDir.theta + Math.PI) % (Math.PI * 2);
+	const normalized = ((yaw / (Math.PI * 2)) * 4 + 0.5) % 4;
+	const dirs = ["rot1", "rot2", "rot3", "rot4"];
+	return dirs[Math.floor(normalized)];
+}
+
+class ChestStorage {
+	static id = "__STORAGE__";
+
+	static init(playerId: string, position: [number, number, number]) {
+		const facing = getFacingMeta(playerId);
+		api.setBlock(position[0], position[1], position[2], `Iron Chest|meta|${facing}`);
+		api.setStandardChestItemSlot(
+			position,
+			0,
+			"Stick",
+			1,
+			playerId,
+			{
+				customDisplayName: ChestStorage.id,
+				customDescription: api.getPlayerDbId(playerId),
+			},
+		);
+	}
+
+	static isStorage(x: number, y: number, z: number, playerId?: string) {
+		if (api.getBlock(x, y, z).startsWith("Iron Chest")) {
+			const item = api.getStandardChestItemSlot(
+				[x, y, z],
+				0,
+			);
+			const customDisplayName = item?.attributes?.customDisplayName;
+			if (customDisplayName === ChestStorage.id) {
+				if (playerId) {
+					const customDescription = item?.attributes?.customDescription;
+					if (customDescription === api.getPlayerDbId(playerId)) {
+						return 2;
+					}
+				}
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+	static set(playerId: string, x: number, y: number, z: number, index: number, value: any) {
+		if (0 < index && index <= 35) {
+			api.setStandardChestItemSlot(
+				[x, y, z],
+				index,
+				"Stick",
+				1,
+				playerId,
+				{ customDescription: JSON.stringify(value) },
+			);
+		} else {
+			api.sendMessage(playerId, "Storage.set: Invalid index.", { color: "red" });
+		}
+	}
+
+	static get(playerId: string, x: number, y: number, z: number, index: number) {
+		if (0 < index && index <= 35) {
+			const item = api.getStandardChestItemSlot(
+				[x, y, z],
+				index,
+			);
+			if (item?.attributes?.customDescription) {
+				return JSON.parse(item?.attributes?.customDescription);
+			}
+		} else {
+			api.sendMessage(playerId, "Storage.get: Invalid index.", { color: "red" });
+		}
+		return null;
+	}
+
+	/**
+	 * @param length 0 to 35
+	 */
+	static teardown(playerId: string, x: number, y: number, z: number, length: number) {
+		for (let index = 0; index <= length; index += 1) {
+			api.setStandardChestItemSlot(
+				[x, y, z],
+				index,
+				"Air",
+				0,
+				playerId,
+				{},
+			);
+		}
+	}
+
+	static onPlayerAttemptOpenChest = (playerId: string, x: number, y: number, z: number, _isMoonstoneChest: any, _isIronChest: any) => {
+		if (api.getBlock(x, y, z) === "Chest") {
+			if (ChestStorage.isStorage(x, y - 1, z)) {
+				api.sendMessage(playerId, "Break it to find out what's inside!", { color: "gold" });
+				return "preventOpen";
+			}
+		}
+		if (ChestStorage.isStorage(x, y, z)) {
+			api.sendMessage(playerId, "That's a one block!", { color: "gold" });
+			return "preventOpen";
+		}
+		return undefined;
+	}
+}
+
 
 const flowers_ = [
 	"Dandelion",
@@ -117,342 +390,12 @@ const fruits_ =  [
 	"Pumpkin",
 ];
 
-type GenericFunction = (...args: any[]) => any;
-
-declare const api: {
-	[key: string]: GenericFunction;
-}
-
-declare let tick: GenericFunction;
-declare let onClose: GenericFunction;
-declare let onPlayerJoin: GenericFunction;
-declare let onPlayerLeave: GenericFunction;
-declare let onPlayerJump: GenericFunction;
-declare let onRespawnRequest: GenericFunction;
-declare let playerCommand: GenericFunction;
-declare let onPlayerChat: GenericFunction;
-declare let onPlayerChangeBlock: GenericFunction;
-declare let onPlayerDropItem: GenericFunction;
-declare let onPlayerPickedUpItem: GenericFunction;
-declare let onPlayerSelectInventorySlot: GenericFunction;
-declare let onBlockStand: GenericFunction;
-declare let onPlayerAttemptCraft: GenericFunction;
-declare let onPlayerCraft: GenericFunction;
-declare let onPlayerAttemptOpenChest: GenericFunction;
-declare let onPlayerOpenedChest: GenericFunction;
-declare let onPlayerMoveItemOutOfInventory: GenericFunction;
-declare let onPlayerMoveInvenItem: GenericFunction;
-declare let onPlayerMoveItemIntoIdxs: GenericFunction;
-declare let onPlayerSwapInvenSlots: GenericFunction;
-declare let onPlayerMoveInvenItemWithAmt: GenericFunction;
-declare let onPlayerAttemptAltAction: GenericFunction;
-declare let onPlayerAltAction: GenericFunction;
-declare let onPlayerClick: GenericFunction;
-declare let onClientOptionUpdated: GenericFunction;
-declare let onMobSettingUpdated: GenericFunction;
-declare let onInventoryUpdated: GenericFunction;
-declare let onChestUpdated: GenericFunction;
-declare let onWorldChangeBlock: GenericFunction;
-declare let onCreateBloxdMeshEntity: GenericFunction;
-declare let onEntityCollision: GenericFunction;
-declare let onPlayerAttemptSpawnMob: GenericFunction;
-declare let onWorldAttemptSpawnMob: GenericFunction;
-declare let onPlayerSpawnMob: GenericFunction;
-declare let onWorldSpawnMob: GenericFunction;
-declare let onWorldAttemptDespawnMob: GenericFunction;
-declare let onMobDespawned: GenericFunction;
-declare let onPlayerAttack: GenericFunction;
-declare let onPlayerDamagingOtherPlayer: GenericFunction;
-declare let onPlayerDamagingMob: GenericFunction;
-declare let onMobDamagingPlayer: GenericFunction;
-declare let onMobDamagingOtherMob: GenericFunction;
-declare let onAttemptKillPlayer: GenericFunction;
-declare let onPlayerKilledOtherPlayer: GenericFunction;
-declare let onMobKilledPlayer: GenericFunction;
-declare let onPlayerKilledMob: GenericFunction;
-declare let onMobKilledOtherMob: GenericFunction;
-declare let onPlayerPotionEffect: GenericFunction;
-declare let onPlayerDamagingMeshEntity: GenericFunction;
-declare let onPlayerBreakMeshEntity: GenericFunction;
-declare let onPlayerUsedThrowable: GenericFunction;
-declare let onPlayerThrowableHitTerrain: GenericFunction;
-declare let onTouchscreenActionButton: GenericFunction;
-declare let onTaskClaimed: GenericFunction;
-declare let onChunkLoaded: GenericFunction;
-declare let onPlayerRequestChunk: GenericFunction;
-declare let onItemDropCreated: GenericFunction;
-declare let onPlayerStartChargingItem: GenericFunction;
-declare let onPlayerFinishChargingItem: GenericFunction;
-declare let onPlayerFinishQTE: GenericFunction;
-declare let onPlayerBoughtShopItem: GenericFunction;
-declare let doPeriodicSave: GenericFunction;
-
-interface MessageStyle {
-	color?: string;
-	fontWeight?: number;
-}
-
-/**
- * @description broadcast message
- */
-const b = (message: string, style: MessageStyle) => api.broadcastMessage(message, style);
-
-/**
- * @description unicast message
- */
-const m = (playerId: string, message: string, style: MessageStyle) => api.sendMessage(playerId, message, style);
-
-/**
- * @description style
- */
-const s = (color: string, fontWeight?: number) => ({ color, fontWeight });
-
-type Point = [number, number, number];
-
-type Rect = [Point, Point];
-
-
-/**
- * @description
- * 
- * Be wary of Degenerate Whitelist Rects.
- * 
- * For example:
- * 
- * static whitelist = new Set<Rect>([
- * 	 [[0, 0, 18], [0, 1, 18]],   // x: 0→0, z: 18→18
- *   [[2, 0, 18], [2, 1, 18]],   // x: 2→2, z: 18→18
- * ]);
- * 
- * Both corners of each rect share the same X and Z values — they only differ in Y.
- * This makes them degenerate rects with zero width and depth (essentially a line segment, not a volume).
- * api.isInsideRect almost certainly doesn't consider a point to be "inside" a zero-area/zero-volume shape.
- * 
- * The two corner points must differ in all three axes that isInsideRect can reason about.
- * 
- */
-class RectControl {
-	static playerIds = new Set<string>();
-
-	static unlockedPlayerIds = new Set<string>();
-
-	static blacklist = new Set<Rect>([
-		[[-64, -1024, -64], [64, 1024, 64]],
-		[[-11, -10, 65], [-21, -4, 82]],
-	]);
-
-	static whitelist = new Set<Rect>([
-		[[2, 0, 18], [50, 1, 18]],
-	]);
-
-	static unlock(playerId: string) {
-		RectControl.unlockedPlayerIds.add(playerId);
-		m(playerId, "Rects unlocked.", s("gold"));
-	}
-
-	static lock(playerId: string) {
-		RectControl.unlockedPlayerIds.delete(playerId);
-		m(playerId, "Rects locked.", s("gold"));
-	}
-
-	static isProtected(point: Point, playerId?: string) {
-		if (typeof playerId === "string") {
-			if (RectControl.unlockedPlayerIds.has(playerId)) {
-				return false;
-			}
-		}
-		for (const rect of RectControl.whitelist.values()) {
-			if (api.isInsideRect(point, rect[0], rect[1])) {
-				return false;
-			}
-		}
-		for (const rect of RectControl.blacklist.values()) {
-			if (api.isInsideRect(point, rect[0], rect[1])) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	static whitelistDelete(rect: Rect) {
-		for (const rect2 of RectControl.whitelist.values()) {
-			if (JSON.stringify(rect) === JSON.stringify(rect2)) {
-				RectControl.whitelist.delete(rect2);
-				return;
-			}
-		}
-	}
-
-	static onPlayerJoin(playerId: string) {
-		RectControl.lock(playerId);
-		RectControl.playerIds.add(playerId);
-	}
-
-	static onPlayerLeave(playerId: string, _serverIsShuttingDown: any) {
-		RectControl.playerIds.delete(playerId);
-    RectControl.unlockedPlayerIds.delete(playerId);
-	}
-
-	static onPlayerChangeBlock(
-		playerId: string,
-		x: number, y: number, z: number,
-		_fromBlock: string, _toBlock: string,
-		_droppedItem: string | null,
-		_fromBlockInfo: unknown, _toBlockInfo: unknown
-	) {
-		if (RectControl.isProtected([x, y, z], playerId)) {
-			m(playerId, "That area is protected.", s("gold"));
-			return "preventChange";
-		}
-		return undefined;
-	}
-
-	static onPlayerChat(playerId: string, chatMessage: string) {
-		switch (chatMessage) {
-			case ".unlock": {
-				RectControl.unlock(playerId);
-				return false;
-			}
-			case ".lock": {
-				RectControl.lock(playerId);
-				return false;
-			}
-			default: {
-				break;
-			}
-		}
-		return undefined
-	}
-}
-
-// @ts-ignore
-globalThis.b = b;
-// @ts-ignore
-globalThis.m = m;
-// @ts-ignore
-globalThis.s = s;
-
-const getFacingMeta = (playerId: string) => {
-	const { angleDir } = api.getPlayerFacingInfo(playerId);
-	const yaw = (angleDir.theta + Math.PI) % (Math.PI * 2);
-	const normalized = ((yaw / (Math.PI * 2)) * 4 + 0.5) % 4;
-	const dirs = ["rot1", "rot2", "rot3", "rot4"];
-	return dirs[Math.floor(normalized)];
-}
-
-class ChestStorage {
-	static id = "__STORAGE__";
-
-	static init(playerId: string, position: [number, number, number]) {
-		const facing = getFacingMeta(playerId);
-		api.setBlock(position[0], position[1], position[2], `Iron Chest|meta|${facing}`);
-		api.setStandardChestItemSlot(
-			position,
-			0,
-			"Stick",
-			1,
-			playerId,
-			{
-				customDisplayName: ChestStorage.id,
-				customDescription: api.getPlayerDbId(playerId),
-			},
-		);
-	}
-
-	static isStorage(x: number, y: number, z: number, playerId?: string) {
-		if (api.getBlock(x, y, z).startsWith("Iron Chest")) {
-			const item = api.getStandardChestItemSlot(
-				[x, y, z],
-				0,
-			);
-			const customDisplayName = item?.attributes?.customDisplayName;
-			if (customDisplayName === ChestStorage.id) {
-				if (playerId) {
-					const customDescription = item?.attributes?.customDescription;
-					if (customDescription === api.getPlayerDbId(playerId)) {
-						return 2;
-					}
-				}
-				return 1;
-			}
-		}
-		return 0;
-	}
-
-	static set(playerId: string, x: number, y: number, z: number, index: number, value: any) {
-		if (0 < index && index <= 35) {
-			api.setStandardChestItemSlot(
-				[x, y, z],
-				index,
-				"Stick",
-				1,
-				playerId,
-				{ customDescription: JSON.stringify(value) },
-			);
-		} else {
-			m(playerId, "Storage.set: Invalid index.", s("red"));
-		}
-	}
-
-	static get(playerId: string, x: number, y: number, z: number, index: number) {
-		if (0 < index && index <= 35) {
-			const item = api.getStandardChestItemSlot(
-				[x, y, z],
-				index,
-			);
-			if (item?.attributes?.customDescription) {
-				return JSON.parse(item?.attributes?.customDescription);
-			}
-		} else {
-			m(playerId, "Storage.get: Invalid index.", s("red"));
-		}
-		return null;
-	}
-
-	/**
-	 * 
-	 * @param playerId 
-	 * @param x 
-	 * @param y 
-	 * @param z 
-	 * @param length 0 to 35
-	 */
-	static teardown(playerId: string, x: number, y: number, z: number, length: number) {
-		for (let index = 0; index <= length; index += 1) {
-			api.setStandardChestItemSlot(
-				[x, y, z],
-				index,
-				"Air",
-				0,
-				playerId,
-				{},
-			);
-		}
-	}
-
-	static onPlayerAttemptOpenChest = (playerId: string, x: number, y: number, z: number, _isMoonstoneChest: any, _isIronChest: any) => {
-		if (api.getBlock(x, y, z) === "Chest") {
-			if (ChestStorage.isStorage(x, y - 1, z)) {
-				m(playerId, "Break it to find out what's inside!", s("gold"));
-				return "preventOpen";
-			}
-		}
-		if (ChestStorage.isStorage(x, y, z)) {
-			m(playerId, "That's a one block!", s("gold"));
-			return "preventOpen";
-		}
-		return undefined;
-	}
-}
-
-type Nullable<T> = T | null;
-
 /**
  * @description Weight, BlockName, ItemName = BlockName, ItemMin = 1, ItemMax = null
  */
 type PhaseBlock = [number, string, Nullable<string>?, Nullable<number>?, Nullable<number>?];
 
-type Metadata = [string, string, number, number, number, number, ...PhaseBlock]
+type Metadata = [string, string, number, number, number, number, ...PhaseBlock];
 
 interface Phase {
 	id: string;
@@ -461,9 +404,6 @@ interface Phase {
 	blocks: PhaseBlock[];
 }
 
-/**
- * @url https://bloxd-io.fandom.com/wiki/One_Block
- */
 const phasesByIds = new Map<string, Phase>();
 
 // @ts-ignore
@@ -714,7 +654,7 @@ class OneBlock {
 						const above: Point = [placement[0], placement[1] + 1, placement[2]];
 						if (api.getBlock(above[0], above[1], above[2]) === "Air") {
 							if (RectControl.isProtected(placement, playerId) || RectControl.isProtected(above, playerId)) {
-								m(playerId, "Invalid placement, protected area.", s("gold"));
+								api.sendMessage(playerId, "Invalid placement, protected area.", { color: "gold" });
 								return undefined;
 							}
 							api.setItemSlot(playerId, api.getSelectedInventorySlotI(playerId), "Air");
@@ -730,7 +670,7 @@ class OneBlock {
 							OneBlock.cache.set(key, metadata);
 							return undefined;
 						} else {
-							m(playerId, "Invalid placement, not enough space.", s("gold"));
+							api.sendMessage(playerId, "Invalid placement, not enough space.", { color: "gold" });
 							return undefined;
 						}
 					}
@@ -749,7 +689,7 @@ class OneBlock {
 			 */
 			switch (ChestStorage.isStorage(x, y, z, playerId)) {
 				case 1: {
-					m(playerId, "That one block is not yours.", s("gold"));
+					api.sendMessage(playerId, "That one block is not yours.", { color: "gold" });
 					return "preventChange";
 				}
 				case 2: {
@@ -810,7 +750,7 @@ class OneBlock {
 										rl_count += 1;
 										if (rl_count > rl_limit) {
 											const timeToReset = Math.floor((60000 - (api.now() % 60000)) / 1000);
-											m(playerId, `This one block preview has limit of ${rl_limit} blocks per minute, it will reset in ${timeToReset} seconds. Buy it for no limits.`, s("gold"));
+											api.sendMessage(playerId, `This one block preview has limit of ${rl_limit} blocks per minute, it will reset in ${timeToReset} seconds. Buy it for no limits.`, { color: "gold" });
 											return "preventChange";
 										}
 									}
@@ -854,7 +794,7 @@ class OneBlock {
 			switch (chatMessage) {
 				case ".oneblock": {
 					const commands = Array.from(phasesByIds.values()).map((phase) => `.${phase.id}`).join(', ');
-					m(playerId, `OneBlock test commands: ${commands}`, s("gold"));
+					api.sendMessage(playerId, `OneBlock test commands: ${commands}`, { color: "gold" });
 					return false;
 				}
 				default: {
@@ -872,7 +812,7 @@ class OneBlock {
 										count: 0,
 									},
 								});
-								m(playerId, `You received ${phase.name}.`, s("gold"));
+								api.sendMessage(playerId, `You received ${phase.name}.`, { color: "gold" });
 								return false;
 							}
 						}
@@ -900,7 +840,7 @@ class TownSquare {
 
 	static onPlayerDamagingOtherPlayer(attackingPlayer: string, damagedPlayer: string) {
 		if (api.isInsideRect(api.getPosition(damagedPlayer), [-64, -1024, -64], [64, 1024, 64])) {
-			api.sendMessage(attackingPlayer, "Can't attack inside the town square.", s("gold"));
+			api.sendMessage(attackingPlayer, "Can't attack inside the town square.", { color: "gold" });
 			return "preventDamage";
 		}
 		return undefined;
@@ -909,7 +849,7 @@ class TownSquare {
 	static onPlayerChat(playerId: string, chatMessage: string) {
 		switch (chatMessage) {
 			case ".test": {
-				m(playerId, "Hello world!", s("gold"));
+				api.sendMessage(playerId, "Hello world!", { color: "gold" });
 				return false;
 			}
 			default: {
@@ -955,7 +895,7 @@ onPlayerDamagingOtherPlayer = (attackingPlayer: string, damagedPlayer: string) =
 };
 
 playerCommand = (playerId: string, command: string) => {
-	m(playerId, JSON.stringify({ command }), s("gold"));
+	api.sendMessage(playerId, JSON.stringify({ command }), { color: "gold" });
 	return undefined;
 }
 
