@@ -1,15 +1,13 @@
 class Loader{
 	static blocks: Point[] = [
-		[-2, 1, -63],
-		[-1, 1, -63],
-		[0, 1, -63],
 		[1, 1, -63],
+		[3, 1, -63],
+		[5, 1, -63],
+		[7, 1, -63],
 	];
 	static load() {
 		for (const block of Loader.blocks) {
-			const data = api.getBlockData(block[0], block[1], block[2]);
-			const code = data?.persisted?.shared?.text ?? null;
-			api.broadcastMessage(JSON.stringify({ block, code }));
+			const code = api.getBlockData(block[0], block[1], block[2])?.data?.persisted?.shared?.text ?? null;
 			if (code) {
 				eval(code);
 			}	
