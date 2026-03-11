@@ -1,4 +1,3 @@
-
 class TownSquare {
 	static onWorldChangeBlock (x: number, y: number, z: number, _fromBlock: BlockName, _toBlock: BlockName, _initiatorDbId: string | null, extraInfo: WorldBlockChangedInfo) {
 		if (extraInfo?.cause === "Explosion") {
@@ -35,3 +34,5 @@ class TownSquare {
 		return undefined
 	}
 }
+
+Object.assign(globalThis, { TownSquare });

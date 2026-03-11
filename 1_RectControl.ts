@@ -82,3 +82,5 @@ class RectControl {
 		return undefined
 	}
 }
+
+Object.assign(globalThis, { RectControl });

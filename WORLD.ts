@@ -19,6 +19,10 @@ class Loader{
 
 Loader.load();
 
+api.setCallbackValueFallback("onWorldChangeBlock", "preventChange");
+api.setCallbackValueFallback("onPlayerChangeBlock", "preventChange");
+api.setCallbackValueFallback("onPlayerDamagingOtherPlayer", "preventDamage");
+api.setCallbackValueFallback("onPlayerAttemptOpenChest", "preventOpen");
 
 onPlayerJoin = (playerId: string) => {
 	return RectControl.onPlayerJoin(playerId);
@@ -59,8 +63,3 @@ onPlayerChat = (playerId: string, chatMessage: string) => {
 onPlayerAttemptOpenChest = (playerId: string, x: number, y: number, z: number, isMoonstoneChest: boolean, isIronChest: boolean) => {
 	return ChestStorage.onPlayerAttemptOpenChest(playerId, x, y, z, isMoonstoneChest, isIronChest)
 };
-
-api.setCallbackValueFallback("onWorldChangeBlock", "preventChange");
-api.setCallbackValueFallback("onPlayerChangeBlock", "preventChange");
-api.setCallbackValueFallback("onPlayerDamagingOtherPlayer", "preventDamage");
-api.setCallbackValueFallback("onPlayerAttemptOpenChest", "preventOpen");

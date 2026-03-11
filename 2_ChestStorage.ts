@@ -105,3 +105,5 @@ class ChestStorage {
 		return undefined;
 	}
 }
+
+Object.assign(globalThis, { ChestStorage });
