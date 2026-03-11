@@ -19,6 +19,11 @@ class Loader{
 
 Loader.load();
 
+api.broadcastMessage(`RectControl ${typeof RectControl}`);
+api.broadcastMessage(`ChestStorage ${typeof ChestStorage}`);
+api.broadcastMessage(`OneBlock ${typeof OneBlock}`);
+api.broadcastMessage(`TownSquare ${typeof TownSquare}`);
+
 api.setCallbackValueFallback("onWorldChangeBlock", "preventChange");
 api.setCallbackValueFallback("onPlayerChangeBlock", "preventChange");
 api.setCallbackValueFallback("onPlayerDamagingOtherPlayer", "preventDamage");
