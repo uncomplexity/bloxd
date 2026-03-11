@@ -8,6 +8,7 @@ class Loader{
 	static load() {
 		for (const block of Loader.blocks) {
 			const code = api.getBlockData(block[0], block[1], block[2])?.data?.persisted?.shared?.text ?? null;
+			api.broadcastMessage(`${block.join(' ')} ${code.length}`);
 			if (code) {
 				eval(code);
 			}	
