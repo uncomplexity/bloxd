@@ -10,7 +10,7 @@ class ChestStorage {
   }
 
 	static init(playerId: string, position: [number, number, number]) {
-		const rotation = get_rotation(playerId);
+		const rotation = ChestStorage.get_rotation(playerId);
 		api.setBlock(position[0], position[1], position[2], `Iron Chest|meta|${rotation}`);
 		api.setStandardChestItemSlot(
 			position,
