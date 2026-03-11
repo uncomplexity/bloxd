@@ -1,7 +1,3 @@
-type Point = [number, number, number];
-
-type Rect = [Point, Point];
-
 class RectControl {
 	static playerIds = new Set<string>();
 	static unlockedPlayerIds = new Set<string>();
