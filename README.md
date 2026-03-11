@@ -1,5 +1,21 @@
 # bloxd
 
+## Terser
+
+- https://try.terser.org/
+
+```json
+// edit terser options
+{
+  module: false,
+  compress: {},
+  mangle: false,
+  output: {},
+  parse: {},
+  rename: {},
+}
+```
+
 ## Ideas
 
 #### Protector Chests
