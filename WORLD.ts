@@ -6,7 +6,7 @@ class Loader{
 		[1, 1, -63],
 	];
 	static load() {
-		for (const block of blocks) {
+		for (const block of Loader.blocks) {
 			const data = api.getBlockData(block[0], block[1], block[2]);
 			const code = data?.persisted?.shared?.text ?? null;
 			api.broadcastMessage(JSON.stringify({ block, code }));
