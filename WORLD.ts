@@ -8,27 +8,31 @@ class Loader {
 
     static cursor = 0;
 
+		static completed = false;
+
     static tick() {
-        while (Loader.cursor < Loader.blocks.length) {
-            const block = Loader.blocks[Loader.cursor];
-            const [x, y, z] = block;
-            if (api.getBlockId(x, y, z) === 1) {
-							return;
-						}
-            const data = api.getBlockData(x, y, z);
-            const code = data?.persisted?.shared?.text ?? null;
-            if (code) {
-                api.broadcastMessage(`${block.join(' ')} ${code.length}`);
-                eval(code);
-            }
-            Loader.cursor++;
-        }
-        Loader.finish();
+			if (Loader.completed === true) {
+				return;
+			}
+			while (Loader.cursor < Loader.blocks.length) {
+					const block = Loader.blocks[Loader.cursor];
+					const [x, y, z] = block;
+					if (api.getBlockId(x, y, z) === 1) {
+						return;
+					}
+					const data = api.getBlockData(x, y, z);
+					const code = data?.persisted?.shared?.text ?? null;
+					if (code) {
+							api.broadcastMessage(`${block.join(' ')} ${code.length}`);
+							eval(code);
+					}
+					Loader.cursor++;
+			}
+			Loader.finish();
     }
 
     static finish() {
         api.broadcastMessage(`RectControl ${typeof RectControl}`);
-        // ... rest of your broadcast checks
 
         api.setCallbackValueFallback("onWorldChangeBlock", "preventChange");
         api.setCallbackValueFallback("onPlayerChangeBlock", "preventChange");
@@ -77,8 +81,10 @@ class Loader {
 					return ChestStorage.onPlayerAttemptOpenChest(playerId, x, y, z, isMoonstoneChest, isIronChest)
 				};
 
-        tick = undefined;
+        Loader.completed = true;
     }
 }
 
-tick = () => Loader.tick();
+tick = () => {
+	Loader.tick();
+}
