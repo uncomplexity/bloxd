@@ -9,7 +9,7 @@ class TownSquare {
 		extraInfo: WorldBlockChangedInfo,
 	) {
 		if (extraInfo?.["cause"] === "Explosion") {
-			if (api["isInsideRect"]([x, y, z], [-64, -1024, -64], [64, 1024, 64])) {
+			if (api.isInsideRect?.([x, y, z], [-64, -1024, -64], [64, 1024, 64])) {
 				return "preventChange";
 			}
 		}
@@ -21,13 +21,13 @@ class TownSquare {
 		damagedPlayer: string,
 	) {
 		if (
-			api["isInsideRect"](
-				api["getPosition"](damagedPlayer),
+			api.isInsideRect?.(
+				api.getPosition?.(damagedPlayer),
 				[-64, -1024, -64],
 				[64, 1024, 64],
 			)
 		) {
-			api["sendMessage"](attackingPlayer, "Can't attack inside the town square.", {
+			api.sendMessage?.(attackingPlayer, "Can't attack inside the town square.", {
 				color: "gold",
 			});
 			return "preventDamage";
@@ -38,7 +38,7 @@ class TownSquare {
 	static onPlayerChat(playerId: string, chatMessage: string) {
 		switch (chatMessage) {
 			case ".test": {
-				api["sendMessage"](playerId, "Hello world!", { color: "gold" });
+				api.sendMessage?.(playerId, "Hello world!", { color: "gold" });
 				return false;
 			}
 			default: {
@@ -47,7 +47,7 @@ class TownSquare {
 		}
 		if (chatMessage.startsWith(".give ")) {
 			const item = chatMessage.substring(6);
-			api["giveItem"](playerId, item, 1, {});
+			api.giveItem?.(playerId, item, 1, {});
 			return false;
 		}
 		return undefined;

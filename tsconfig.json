@@ -3,12 +3,7 @@
 		"@tsconfig/recommended/tsconfig.json",
 		"@tsconfig/strictest/tsconfig.json"
 	],
-	"compilerOptions": {
-		"noEmit": true,
-		"allowImportingTsExtensions": true,
-		"paths": {
-			"#app/*": ["./*"]
-		}
-	},
-	"include": ["src/**/*.ts"]
+	"compilerOptions": {},
+	"include": ["src/**/*.ts"],
+	"exclude": ["src/trash/**/*.ts"]
 }

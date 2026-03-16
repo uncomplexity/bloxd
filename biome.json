@@ -19,6 +19,14 @@
 			"complexity": {
 				"noStaticOnlyClass": {
 					"level": "off"
+				},
+				"useLiteralKeys": {
+					"level": "off"
+				}
+			},
+			"suspicious": {
+				"noExplicitAny": {
+					"level": "off"
 				}
 			}
 		}
