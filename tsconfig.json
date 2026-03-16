@@ -4,7 +4,8 @@
 		"@tsconfig/strictest/tsconfig.json"
 	],
 	"compilerOptions": {
-		"outDir": "dist"
+		"outDir": "dist",
+		"module": "nodenext"
 	},
 	"include": ["src/**/*.ts"],
 	"exclude": ["src/trash/**/*.ts"]

@@ -189,7 +189,6 @@ declare const api: {
 	setAuraLevel: GenericFunction;
 	applyAuraChange: GenericFunction;
 	setCallbackValueFallback: GenericFunction;
-	[key: string]: never;
 }
 
 declare let tick: GenericFunction;
