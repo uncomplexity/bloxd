@@ -3,7 +3,9 @@
 		"@tsconfig/recommended/tsconfig.json",
 		"@tsconfig/strictest/tsconfig.json"
 	],
-	"compilerOptions": {},
+	"compilerOptions": {
+		"outDir": "dist"
+	},
 	"include": ["src/**/*.ts"],
 	"exclude": ["src/trash/**/*.ts"]
 }
