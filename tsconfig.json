@@ -1,14 +1,14 @@
 {
-  "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "lib": ["esnext", "dom"],
-    "strict": true,
-    "noEmit": true,
-    "skipLibCheck": true,
-    "moduleResolution": "bundler"
-  },
-  "include": [
-    "**/*.ts"
-  ]
+	"extends": [
+		"@tsconfig/recommended/tsconfig.json",
+		"@tsconfig/strictest/tsconfig.json"
+	],
+	"compilerOptions": {
+		"noEmit": true,
+		"allowImportingTsExtensions": true,
+		"paths": {
+			"#app/*": ["./*"]
+		}
+	},
+	"include": ["src/**/*.ts"]
 }
