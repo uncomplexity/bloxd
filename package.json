@@ -4,7 +4,8 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"dev": "node --disable-warning=ExperimentalWarning --watch-path=./src/ ./src/index.ts"
+		"dev": "node --disable-warning=ExperimentalWarning --watch-path=./src/ ./src/index.ts",
+		"update-code-api": "git submodule update --remote code-api"
 	},
 	"keywords": [],
 	"author": "",
