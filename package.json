@@ -7,7 +7,7 @@
 		"update-code-api": "git submodule update --remote code-api",
 		"bundle": "npx tsc",
 		"minify": "node ./scripts/index.ts",
-		"build": "esbuild ./src/*.ts --outdir=dist --minify --watch"
+		"build": "esbuild ./src/*.ts --outdir=dist --minify --watch --analyze"
 	},
 	"keywords": [],
 	"author": "",

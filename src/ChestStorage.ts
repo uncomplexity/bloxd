@@ -113,3 +113,5 @@ class ChestStorage {
 }
 
 Object.assign(globalThis, { ChestStorage });
+
+export type { ChestStorage };

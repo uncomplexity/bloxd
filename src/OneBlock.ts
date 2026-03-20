@@ -1,3 +1,11 @@
+import type { ChestStorage as ChestStorageClass } from "./ChestStorage.js";
+import type { RectControl as RectControlClass } from "./RectControl.js";
+
+declare global {
+	const RectControl: typeof RectControlClass;
+	const ChestStorage: typeof ChestStorageClass;
+}
+
 const flowers_ = [
 	"Dandelion",
 	"Poppy",

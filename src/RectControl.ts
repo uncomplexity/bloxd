@@ -87,3 +87,5 @@ class RectControl {
 }
 
 Object.assign(globalThis, { RectControl });
+
+export type { RectControl };
