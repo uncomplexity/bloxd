@@ -27,9 +27,13 @@ class TownSquare {
 				[64, 1024, 64],
 			)
 		) {
-			api.sendMessage?.(attackingPlayer, "Can't attack inside the town square.", {
-				color: "gold",
-			});
+			api.sendMessage?.(
+				attackingPlayer,
+				"Can't attack inside the town square.",
+				{
+					color: "gold",
+				},
+			);
 			return "preventDamage";
 		}
 		return undefined;

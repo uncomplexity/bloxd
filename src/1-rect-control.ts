@@ -2,7 +2,10 @@ class RectControl {
 	static playerIds = new Set<string>();
 	static unlockedPlayerIds = new Set<string>();
 	static blacklist = new Set<Rect>([
-		[[-64, -1024, -64], [64, 1024, 64]],
+		[
+			[-64, -1024, -64],
+			[64, 1024, 64],
+		],
 	]);
 	static whitelist = new Set<Rect>([
 		// [[2, 0, 18], [50, 1, 18]],
@@ -44,15 +47,19 @@ class RectControl {
 
 	static onPlayerLeave(playerId: string, _serverIsShuttingDown: boolean) {
 		RectControl.playerIds.delete(playerId);
-    RectControl.unlockedPlayerIds.delete(playerId);
+		RectControl.unlockedPlayerIds.delete(playerId);
 	}
 
 	static onPlayerChangeBlock(
 		playerId: string,
-		x: number, y: number, z: number,
-		_fromBlock: string, _toBlock: string,
+		x: number,
+		y: number,
+		z: number,
+		_fromBlock: string,
+		_toBlock: string,
 		_droppedItem: string | null,
-		_fromBlockInfo: unknown, _toBlockInfo: unknown
+		_fromBlockInfo: unknown,
+		_toBlockInfo: unknown,
 	) {
 		if (RectControl.isProtected([x, y, z], playerId)) {
 			api.sendMessage(playerId, "That area is protected.", { color: "gold" });
@@ -75,7 +82,7 @@ class RectControl {
 				break;
 			}
 		}
-		return undefined
+		return undefined;
 	}
 }
 
